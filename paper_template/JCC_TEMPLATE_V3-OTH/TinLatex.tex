@@ -1,0 +1,109 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\documentclass[11pt]{TinLatex_review} 
+
+\textwidth15.4cm
+
+\textheight21.8cm
+
+\oddsidemargin0.0cm 
+
+\evensidemargin0.0cm
+
+\setlength{\topmargin}{0cm}
+\setlength{\headheight}{0.4cm}
+\setlength{\headsep}{.5cm}
+
+
+
+%\topmargin
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+
+\usepackage{amsmath,amsxtra,amssymb,latexsym, amscd}
+
+\usepackage[mathscr]{eucal}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=false,
+	pdfborder={0 0 0}
+}
+
+\usepackage{xspace}
+
+%\renewcommand\refname{\normalsize \centerline{ REFERENCES}}
+
+\input setbmp
+\input seteps
+\input setwmf
+\input setps
+\IfFileExists{./Dih.tex}{\input Dih.tex}{\IfFileExists{./dih.tex}{\input dih.tex}{\typeout{Warning: Dih.tex not found, Vietnamese macros skipped}}}
+
+\font\elevent=cmr12 at 11pt
+%\parskip=2pt
+\font\it=cmti12 at 11pt
+\font\bf=cmbx12 at 11pt
+\font\cv=cmr10 scaled \magstephalf
+\advance\hoffset0.4cm
+%\font\bfv=cmbx10 %scaled \magstephalf
+\font\itv=cmti10 %scaled \magstephalf
+\font\bfm=cmbx12
+\font\bfh=cmssbx10 scaled 1400
+\font\bfl=cmssbx10 scaled \magstep1
+\font\beo=cmr10 scaled\magstep1
+\font\chu=cmr8
+\font\dsl=cmitt10
+\font\cvv=cmr10 scaled \magstephalf
+\font\be=cmr6
+%%%%%%%%%%
+\font\itn=cmti10
+\font\bfn=cmbx10
+\font\bfitt = cmbxti10 
+\font\cn=cmr10
+%%%%%%%%%%
+\font\itsl=cmsl9
+\font\nn=cmsl8
+\font\go=eufm10
+\font\gotic=eufm8
+\font\goticc=eufm6
+%%%%%%%%%%%%
+\def\vs{\vskip-0.4cm}
+\def\vhs{\vskip-0.18cm}
+\def\vss{\vskip-0.7cm}
+\def\vt{\vskip0.5cm}
+\def\vl{\vskip0.3cm}
+\def\vlv{\vskip0.27cm}
+\def\vv{\vskip0.25cm}%0.25
+\def\vvb{\vskip0.21cm}
+\def\vb{\vskip0.17cm}%.17
+\def\vn{\vskip0.11cm}
+\def\vnn{\vskip0.05cm}
+\def\n{\noindent}
+\def\ce{\centerline}
+\def\dis{\displaystyle}
+\def\ed{\end{document}}
+\def\vuong{\raise-0.16cm\hbox{$^\blacksquare$}}
+
+% Add a period to the end of an abbreviation unless there's one
+% already, then \xspace.
+\makeatletter
+\DeclareRobustCommand\onedot{\futurelet\@let@token\@onedot}
+\def\@onedot{\ifx\@let@token.\else.\null\fi\xspace}
+
+\def\eg{e.g\onedot} \def\Eg{E.g\onedot}
+\def\ie{i.e\onedot} \def\Ie{I.e\onedot}
+\def\cf{c.f\onedot} \def\Cf{C.f\onedot}
+\def\etc{etc\onedot} \def\vs{vs\onedot}
+\def\wrt{w.r.t\onedot} \def\dof{d.o.f\onedot}
+\def\etal{et al\onedot}
+\makeatother
+
+\newcommand\blankfootnote[1]{%
+	\begingroup
+		\renewcommand\thefootnote{}\footnote{#1}%
+		\addtocounter{footnote}{-1}%
+	\endgroup
+}
+    
