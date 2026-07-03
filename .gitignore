@@ -1,0 +1,25 @@
+# Vendored third-party skills (academic-research-skills, CC-BY-NC-4.0).
+# Not committed — reinstall by cloning github.com/imbad0202/academic-research-skills
+# and copying the 4 skill dirs + shared/ into .claude/skills/ (see CLAUDE.md §5).
+.claude/skills/
+
+# Machine-specific local settings (contains an absolute hook path).
+.claude/settings.local.json
+
+# Python / notebook artifacts
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.bbl
+*.blg
+*.toc
+*.fls
+*.fdb_latexmk
+
+pro-p.txt
