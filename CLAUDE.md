@@ -1,15 +1,15 @@
-# CLAUDE.md — Kỷ luật nghiên cứu & triển khai paper (CHỦ ĐỀ: CHƯA CHỐT)
+# CLAUDE.md — Kỷ luật nghiên cứu & triển khai paper (CHỦ ĐỀ: ĐÃ CHỐT — QIGOA reality-check)
 
 > **Tóm tắt cho tác giả (tiếng Việt):** File này là "luật chơi" mà Claude Code TỰ ĐỌC mỗi phiên.
-> **Chủ đề paper hiện CHƯA chốt** → file này cố tình KHÔNG gắn với đề tài cụ thể; nó chỉ ghi
-> kỷ luật **bất biến** áp dụng cho MỌI chủ đề: (0) cách làm việc, (1) bối cảnh — *chờ điền*,
+> **Chủ đề đã chốt 13/07/2026** (§1). Các mục còn lại ghi kỷ luật **bất biến**:
+> (0) cách làm việc, (1) **bối cảnh paper — ACTIVE**,
 > (2) **liêm chính học thuật — luật sắt, không thương lượng**, (3) kỷ luật thực nghiệm,
 > (4) chuẩn viết journal/Transaction, (5) **kỷ luật triển khai / reproducibility / provenance**,
 > (6) khi nào dùng skill nào, (7) an toàn thao tác file, (8) **giao thức mỗi phiên + Definition of Done**,
 > (9) preregistration & nhật ký thí nghiệm.
 > **Sửa file này bất cứ lúc nào** — nó override hành vi mặc định của Claude.
-> 📦 Một hướng ứng viên đã soạn chi tiết (depression phenotyping) đang cất kho ở
-> [docs/huong-depression-phenotyping-parked.md](docs/huong-depression-phenotyping-parked.md) — merge lại nếu chốt hướng đó.
+> 📦 Hướng ứng viên cũ (depression phenotyping) **không còn trên đĩa** nhưng khôi phục được:
+> `git show ad0977c^:docs/huong-tiep-can-mental-health-vi.md`. Không theo đuổi — đã có near-scoop (Pfohl et al., FAccT 2022).
 
 ---
 
@@ -23,19 +23,37 @@
 
 ---
 
-## 1. Bối cảnh paper — ⏳ CHỜ CHỐT CHỦ ĐỀ
+## 1. Bối cảnh paper — ✅ ACTIVE (chốt 13/07/2026)
 
-> Chủ đề chưa được chốt. **Không tự ý giả định một đề tài** rồi triển khai — nếu tác giả chưa
-> nói rõ, hãy hỏi hoặc đề xuất có lý lẽ, đừng bịa bối cảnh.
+**Hướng:** *Optimizing the Wrong Variable — Structural Degeneracy in Metaheuristic and Quantum-Inspired Multilevel Thresholding for Brain Tumor Segmentation.*
 
-Khi tác giả **chốt chủ đề**, điền vào mục này (và Claude nên chủ động nhắc điền):
-- **Hướng ACTIVE:** bài toán, modality/dữ liệu, đóng góp chính (headline).
-- **Headline nên là một FINDING falsifiable** (có thể bị bác bỏ), không phải "novelty-by-intersection" (gộp nhiều thứ). Editor Q1 đọc "gộp benchmark" ra ngay và trừ điểm.
-- **Near-scoop / near-rival đã web-verify:** liệt kê + cách phân biệt (xem §2 IRON RULE 4, §4).
-- **Venue dự kiến** + lý do (conference vs journal/Transaction).
-- **Ràng buộc feasibility & compute** (Kaggle).
+Thầy Hảo giao đề QIGOA (Kapur + Q-bit + rotation gate, brain tumor MRI). Đề gốc **không extend lên journal được** (metric sai loại, sai venue, zero novelty, hai lớp metaphor). Ta **giữ QIGOA làm nhân vật trung tâm nhưng đổi câu hỏi**: từ *"QIGOA có thắng không"* → *"QIGOA có thực sự giúp không, và ta đang đo đúng thứ chưa"*.
 
-*(Có sẵn một hướng ứng viên chi tiết đã cất kho — xem link ở đầu file.)*
+- **Headline = 4 mệnh đề falsifiable** (không phải novelty-by-intersection). Chi tiết + tiêu chí bác bỏ: [docs/preregistration.md](docs/preregistration.md).
+  - **P1** Suy biến: mask lâm sàng phụ thuộc ≤ 2 trong k ngưỡng, bất kể k. *(Đã verify sơ bộ trên dữ liệu cũ: 2.576/2.576 nhóm, std = 0.)*
+  - **P2** Không còn gì để tối ưu: mọi metaheuristic đạt ≥ 99,99% nghiệm tối ưu chính xác (DP, mili-giây).
+  - **P3** Goodhart: fitness/PSNR/SSIM ↑ theo k trong khi Dice ↓ (ρ ≈ −0,89).
+  - **P4** Trần: oracle-1-khoảng là trần của MỌI thresholding cường độ; 2D U-Net cùng input vượt trần.
+- **Đóng góp DƯƠNG (bắt buộc):** bộ giải chính xác mili-giây + checklist giao thức đánh giá.
+- **Dữ liệu:** BraTS 2020 (Kaggle `awsaf49/brats20-dataset-training-validation`), **1 lát/1 bệnh nhân, n=150**; ngoại kiểm LGG (`mateuszbuda/lgg-mri-segmentation`).
+- **Venue:** Biomedical Signal Processing & Control (chính) → ESWA (dự phòng) → JCC/hội nghị Scopus (lưới an toàn). **KHÔNG nộp IEEE JBHI** (desk-reject out-of-scope). **CẤM** Multimedia Tools & Applications, J. Ambient Intelligence (đã bị Clarivate delist khỏi WoS).
+- **Compute:** ~40 h CPU Kaggle + ~2 h GPU. Nút thắt là lập luận & viết, không phải compute.
+
+**Near-rival PHẢI cite trang trọng & phân biệt (đã web-verify):**
+| Near-rival | Vì sao khác ta |
+|---|---|
+| **Merzban & Elbayoumi**, ESWA 116:299–309 (2019) — exact DP thắng metaheuristic | Họ dùng **ảnh tự nhiên, không ground truth** ⇒ không thể phát hiện suy biến metric. **KHÔNG claim DP là đóng góp của mình.** |
+| Luessi et al., J. Electronic Imaging 18(1):013004 (2009) | Như trên |
+| *A novel quantum grasshopper optimization algorithm*, IJAR 127:33–53 (2020), `10.1016/j.ijar.2020.08.011` | "QGOA" đã tồn tại ⇒ **không được claim QIGOA là mới** |
+| Dey/Bhattacharyya/Maulik — sách Wiley 2019 + ASC 46 (2016), 56 (2017) | QI-metaheuristic + Kapur + thresholding đã xong từ 2016 |
+| AI Review (2025), `10.1007/s10462-025-11438-w` — quantum + Rényi entropy + brain MRI | Near-scoop gần nhất |
+
+**Ba lằn ranh đỏ của hướng này:**
+1. **Không tái dùng bất kỳ con số nào từ commit `c4fe108`** (bug NFE 13,4%, GOA hit-rate 0%, SSIM/FSIM tự chế, pseudo-replication). Nó là bằng chứng chẩn đoán, không phải nguồn số liệu.
+2. **Không đụng vào Bảng I trong `Huong-tiep-can-paper-Long.pdf`** — đó là **số bịa**. Vi phạm IRON RULE 1 nếu tái sinh.
+3. **Không claim "quantum advantage"**. QIEA = một EDA (Platel et al., IEEE TEVC 2009, `10.1109/TEVC.2008.2003010`). Định vị đúng: *"an EDA-style probabilistic update rule"*.
+
+📄 Bản trình bày với thầy: [docs/trinh-bay-voi-thay.md](docs/trinh-bay-voi-thay.md) — **chưa code cho tới khi thầy gật.**
 
 ---
 
