@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.nature.com)",
+      "WebFetch(domain:www.kaggle.com)",
+      "WebFetch(domain:physionet.org)",
+      "WebFetch(domain:sbcb.inf.ufrgs.br)",
+      "WebFetch(domain:archive.ics.uci.edu)",
+      "WebSearch"
+    ]
+  }
+}

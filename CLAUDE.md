@@ -1,132 +1,179 @@
-# CLAUDE.md — QIGOA Paper (Paper 3)
+# CLAUDE.md — Kỷ luật nghiên cứu & triển khai paper (CHỦ ĐỀ: CHƯA CHỐT)
 
-> **Tóm tắt cho tác giả (tiếng Việt):** File này là "luật chơi" mà Claude Code tự đọc mỗi phiên.
-> Nó ghi bối cảnh paper, các quy tắc **liêm chính học thuật** (KHÔNG bịa số liệu / trích dẫn),
-> chuẩn viết IEEE, cách chạy thí nghiệm, và khi nào dùng skill nào. Sửa file này bất cứ lúc nào.
-
-Communicate with the user **in Vietnamese**. Be decisive and push work toward submission
-(the author prefers Claude to make well-reasoned decisions rather than ask many questions).
-Reference files as clickable `path:line`.
-
----
-
-## 1. Project
-
-- **Paper 3 — QIGOA:** *Multilevel Image Thresholding for Brain Tumor Segmentation using a
-  Quantum-Inspired Grasshopper Optimization Algorithm.*
-- **Core idea:** QIGOA = standard GOA (Saremi 2017) + a **3-layer contribution stack** for multilevel
-  thresholding with **Kapur's entropy** as the objective:
-  1. **Quantum representation** — Q-bit pairs `(α, β)` updated by a quantum rotation gate.
-  2. **Adaptive rotation angle** — `θ_i = θ_min + (θ_max − θ_min) × fitness_gap × time_decay`.
-  3. **OBL + Lévy** — Opposition-Based Learning at init; Lévy-flight kick when stagnated for
-     `stagnation_window` iterations.
-- **Novelty framing:** lead with the **3-layer stack**, NOT "we added quantum to GOA" (too thin for
-  a Q1 journal). The stack gives reviewers something to credit beyond the swap.
-- **Domain:** medical image segmentation — brain tumor MRI, **BraTS** dataset.
-- **Author:** Nguyễn Võ Hoàng Long (Long Nguyen Vo Hoang).
-- **Target venue (decided 2026-05-19):** ***Biomedical Signal Processing and Control*** (Elsevier,
-  Q1, IF ~5.1). NOT IEEE JBHI — the advisor first suggested JBHI, but it was redirected because JBHI
-  demands deep-learning SOTA comparison on full BraTS, which thresholding cannot deliver.
-- **Current draft:** `Huong-tiep-can-paper-Long.pdf` — an **old 2-page skeleton** with the stale
-  IEEE JBHI header and a thinner method. **Its results are PLACEHOLDER / illustrative** ("Your Name",
-  the PSNR & CPU table). Treat every number in it as unverified; the plan above supersedes it.
-- **Code status:** the `qigoa/` implementation (`src/algorithms/` 7 optimizers, `notebooks/qigoa_kaggle.ipynb`)
-  was **removed from this repo** (git: "Remove QIGOA project files"). If restored, that is the driver.
-
-### Conference → Journal strategy
-The author's broader plan is **conference papers that extend into journal papers**. When working here:
-- Keep a clear line between what is *conference-level* and what is *journal-level* new content.
-- A journal extension must add **substantial** new material over any conference version
-  (more baselines, more datasets, deeper analysis, statistical validation, ablations) — not a reprint.
-- Sibling projects for context (do not edit from here): `../1-Conference-SNDF` (Quishing/QR, ICTA 2025),
-  `../2-Conference-Explainable Federated Learning...` (IEEE FJCAI 2026), `../6-Boundary-Uncertainty Aware U-Net`.
+> **Tóm tắt cho tác giả (tiếng Việt):** File này là "luật chơi" mà Claude Code TỰ ĐỌC mỗi phiên.
+> **Chủ đề paper hiện CHƯA chốt** → file này cố tình KHÔNG gắn với đề tài cụ thể; nó chỉ ghi
+> kỷ luật **bất biến** áp dụng cho MỌI chủ đề: (0) cách làm việc, (1) bối cảnh — *chờ điền*,
+> (2) **liêm chính học thuật — luật sắt, không thương lượng**, (3) kỷ luật thực nghiệm,
+> (4) chuẩn viết journal/Transaction, (5) **kỷ luật triển khai / reproducibility / provenance**,
+> (6) khi nào dùng skill nào, (7) an toàn thao tác file, (8) **giao thức mỗi phiên + Definition of Done**,
+> (9) preregistration & nhật ký thí nghiệm.
+> **Sửa file này bất cứ lúc nào** — nó override hành vi mặc định của Claude.
+> 📦 Một hướng ứng viên đã soạn chi tiết (depression phenotyping) đang cất kho ở
+> [docs/huong-depression-phenotyping-parked.md](docs/huong-depression-phenotyping-parked.md) — merge lại nếu chốt hướng đó.
 
 ---
 
-## 2. Research integrity — NON-NEGOTIABLE (đọc kỹ)
+## 0. Cách giao tiếp & làm việc
 
-These override any instinct to "make the paper look finished."
-
-1. **Never fabricate.** Do not invent experimental numbers, table values, p-values, dataset sizes,
-   or citations. If a value is not from a real run or a real source, it does not go in the paper.
-2. **Every quantitative claim traces to evidence.** A PSNR/SSIM/CPU number must come from a script
-   output the author can re-run. Keep the producing code/notebook path next to the result.
-3. **Mark unverified content explicitly.** Use `[PLACEHOLDER]`, `[TODO: run experiment]`,
-   `[UNVERIFIED]`, or `[GAP]` tags. Never silently promote a placeholder into a stated result.
-4. **No hallucinated references.** Every citation must be a real, verifiable work (title + venue +
-   year, ideally DOI). If you cannot verify it, flag it — do not add it. Use the `academic-paper`
-   citation-check mode and cross-check against Google Scholar / Semantic Scholar / DOI.
-5. **Don't overclaim.** "Outperforms state-of-the-art" requires real comparative data **and** a
-   statistical test. Otherwise write "preliminary results suggest".
-6. **Separate proposed vs measured.** Clearly distinguish the *proposed method* (design) from
-   *measured outcomes* (experiments). The draft currently blurs this — fix it.
-
-If asked to write results before experiments exist, produce a **results template with placeholders**
-and a list of experiments to run — not fabricated numbers.
+- **Giao tiếp bằng tiếng Việt.** Thuật ngữ kỹ thuật (calibration, ablation, leakage, net-benefit, LODO...) giữ nguyên tiếng Anh.
+- **Quyết đoán, đẩy về phía submit.** Tác giả muốn Claude *tự ra quyết định có lý lẽ* (venue, baseline, hyperparameter, scope dữ liệu) thay vì hỏi lại nhiều. Nêu lý do ngắn để tác giả override nếu cần. **Chỉ hỏi khi đó là quyết định thật sự của tác giả** — VD: **chốt chủ đề nghiên cứu**, chọn tạp chí cuối cùng, đổi hẳn hướng.
+- **Tham chiếu file bằng `path:line` có thể click.** VD: `docs/lam-va-viet-paper-chuan-IEEE.md:37`.
+- **Ship theo lô, đừng nhỏ giọt.** Khi đã chốt hướng, đưa code/nội dung trong một lô hoàn chỉnh.
+- Tác giả **chạy thí nghiệm trên Kaggle** → mọi code phải Kaggle-runnable (xem §5).
 
 ---
 
-## 3. Method & experiment rigor (QIGOA specifics)
+## 1. Bối cảnh paper — ⏳ CHỜ CHỐT CHỦ ĐỀ
 
-- **Objective:** Kapur's entropy for multilevel thresholding; state it precisely and consistently.
-- **Quantum layer:** Q-bit individual `[α;β]`, rotation gate; justify how the adaptive `θ_i` is
-  derived from the fitness gap, and how measurement maps Q-states → discrete thresholds. Watch
-  boundary handling. Keep the OBL-init and Lévy-flight-kick logic explicit in the algorithm listing.
-- **Dataset:** BraTS 2020/2023 **FLAIR axial slices**; evaluate the binary tumor mask.
-- **Threshold levels:** `k ∈ {2, 3, 4, 5}`.
-- **Search settings:** population = 30, max iterations = 100, **30 independent runs** per algorithm.
-- **Baselines (planned set):** GA, PSO, GOA, **WOA, GWO, MPA**. Cite each properly.
-- **Metrics:** PSNR, SSIM, FSIM, **Dice, IoU, sensitivity, specificity**, fitness (Kapur value), CPU time.
-- **Statistical validation (required for Q1):** report **mean ± std** over the 30 runs, plus
-  **Wilcoxon pairwise + Friedman omnibus + Holm post-hoc**. Single-run tables are not acceptable.
-- **Reproducibility:** fix random seeds, log all hyperparameters (pop, max_iter, `c` schedule,
-  `θ_min/θ_max`, `stagnation_window`), record the BraTS year/split, and keep the exact notebook.
+> Chủ đề chưa được chốt. **Không tự ý giả định một đề tài** rồi triển khai — nếu tác giả chưa
+> nói rõ, hãy hỏi hoặc đề xuất có lý lẽ, đừng bịa bối cảnh.
 
-### Experiment workflow
-- Experiments run on **Kaggle** (author's environment); the driver was `notebooks/qigoa_kaggle.ipynb`,
-  writing CSVs to `/kaggle/working/results/`. Produce self-contained, Kaggle-runnable code.
-- **Immediate next step after a Kaggle run:** fill Methods + Results sections from the generated CSVs.
-- Store real outputs in the repo (e.g. `results/`) alongside the code that produced them.
+Khi tác giả **chốt chủ đề**, điền vào mục này (và Claude nên chủ động nhắc điền):
+- **Hướng ACTIVE:** bài toán, modality/dữ liệu, đóng góp chính (headline).
+- **Headline nên là một FINDING falsifiable** (có thể bị bác bỏ), không phải "novelty-by-intersection" (gộp nhiều thứ). Editor Q1 đọc "gộp benchmark" ra ngay và trừ điểm.
+- **Near-scoop / near-rival đã web-verify:** liệt kê + cách phân biệt (xem §2 IRON RULE 4, §4).
+- **Venue dự kiến** + lý do (conference vs journal/Transaction).
+- **Ràng buộc feasibility & compute** (Kaggle).
+
+*(Có sẵn một hướng ứng viên chi tiết đã cất kho — xem link ở đầu file.)*
 
 ---
 
-## 4. Writing conventions
+## 2. LIÊM CHÍNH HỌC THUẬT — LUẬT SẮT (không thương lượng)
 
-- **Format:** IEEE. Draft is LaTeX (author uses Overleaf for sibling papers — prefer LaTeX/`.tex`).
-- **Language:** formal academic English in the manuscript; Vietnamese when chatting with the author.
-- **Structure:** Abstract → Index Terms → Introduction → Related Work → Problem Formulation →
-  Proposed Method → Experiments → Results & Discussion → Conclusion → References.
-- **Related Work / GAP:** motivate the contribution from a real, cited research gap (use Elicit /
-  `deep-research` lit-review). State the gap explicitly and tie each contribution to it.
-- Keep terminology and notation consistent (e.g. always "Kapur's entropy", one symbol per concept).
+> Đây là phần quan trọng nhất và **đúng cho mọi chủ đề**. Vi phạm bất kỳ mục nào = phá hỏng sự nghiệp của tác giả. Khi nghi ngờ, DỪNG và hỏi.
 
----
+- **IRON RULE 1 — KHÔNG bịa số.** Không bao giờ tự chế bất kỳ con số thực nghiệm, giá trị trong bảng, p-value, metric (AUROC/F1/accuracy…), khoảng tin cậy, kích thước dataset. Mọi con số định lượng phải **truy được về output của một script chạy lại được**.
+- **IRON RULE 2 — KHÔNG bịa trích dẫn.** Không tạo tác giả/năm/DOI/tên tạp chí không có thật. Mọi reference phải **verify được** (Crossref/DOI/arXiv). Không verify được → đánh dấu `[UNVERIFIED]`, không đưa vào reference list chính thức.
+- **IRON RULE 3 — Kết quả là PLACEHOLDER cho tới khi tái lập từ pipeline sạch.** Bất kỳ bảng/hình/số nào chưa chạy ra từ script đều mang nhãn `[PLACEHOLDER]` / `[TODO]` / `[UNVERIFIED]`. **Không bao giờ âm thầm "thăng cấp" placeholder thành kết quả thật.**
+- **IRON RULE 4 — Sau knowledge-cutoff (Jan 2026) → BẮT BUỘC web-verify.** Trước khi khẳng định một paper 2025–2026 tồn tại/nói gì, hoặc trước khi tuyên bố "chưa ai làm" (novelty/collision-check), phải tra web (WebSearch/WebFetch). Model KHÔNG được nhớ từ training về các paper sau cutoff.
+- **IRON RULE 5 — Không overclaim.** Không viết "outperforms SOTA" / "vượt trội" nếu chưa có kiểm định thống kê (mean±std + Wilcoxon/Friedman+Holm). Không nói "first/đầu tiên" khi chưa collision-check web.
+- **IRON RULE 6 — Trung thực về bản chất & giới hạn của method.** Gọi đúng tên và đúng phạm vi của kỹ thuật; nêu caveat; **không cường điệu một "advantage" chưa được chứng minh**. Nếu method chỉ là *inspired-by* (VD quantum-inspired chạy trên phần cứng cổ điển) → nói rõ *không có advantage lý thuyết đã được chứng minh*, kèm cite phản chứng. Không dùng bằng chứng sai họ phương pháp (VD: kết quả trên phần cứng thật để biện minh cho biến thể cổ điển) — đó là *category error*.
 
-## 5. Installed skills — when to use which
-
-Four skills are installed under `.claude/skills/` (from `academic-research-skills`, CC-BY-NC-4.0).
-Invoke by describing the task; Claude picks the mode.
-
-| Need | Skill / mode |
-|------|--------------|
-| Find/verify research GAP, systematic lit review (PRISMA), fact-check | **deep-research** |
-| Write/plan/outline paper, revise from reviewer comments, citation-check, draft rebuttal | **academic-paper** |
-| Self-review before submission (simulated EIC + peer reviewers, 0–100 rubric) | **academic-paper-reviewer** |
-| End-to-end research→write→review→revise with integrity gates | **academic-pipeline** |
-
-`.claude/skills/shared/` holds protocols/schemas the skills load at runtime — **do not delete**.
-To reinstall/update, re-clone `github.com/imbad0202/academic-research-skills` and copy the four skill
-dirs + `shared/` back into `.claude/skills/`.
-
-**External tools the author has collected** (see memory `reference-research-ai-tools`):
-Elicit (research gaps), Consensus (literature search), a Google-Scholar credibility tool.
+**Khi tạo nội dung định lượng chưa chạy:** viết công thức/khung bảng với ô để trống + nhãn `[PLACEHOLDER]`, kèm *đúng script* sẽ điền nó. Không điền số minh họa trông-như-thật.
 
 ---
 
-## 6. Working agreement
+## 3. Kỷ luật thực nghiệm (chưng cất từ [docs/lam-va-viet-paper-chuan-IEEE.md](docs/lam-va-viet-paper-chuan-IEEE.md))
 
-- Before submission, run the paper through **academic-paper-reviewer** and fix what a real reviewer
-  would flag (especially: missing baselines, no statistical test, unverifiable claims).
-- Prefer concrete next actions (draft this section, write this experiment) over abstract advice.
-- Do not commit or push unless asked. `.claude/skills/` is git-ignored (vendored third-party code).
-- When a claim in the draft can't be supported yet, say so plainly and propose how to support it.
+Đọc playbook đó khi thiết kế thí nghiệm hoặc dựng formulation. Nguyên tắc cốt lõi (topic-agnostic):
+
+- **Anti-toy.** Bài toán, dataset, threat-model phải ở đúng thang thực tế — không dùng setup đồ-chơi để làm đẹp số.
+- **Đa-seed, LUÔN LUÔN.** Mọi kết quả báo cáo **mean ± std qua ≥5 seed/run độc lập**, không bao giờ một-lần-chạy.
+- **Ablation cùng tham số.** Khi bật/tắt một thành phần, giữ *mọi* hyperparameter khác y hệt — lợi thế biểu kiến thường đến từ tuning lệch, không phải thành phần mới.
+- **Kiểm soát confound.** Trước khi quy công cho method, loại trừ: rò rỉ dữ liệu (leakage), chênh tiền xử lý, khác thang nhiễu, mất cân bằng nhóm.
+- **Metric tổng hợp chống cherry-pick.** Báo cáo bộ metric đầy đủ phù hợp bài toán (không chỉ một metric đẹp) — VD với bài lâm sàng: discrimination + calibration + net-benefit + fairness.
+- **Audit shortcut + held-out.** Kiểm tra model có ăn shortcut / spurious correlation không. Luôn hướng tới **external validation** trên dataset/điều kiện khác.
+- **Thống kê chuẩn:** so sánh cặp **Wilcoxon signed-rank**; omnibus **Friedman** + post-hoc **Holm**. Nêu effect size, không chỉ p-value.
+- **Ba cờ đỏ** (dừng lại nếu thấy): (a) lợi thế biến mất khi cùng-tham-số-hóa; (b) chỉ đẹp trên một seed/split; (c) không tái lập được từ script sạch.
+- **Hội tụ, không trôi dạt.** Qua từng lớp nghiêm cẩn, kết luận phải hội tụ về sự thật — **nếu tuyên bố chính sụp thì REFRAME trung thực**, đừng cố cứu claim đã chết.
+
+---
+
+## 4. Chuẩn viết journal / IEEE Transaction
+
+Nguồn chuẩn: [docs/lam-va-viet-paper-chuan-IEEE.md](docs/lam-va-viet-paper-chuan-IEEE.md). Điểm chốt:
+
+- **Transaction khác conference:** đòi formulation cứng, evaluation như *phép thử bác bỏ*, và định vị related work sắc.
+- **Formulation chặt:** trình bài toán bằng ký hiệu rõ, mục tiêu/ràng buộc rõ, threat-model tường minh.
+- **Evaluation là phép thử bác bỏ:** thiết kế thí nghiệm để *có thể làm sai* claim của mình, không phải để minh họa nó.
+- **Related work = định vị, KHÔNG phải liệt kê.** Dẫn đầu bằng đóng góp tích hợp; chủ động **nêu & phân biệt các near-rival** (đã web-verify, §2 IRON RULE 4) thay vì chỉ trích dẫn cho có.
+- **Figure/table chuẩn Transaction:** tự-giải-thích, caption đầy đủ, đơn vị & n & seed rõ.
+- **Rebuttal per-comment:** trả lời TỪNG comment reviewer, hai bản (thư phản hồi + bản diff) từ một nguồn.
+- **Preregister claim trước khi chạy** để tránh HARKing (§9).
+
+---
+
+## 5. KỶ LUẬT TRIỂN KHAI (implementation + reproducibility + provenance)
+
+> Mục này biến **IRON RULE 1 & 3** (§2) thành quy trình cụ thể: *mọi con số trong paper phải sinh ra từ một script chạy lại được, và truy ngược được về đúng commit + seed + config.* Repo hiện **chưa có code** → đặt các quy ước này ngay từ file đầu tiên, không phụ thuộc chủ đề.
+
+### 5.1 Cấu trúc repo chuẩn (lập từ ngày đầu)
+
+```
+configs/     # 1 file YAML/JSON cho MỖI thí nghiệm: seed(s), hyperparams, đường dẫn dataset, metric
+src/         # module tái dùng: features/  models/  eval/  (thêm module theo phương pháp khi chốt)
+scripts/     # entrypoint chạy được trên Kaggle — mỗi script tái lập ĐÚNG 1 bảng/hình
+results/     # OUTPUT do script sinh: metrics.csv/json, figures/, run-manifest.json — KHÔNG sửa tay
+paper/       # bản thảo (LaTeX/md); bảng & hình PULL từ results/, không gõ số tay
+docs/        # memo hướng tiếp cận + preregistration.md + RESULTS.md
+```
+
+- **Config-driven, KHÔNG magic number trong code.** Đổi thí nghiệm = đổi config, không sửa code cứng.
+- **Split ở mức subject/nhóm, KHÔNG mức mẫu lẻ** (chống leakage) — lưu split ra đĩa và version nó.
+
+### 5.2 Reproducibility contract (bắt buộc cho MỌI run)
+
+- **Set MỌI seed:** `random`, `numpy`, `torch` (+ `cudnn.deterministic=True`), truyền seed qua config; chạy **≥5 seed độc lập** → báo mean ± std (§3).
+- **Pin môi trường:** `requirements.txt`/freeze; ghi phiên bản thư viện vào manifest.
+- **`run-manifest.json` cho MỖI run:** `{git_commit, config_hash, seed(s), dataset_version, lib_versions, timestamp, output_paths}`. Không có manifest = run *không tồn tại* với paper.
+- **Log có cấu trúc:** ghi metric ra CSV/JSON (không chỉ `print`); artifact lưu lại được.
+
+### 5.3 Provenance contract (số → script → commit) — vận hành IRON RULE 1 & 3
+
+- Giữ `docs/RESULTS.md` map **mỗi bảng/hình/số** trong paper về nguồn sinh, dạng:
+  `Table 2 ← results/<exp>/metrics.csv ← scripts/run_<exp>.py --config configs/<exp>.yaml @commit <hash>, seeds {0..4}`
+- Số chưa có dòng provenance = **`[PLACEHOLDER]`**, không được đưa vào bản thảo như kết quả thật.
+- Bảng/hình trong `paper/` **generate từ `results/`** (qua script build), không copy-paste số bằng tay → tránh lệch số âm thầm.
+
+### 5.4 Dữ liệu & Kaggle
+
+- Ưu tiên **dataset công khai**; khi label là proxy (VD điểm sàng lọc ≠ chẩn đoán lâm sàng) → **luôn nêu caveat construct-validity**.
+- Python, ưu tiên CPU-friendly; đọc từ `/kaggle/input/` (read-only), ghi ra `/kaggle/working/`.
+- **Luôn có synthetic fallback** để pipeline chạy được cả khi dataset chưa mount — nhưng đó chỉ là smoke-test cấu trúc; **số synthetic KHÔNG bao giờ là kết quả**, luôn gắn `[PLACEHOLDER]`.
+- Tôn trọng giới hạn thời gian/quota Kaggle: chia stage, cache feature đã trích, thiết kế resume-được.
+
+---
+
+## 6. Khi nào dùng skill nào
+
+| Nhu cầu | Skill |
+|---|---|
+| Tìm/verify research gap, collision-check near-scoop, lit-review, fact-check citation | **deep-research** |
+| Viết/sửa section theo chuẩn journal, abstract song ngữ, format IEEE/DOCX, citation-check, rebuttal | **academic-paper** |
+| Đóng vai 5 reviewer chấm bài trước khi nộp, re-review sau sửa | **academic-paper-reviewer** |
+| Chạy trọn quy trình research → viết → integrity-check → review → revise (có cổng chất lượng) | **academic-pipeline** |
+| Vẽ sơ đồ pipeline/architecture/flow | **drawio-skill** |
+
+Ví dụ ánh xạ ý định → skill nằm ở [pro-p.txt](pro-p.txt).
+
+---
+
+## 7. An toàn thao tác file & repo
+
+- **Không xóa/ghi đè** file tài liệu (docx/pdf/md approach) mà không đọc trước và xác nhận với tác giả — nhất là file *advisor-facing* trong `docs/`.
+- **File-path trong memo cũ dễ stale** — verify tồn tại trước khi khẳng định. Nguồn thật hiện tại: `git ls-tree -r HEAD`.
+- Chỉ commit/push khi tác giả yêu cầu. Nếu đang ở nhánh `main`, tạo nhánh trước.
+- Trước khi xóa/ghi đè: nếu nội dung file mâu thuẫn với cách nó được mô tả, **báo lại thay vì cứ làm**.
+
+---
+
+## 8. Giao thức mỗi phiên & Definition of Done
+
+**Đầu mỗi phiên (Claude tự làm, không cần hỏi):**
+1. Đọc `CLAUDE.md` + `MEMORY.md`; chạy `git status` + `git log --oneline -5` để biết đang ở đâu.
+2. **Kiểm tra chủ đề đã chốt chưa** (§1). Nếu chưa → không giả định đề tài; đề xuất/hỏi.
+3. Xác định bước hiện tại: chốt-chủ-đề → research → preregister → code → run → viết → review → revise.
+4. Memo/nhắc cũ nêu file-path → **verify tồn tại** trước khi dựa vào (§7).
+
+**Definition of Done — MỘT thí nghiệm được coi là "paper-ready" khi:**
+- [ ] Config-driven + **≥5 seed** + `run-manifest.json` đã ghi (§5.2).
+- [ ] Split mức subject/nhóm, **audit leakage pass** (no overlap, no preprocessing leak).
+- [ ] **Bộ metric đầy đủ** phù hợp bài toán — không lọc metric đẹp.
+- [ ] **Kiểm định thống kê** (Wilcoxon / Friedman+Holm) + effect size — không chỉ p-value.
+- [ ] Đã thử **external validation** (dataset/điều kiện khác), hoặc ghi rõ lý do hoãn + fallback.
+- [ ] **Dòng provenance** đã thêm vào `RESULTS.md`; số trong `results/` khớp số trong `paper/` (§5.3).
+
+**Definition of Done — MỘT claim trong paper:**
+- [ ] Đã **preregister** trước khi chạy (§9).
+- [ ] Mọi số **truy được về script** (không còn `[PLACEHOLDER]` sót trong bản nộp).
+- [ ] Không overclaim; caveat về **giới hạn method** (§2 IRON RULE 6) và **proxy-label** (nếu có) đều có mặt.
+- [ ] Các near-rival được **phân biệt**, không chỉ liệt kê (§4).
+
+---
+
+## 9. Preregistration & nhật ký thí nghiệm
+
+- **`docs/preregistration.md`** — viết **TRƯỚC** khi chạy, cho mỗi claim: *giả thuyết · metric quyết định · ngưỡng thành công · phân tích dùng · fallback nếu thất bại*. Đây là hàng rào chống HARKing (§4). **Nếu claim chính thua → ship baseline đơn giản hơn và báo cáo kết quả âm trung thực.**
+- **Nhật ký thí nghiệm (append-only)** trong `docs/RESULTS.md`: mỗi run một dòng — ngày (tuyệt đối), commit, config, seed, kết quả tóm tắt, kết luận. **Không xóa run xấu; run âm là dữ liệu.**
+- **Ba cờ đỏ → DỪNG** (nhắc lại §3): (a) lợi thế biến mất khi cùng-tham-số-hóa; (b) chỉ đẹp trên một seed/split; (c) không tái lập từ script sạch. Gặp cờ đỏ → **REFRAME trung thực**, đừng cứu claim đã chết.
