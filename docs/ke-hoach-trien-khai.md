@@ -229,7 +229,13 @@ Thang đo, tất cả trên **cùng một trục Dice, cùng một tập test**:
 | 8 | 2D U-Net, **cùng input** (1 lát FLAIR) | ~2 h GPU | Baseline DL **công bằng** |
 | 9 | nnU-Net 3D đa mô thức | — | **Số trích từ văn liệu, KHÔNG chạy** |
 
-**Bậc 5 là thứ biến bài từ "negative result" thành "bài đăng được".** Nếu một ngưỡng phân vị cố định, hiệu chỉnh trên 10 ảnh train, mà đánh bại cả 7 metaheuristic — thì bài không còn nói *"các anh sai"*, nó nói *"chúng tôi thay cả họ phương pháp bằng một tham số, nhanh hơn ~250 lần"*.
+**Bậc 5 là thứ biến bài từ "negative result" thành "bài đăng được".** Nếu một ngưỡng phân vị cố định đánh bại cả 7 metaheuristic — thì bài không còn nói *"các anh sai"*, nó nói *"chúng tôi thay cả họ phương pháp bằng một tham số"*.
+
+> ### 🔴 SỬA BẮT BUỘC (14/07/2026) — bậc 5 hiện đang là LEAKAGE
+> *"Hiệu chỉnh trên 10 ảnh train"* rồi so trên **cả 150 bệnh nhân** (gồm cả 10 ảnh đã fit) = **train-on-test**, nằm ngay trong **đóng góp dương của một bài tố cáo người khác so sánh không lành mạnh**. Đây là lỗi **DUY NHẤT có thể bị reject vì LIÊM CHÍNH**, không phải vì novelty — và reviewer nào cũng thấy trong 5 phút.
+> ✅ **Sửa:** nested CV ở **cấp bệnh nhân** — fit `q*` trên outer-train fold, **đóng băng**, đánh giá out-of-fold. Công bố **5 giá trị `q*`** (ổn định giữa các fold ⇒ finding mạnh) + learning curve theo cỡ tập fit. Chuẩn hoá cường độ **per-image** (dùng thống kê toàn dataset = preprocessing leak). Chi tiết: [preregistration.md](preregistration.md) §6/A3.
+> ⚠️ **Bậc 5 CHƯA ĐƯỢC PREREGISTER** — trong khi chính dòng này gọi nó là *"thứ biến bài từ negative result thành bài đăng được"*. **Preregister nó như P5 kèm fallback, và CHẠY NÓ Ở TUẦN 2** (~1 giờ CPU), không phải tuần 3. Đừng để thứ quyết định số phận bài là thứ cuối cùng ta biết.
+> ⚠️ **Bỏ claim "nhanh hơn ~250 lần"** — artifact của vòng lặp Python, chưa ai đo. Đồng tiền chính = **NFE + độ phức tạp**.
 
 **Về deep learning — đọc kỹ, đây là chỗ dễ chết:**
 - ❌ **KHÔNG train nnU-Net.** 3D full-res × 5 fold = nhiều ngày GPU. Kaggle cho 30 GPU-h/tuần, session ≤ 12 h. Bất khả.
@@ -294,15 +300,21 @@ Không có TOST + ROPE, reviewer đánh đúng một câu: *"absence of evidence
 | 2 · Related Work & the Citation Gap | Ba nhánh: (a) metaheuristic thresholding + nhánh quantum-inspired; (b) **lời giải chính xác đã tồn tại** (Luessi 2009; Merzban 2019); (c) chuẩn đánh giá segmentation (*Metrics Reloaded*, BraTS). **Chỉ ra nhánh (a) không cite nhánh (b) và không dùng nhánh (c)** | Bảng I |
 | 3 · **The Degeneracy of the Objective** ★ | **Mệnh đề 1**: mask = f(≤2 ngưỡng), bất kể k. **Mệnh đề 2**: Kapur cộng tính ⇒ DP cho tối ưu toàn cục `O(k·L²)`. Chứng minh + xác nhận bit-exact | Bảng II |
 | 4 · Experimental Protocol | 150 BN (1 lát/BN) + LGG ngoại kiểm; equal-NFE; Dice/HD95/NSD + PSNR/SSIM; Wilcoxon+rank-biserial, Friedman+CD, **TOST**, **Bayesian ROPE**. **Khai báo trước SESOI = 0,01 Dice** | Hình 1 |
-| 5 · **R1 — There Is Nothing Left to Optimize** | Mọi metaheuristic đạt ≥99,99% nghiệm DP với chi phí gấp ~250×. GOA hỏng, và "significance" của QIGOA sinh ra từ đó | Bảng III · Hình 2 |
+| 5 · **R1 — There Is Nothing Left to Optimize** | Mọi metaheuristic — **kể cả random search** — đạt nghiệm DP. GOA hỏng, và "significance" của QIGOA sinh ra từ đó. ⚠️ Chi phí báo bằng **NFE + độ phức tạp**, không bằng wall-clock. ⚠️ **Hạ P2 xuống 2 đoạn setup** — Menotti 2015 + Hammouche 2010 + Merzban 2019 đã chiếm gần hết | Bảng III · Hình 2 |
 | 6 · **R2 — The Metrics Are Anti-Correlated** | fitness/PSNR/SSIM ↑ theo k; Dice/HD95 ↓. Chọn k bằng PSNR → k=10; bằng Dice → k=4. **Thừa nhận thẳng**: trong *cùng* k thì ρ dương — và giải thích vì sao điều đó vẫn không cứu được gì | Hình 3 |
 | 7 · **R3 — The Quantum Component Contributes Nothing** | Ablation trên dữ liệu thật, equal-NFE. TOST + Bayes: tương đương với PSO. Nền lý thuyết: QIEA ≡ EDA (Platel, IEEE TEVC 2009) | Bảng IV |
 | 8 · **R4 — The Ceiling** ★ | Thang 9 bậc. Random ≈ metaheuristic ≈ DP; oracle-interval = trần; 2D U-Net cùng input vượt trần | Hình 4 |
-| 9 · **A Better Baseline** (đóng góp dương) | DP mili-giây + ngưỡng 1-tham-số → thắng cả 7 metaheuristic, nhanh hơn ~250×. **+ Checklist đánh giá** cho các bài tương lai | Bảng V · Hộp 1 |
+| 9 · **A Better Baseline** (đóng góp dương — ⚠️ **ĐÃ VIẾT LẠI**) | **(1) Ceiling decomposition** (cường độ vs pixel) · **(2) công cụ chẩn đoán `O(L log L)`** tính trước trần của cả họ phương pháp · **(3) checklist giao thức + Bảng I trắc lượng**. ⛔ **DP KHÔNG còn là đóng góp** — Menotti et al. (CIARP 2015) đã in exact Kapur, `O((K−1)L²)`, <160 ms, **11 năm trước**; ta chỉ **dùng** nó làm reference optimum và cite ở Abstract | Bảng V · Hộp 1 |
 | 10 · Threats to Validity | Tự liệt kê: decoding khác, modality khác, 2D vs 3D, Tsallis không DP được, cỡ mẫu | — |
 | 11 · Conclusion | **KHÔNG** phải "metaheuristic vô dụng nói chung" — mà "**trên bài toán CỤ THỂ này**, chúng tối ưu một biến không quan trọng, trên một bài toán đã giải xong, đo bằng thước đo phản chỉ báo" | — |
 
-**Giọng điệu (quyết định chiến lược):** phê phán **thực hành**, tuyệt đối **không nêu tên tác giả để chê**. Editor sẽ chọn reviewer từ chính cộng đồng này. Đóng khung xây dựng: *"benchmark + protocol + một phương pháp thay thế nhanh hơn 250×"*.
+**Giọng điệu (quyết định chiến lược):** phê phán **thực hành**, tuyệt đối **không nêu tên tác giả để chê**. Editor sẽ chọn reviewer từ chính cộng đồng này. Đóng khung xây dựng: *"benchmark + protocol + một công cụ tính trước trần"*.
+
+> **Bốn quyết định đóng khung bắt buộc (14/07/2026):**
+> 1. **Đổi tiêu đề** — bỏ *"Optimizing the Wrong Variable"* (đảm bảo một AE thù địch). Dùng tiêu đề benchmark, mô tả, trung tính.
+> 2. **Abstract mở bằng ĐÓNG GÓP, không bằng CÁO BUỘC.** Cáo buộc xuất hiện ở câu 4–5, dạng **phát hiện thực nghiệm**, không phải phán xét.
+> 3. **Bảng I (trắc lượng) xuống Supplementary** — nếu bảng ĐẦU TIÊN editor nhìn thấy là *"chúng tôi đếm N bài không cite X"*, bài bị phân loại là **meta-science** ngay tại đó và out-of-scope. Bảng I của bản thảo phải là **DP vs vét cạn** — một bảng toán học, không buộc tội ai.
+> 4. **Cover letter xin reviewer đa chuyên môn** — ít nhất một người về **validation y sinh** (Metrics Reloaded) và một người về **tối ưu tổ hợp chính xác**, bên cạnh reviewer từ cộng đồng metaheuristic. Editor **có** honor loại yêu cầu này; nó biến panel từ 3-vs-0 thành 1-vs-2. Đây là đòn bẩy mạnh nhất mà bài có và hiện **chưa dùng**.
 
 ---
 

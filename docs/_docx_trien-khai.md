@@ -33,6 +33,10 @@ lang: vi
 
 ## 1.3 Vì sao phải đổi — ba sự thật từ chính số liệu của chúng ta
 
+> ### ⚠️ NGUỒN SỐ — ĐỌC TRƯỚC KHI ĐỌC BẤT KỲ BẢNG NÀO Ở MỤC NÀY
+> Mọi con số trong §1.3 lấy từ **lô thí nghiệm đầu tiên** (commit `c4fe108`, 25.200 run). Lô này có **bốn lỗi cài đặt**: ngân sách NFE lệch 13,4% · baseline GOA hỏng (hit-rate 0%) · metric tự chế (global-SSIM, FSIM không đầy đủ) · pseudo-replication (3 lát/bệnh nhân đưa vào Wilcoxon như mẫu độc lập).
+> ⇒ **Chúng là `[PLACEHOLDER]` — BẰNG CHỨNG CHẨN ĐOÁN, KHÔNG PHẢI KẾT QUẢ.** Chúng là *lý do ta phát hiện ra vấn đề*, **không phải nguồn số liệu để công bố**. **Không một con số nào trong mục này được phép xuất hiện trong bản thảo.** Toàn bộ sẽ được tái sinh từ một pipeline sạch.
+
 Lô thí nghiệm đầu tiên đã chạy xong (25.200 lượt chạy độc lập trên BraTS). Khi đọc kỹ số liệu, ba sự thật hiện ra và **cả ba đều bác bỏ claim "QIGOA vượt trội"**.
 
 **Thứ nhất — QIGOA được cấp thêm 13,4% ngân sách.** Mọi baseline tiêu đúng 7.550 lượt đánh giá hàm mục tiêu. QIGOA tiêu 8.563. Nguyên nhân: bước memetic refinement có gọi hàm mục tiêu nhưng không bị trừ vào ngân sách. Nghĩa là QIGOA đang chạy một cuộc đua mà nó được thêm 13,4% thời gian, còn các đối thủ thì không. **Chưa cùng ngân sách thì chưa có quyền so sánh gì cả.**
@@ -106,7 +110,10 @@ Nghiệm tối ưu chính xác tính được bằng quy hoạch động, vì Ka
 
 ## P4 — Trần của cả họ phương pháp
 
-**Phát biểu.** Nếu ta cho phép một "oracle" biết trước đáp án được chọn cặp ngưỡng tốt nhất có thể cho từng ảnh, thì kết quả của oracle đó là **trần đúng của MỌI phương pháp thresholding cường độ** — kể cả những phương pháp chưa ai nghĩ ra. Một mạng U-Net 2D huấn luyện trên **đúng cùng dữ liệu đầu vào** vượt qua trần đó.
+**Phát biểu (đã sửa 14/07/2026).** Nếu ta cho phép một "oracle" biết trước đáp án được chọn **tập mức xám tốt nhất có thể** cho từng ảnh, thì kết quả của oracle đó là **trần đúng của MỌI decoder chỉ-dùng-cường-độ** — kể cả những decoder chưa ai nghĩ ra. Ta đo xem một U-Net 2D huấn luyện trên **đúng cùng đầu vào lúc suy luận** có vượt qua trần đó không.
+
+> ⚠️ **Bản trước nói "oracle chọn CẶP ngưỡng tốt nhất" là trần của mọi thresholding — SAI.** Cặp ngưỡng chỉ cho **một khoảng liên tiếp**; một decoder chọn **tập mức xám không liên tiếp** vượt qua nó. Trần đúng tính bằng cách sắp xếp mức xám theo độ tinh khiết và quét prefix — $O(L\log L)$. Nền toán: **Lipton et al., arXiv:1402.1892** *(cite, không claim là của mình)*.
+> ⚠️ Và **P4 có thể THẤT BẠI**: trần trên WT/FLAIR là ~0,83 (François & Tinarrage, JMIV 2026) — **không thấp**, mà nằm trong vùng đồng thuận giữa các bác sĩ. Fallback đã khoá trong preregistration §6/A2 **trước khi nhìn số**.
 
 **Bác bỏ được nếu:** U-Net không vượt oracle — khi đó luận điểm về trần yếu đi, và ta hạ claim xuống "thresholding chạm trần của chính nó", bỏ phần so sánh với deep learning.
 
@@ -122,11 +129,21 @@ Một bài báo chỉ nói *"các anh sai"* thì editor sẽ hỏi câu cuối c
 >
 > *"Một kết quả âm được làm nghiêm cẩn, cộng một đóng góp dương, là một bài đăng được. Một kết quả dương bịa ra là một lần reject cộng mất uy tín."*
 
-Bài này có đủ ba phần. Phần **Positive** gồm hai thứ:
+Bài này có đủ ba phần. Phần **Positive** gồm ba thứ *(đã viết lại 14/07/2026 — xem cảnh báo cuối mục)*:
 
-**Một — một baseline một-tham-số, chạy trong mili-giây, đánh bại cả bảy metaheuristic.** Nếu một ngưỡng phân vị cố định, hiệu chỉnh trên mười ảnh huấn luyện, mà cho Dice cao hơn cả bảy thuật toán đàn kiến/đàn cào cào/lượng tử — thì bài không còn nói *"các anh sai"*. Nó nói: *"chúng tôi thay cả họ phương pháp bằng một tham số, nhanh hơn khoảng 250 lần."* Đó là một câu editor hiểu ngay.
+**Một — phân rã cái trần (ceiling decomposition).** Trần của decoder chỉ nhìn **một lát FLAIR**, so với trần của decoder nhìn **histogram chung của cả bốn mô thức**, so với **U-Net 2D cùng đầu vào**. Ba con số này tách khoảng cách thành hai phần đo được: *"thông tin **không có trong CƯỜNG ĐỘ**"* và *"thông tin **không có trong PIXEL**"*. **Chưa ai làm.** François & Tinarrage nói *rằng* thresholding chạm trần; ta nói **TẠI SAO, và trần đó gồm những gì**.
 
-**Hai — một checklist giao thức đánh giá** cho dòng văn liệu này, để các bài sau không lặp lại sai lầm: đo Dice và HD95 chứ không phải PSNR/SSIM; báo cáo quy tắc decoding; cấp ngân sách bằng nhau cho mọi thuật toán; làm thống kê ở cấp bệnh nhân chứ không phải cấp lát ảnh.
+**Hai — một công cụ chẩn đoán chạy trong micro-giây.** Cho phép **bất kỳ tác giả nào, trên bất kỳ dataset nào**, tính trước **trần Dice của cả họ phương pháp mà họ sắp dùng** — *trước khi* viết dòng optimizer đầu tiên. Đây là thứ thực sự đổi hành vi: reviewer tiếp theo chỉ cần hỏi *"tại sao anh không chạy công cụ này trước?"*, vì nó tốn **một dòng lệnh**.
+
+**Ba — một checklist giao thức đánh giá** cho dòng văn liệu này: đo Dice và HD95 chứ không phải PSNR/SSIM; **báo cáo quy tắc decoding** (hiện gần như không bài nào nêu); cấp ngân sách bằng nhau cho mọi thuật toán; làm thống kê ở cấp bệnh nhân chứ không phải cấp lát ảnh.
+
+> ### ⚠️ BẢN TRƯỚC ĐÃ SAI Ở ĐÂY — và đây là sửa đổi quan trọng nhất của toàn bộ tài liệu
+> Bản trước đặt **"một bộ giải chính xác mili-giây, nhanh hơn ~250 lần"** làm đóng góp dương số một.
+> **Phải bỏ.** **Menotti, Najman & de A. Araújo (CIARP 2015, `10.1007/978-3-319-25751-8_42`)** đã công bố **đúng thuật toán đó, cho đúng Kapur entropy, đúng độ phức tạp `O((K−1)L²)`, chạy dưới 160 ms** — **mười một năm trước**. Ta chỉ **dùng lại** nó làm mốc tham chiếu, và **cite trang trọng ngay ở Abstract**.
+> Con số **"nhanh hơn ~250 lần"** cũng phải bỏ: đó là **artifact của vòng lặp Python**, không phải của thuật toán, và **chưa ai đo**. Thay bằng ba thứ **không cài đặt nào lấy đi được**: **tính chính xác** (đảm bảo tối ưu toàn cục) · **tính tất định** (không seed, không phương sai) · **không hyperparameter**.
+> **Vì sao đây là chuyện sống còn:** luận điểm trung tâm của bài là *"dòng văn liệu này không cite lời giải chính xác đã có"*. Nếu chính ta đi claim làm lại một lời giải đã in 11 năm, thì ta **tự thiêu trong đúng một câu của reviewer** — và ta xứng đáng bị vậy.
+>
+> **Đóng góp dương phải được chạy SỚM (tuần 2), không phải cuối.** Nó là thứ quyết định bài có tồn tại hay không, và nó hiện **chưa được preregister**. Nếu ngưỡng một-tham-số **không** thắng, đóng góp dương rơi về ba thứ ở trên — và ta phải xác nhận **ngay bây giờ** rằng ba thứ đó **đủ đứng một mình**, chứ không phải sau bốn tuần chạy.
 
 ---
 
@@ -169,12 +186,24 @@ Tất cả đặt trên **cùng một trục Dice, cùng một tập kiểm tra*
 | 3 | Quy hoạch động — tối ưu toàn cục **chính xác** | vài mili-giây | Trần của *bài toán tối ưu* |
 | 4 | Otsu / Li / k-means / GMM cổ điển | vài mili-giây | Baseline cổ điển |
 | 5 | **Ngưỡng một-tham-số học trên tập train** | ~0 | **Đóng góp dương của bài** |
-| 6 | Oracle một-ngưỡng (biết trước đáp án) | ~30 mili-giây | Trần của quy tắc "lớp sáng nhất" |
-| 7 | **Oracle một-khoảng** (biết trước đáp án) | ~30 giây | **Trần của MỌI thresholding cường độ** |
-| 8 | U-Net 2D, **cùng đầu vào** | vài giờ GPU | Baseline deep learning **công bằng** |
+| 6 | Oracle một-ngưỡng (biết trước đáp án) | ~vài mili-giây | Trần của quy tắc "lớp sáng nhất" |
+| 7 | Oracle một-khoảng (biết trước đáp án) | ~vài mili-giây | Trần của decoder **chọn một dải lớp liên tiếp** — ⚠️ **KHÔNG phải trần của mọi thresholding** |
+| **7b** | **Oracle tập-mức-xám (level-set)** ★ | **~vài mili-giây** | **TRẦN ĐÚNG của MỌI decoder chỉ-dùng-cường-độ** |
+| 8 | U-Net 2D, **cùng đầu vào lúc suy luận** | vài giờ GPU | Baseline deep learning **công bằng** |
 | 9 | nnU-Net 3D đa mô thức | — | **Số trích từ văn liệu, không tự chạy** |
 
-Bậc 1 đến 4 nằm trong sai số của nhau. Bậc 6 và 7 là **trần**. Bậc 8 và 9 nằm **trên** trần. Một hình duy nhất nói hết câu chuyện.
+> ### 🔴 SỬA LỖI TOÁN (14/07/2026)
+> Bản trước viết *"Oracle một-khoảng = **Trần của MỌI thresholding cường độ**"*. **Điều đó SAI.** Nó chỉ chặn decoder chọn **một dải lớp LIÊN TIẾP**. Một decoder chọn **tập lớp KHÔNG liên tiếp** vẫn là thresholding cường độ hợp lệ, và nó **vượt qua** trần đó (kiểm chứng: vượt trên ~98% histogram, trung bình **+0,04** Dice).
+> **Trần đúng** là oracle trên **tập mức xám tuỳ ý** $S$: sắp xếp các mức xám theo *độ tinh khiết* $r_v = g_v/n_v$ giảm dần, quét prefix, lấy Dice lớn nhất ⇒ **nghiệm chính xác trong $O(L\log L)$**, vài mili-giây/ảnh, **độc lập k**. *(Nền toán: **Lipton, Elkan & Narayanaswamy, arXiv:1402.1892** — **cite, KHÔNG claim là của mình**.)*
+> **Vì sao điều này quan trọng:** một bài chuyên phê phán overclaim mà **tự overclaim** thì chết không cãi được. Vá xong, kết luận về trần trở thành **decoding-agnostic THẬT SỰ** — không còn kẽ hở "strawman decoding" nào.
+> ⚠️ Đồng thời: chi phí oracle **KHÔNG phải "~30 giây/ảnh"** như bản trước ghi — nó là phép toán **trên histogram**, tốn **mili-giây** (sai 4 bậc độ lớn). Điều này làm nhiều thí nghiệm "đắt" trở nên gần như miễn phí.
+
+Bậc 1 đến 4 nằm trong sai số của nhau. Bậc 6–7b là **trần**. Bậc 8 và 9 nằm **trên** trần — ⚠️ **nhưng xem cảnh báo dưới đây: bậc 8 có thể KHÔNG vượt trần, và ta phải chuẩn bị cho điều đó TRƯỚC khi chạy.**
+
+> ### ⚠️ P4 CÓ THỂ THẤT BẠI — và ta đã biết trước lý do
+> Trên **whole-tumor / FLAIR**, trần của thresholding **KHÔNG THẤP**: François & Tinarrage đo oracle = **Dice 0,83 ± 0,18**, trong khi **đồng thuận giữa các bác sĩ** chỉ ~**0,85–0,87** (Menze et al., IEEE TMI 2015). Và quy tắc "chọn lát có u lớn nhất" của ta lại chọn đúng **lát thuận lợi nhất cho thresholding** ⇒ trần có thể lên **0,88–0,93**, trong khi U-Net 2D FLAIR-only train trên ~120 bệnh nhân thường chỉ đạt **0,80–0,82**.
+> ⇒ **Fallback đã khoá trước khi nhìn số** (preregistration §6/A2): nếu U-Net không vượt trần, headline đổi thành **"Trần CAO — thất bại của thresholding không do giới hạn biểu diễn, mà do BÀI TOÁN CHỌN NGƯỠNG; và không một cỗ máy metaheuristic nào chạm tới bài toán chọn đó."**
+> ⇒ Và **bổ sung một target KHÓ: enhancing tumor trên T1ce** — một **vành sáng bao lõi tối**, thứ mà một dải cường độ liên tiếp **về mặt toán học không thể** biểu diễn. Đó là nơi giới hạn của thresholding là **THẬT**.
 
 **Về deep learning — chỗ dễ chết nhất, cần cẩn thận:**
 
@@ -247,7 +276,15 @@ Nhưng họ dùng **ảnh tự nhiên, không có ground truth**. Vì thế họ
 - **P4 (trần)** — cần ground truth mới tính được trần;
 - và **audit nhánh quantum-inspired** — nhánh này ra đời sau bài của họ.
 
-Nói cách khác: **họ mở cánh cửa; chúng ta là người đầu tiên bước qua và nhìn thấy căn phòng bên trong.** Cover letter gửi tạp chí có thể viết thẳng: *"chúng tôi mở rộng bài năm 2019 của quý tạp chí sang miền dữ liệu lâm sàng có ground truth, và phát hiện điều họ không thể thấy."*
+Nói cách khác: họ dừng lại ở ảnh tự nhiên; ta mang cùng câu hỏi đó **sang miền có ground truth lâm sàng**. Cover letter có thể viết: *"chúng tôi mở rộng bài năm 2019 của quý tạp chí sang miền dữ liệu lâm sàng có ground truth."*
+
+> ⚠️ **Bản trước viết "chúng ta là người đầu tiên bước qua" — ĐÃ BỎ (14/07/2026).** Đó là overclaim và **vi phạm IRON RULE 5** (không nói "first/đầu tiên" khi chưa collision-check). Collision-check đã chạy, và kết quả là: **cửa đã có nhiều người bước qua.**
+> - **Menotti, Najman & Araújo (CIARP 2015)**, `10.1007/978-3-319-25751-8_42` — exact DP cho **đúng Kapur**, `O((K−1)L²)`, *"<160 ms"*. ⇒ **"bộ giải chính xác" KHÔNG phải đóng góp của ta.**
+> - **Hammouche, Diaf & Siarry (EAAI 2010)**, `10.1016/j.engappai.2009.09.011` — đã đo **gap/hit-rate của metaheuristic tới nghiệm vét cạn**, ngưỡng 1e−9.
+> - **François & Tinarrage (JMIV 68, 20, 2026)**, `10.1007/s10851-026-01300-1` — đã in **trần oracle 0,83±0,18 trên BraTS FLAIR**. ⇒ **CẤM claim "we establish the ceiling".**
+> - **Lipton, Elkan & Narayanaswamy (arXiv:1402.1892, 2014)** — **sở hữu định lý** oracle level-set. ⇒ ta **claim ứng dụng, không claim toán học**.
+>
+> **Định vị trung thực còn lại:** ta không phải người đầu tiên bước qua cửa — ta là người **đầu tiên đo xem căn phòng đó cao bao nhiêu, và tại sao trần lại ở đó**.
 
 ## 5.3 Ba đối thủ gần khác phải phân biệt
 
@@ -269,7 +306,7 @@ Nói cách khác: **họ mở cánh cửa; chúng ta là người đầu tiên b
 | 2. Related Work & the Citation Gap | Ba nhánh văn liệu. **Chỉ ra nhánh A không cite nhánh B và không dùng nhánh C** | **Bảng I** — trắc lượng thư mục |
 | 3. **Suy biến của hàm mục tiêu** | Mệnh đề 1 (mask phụ thuộc ≤ 2 ngưỡng) và Mệnh đề 2 (Kapur cộng tính → quy hoạch động cho tối ưu toàn cục). Chứng minh toán học + xác nhận bằng vét cạn | **Bảng II** |
 | 4. Giao thức thực nghiệm | 150 bệnh nhân, ngân sách bằng nhau, bộ thước đo đầy đủ, thống kê cấp bệnh nhân, **ngưỡng khai báo trước** | **Hình 1** — sơ đồ |
-| 5. **Không còn gì để tối ưu** | Mọi metaheuristic đạt trên 99,99% nghiệm chính xác với chi phí gấp ~250 lần. GOA hỏng, và "ý nghĩa thống kê" của QIGOA sinh ra từ đó | **Bảng III**, **Hình 2** |
+| 5. **Không còn gì để tối ưu** | Mọi metaheuristic (kể cả **random search**) đạt nghiệm chính xác của DP. GOA hỏng, và "ý nghĩa thống kê" của QIGOA sinh ra từ đó. ⚠️ **Chi phí báo bằng NFE + độ phức tạp**, không bằng wall-clock — "nhanh hơn 250 lần" là artifact của Python, đã bỏ | **Bảng III**, **Hình 2** |
 | 6. **Thước đo phản chỉ báo chất lượng lâm sàng** | fitness/PSNR/SSIM tăng theo k, Dice/HD95 xấu đi. **Thừa nhận thẳng**: trong cùng một k thì tương quan dương — và giải thích vì sao điều đó vẫn không cứu được gì | **Hình 3** |
 | 7. **Thành phần quantum không đóng góp gì** | Ablation trên dữ liệu thật, ngân sách bằng nhau. Kiểm định tương đương với PSO. Nền lý thuyết: quantum-inspired EA thực chất là một EDA | **Bảng IV** |
 | 8. **Trần** | Thang chín bậc. Random ≈ metaheuristic ≈ quy hoạch động; oracle là trần; U-Net cùng đầu vào vượt trần | **Hình 4** — hình chủ đạo |
@@ -283,7 +320,10 @@ Bài phê phán **thực hành**, tuyệt đối **không nêu tên tác giả c
 
 Lý do rất thực tế: editor sẽ chọn reviewer từ **chính cộng đồng mà bài này audit**. Nếu bài đọc như một cuộc tấn công cá nhân, ta tự tạo ra kẻ thù trong hội đồng phản biện.
 
-Đóng khung mang tính xây dựng: *"một benchmark, một giao thức đánh giá, và một phương pháp thay thế nhanh hơn 250 lần"*. Bảng trắc lượng thư mục trình bày ở dạng **tổng hợp thống kê**, không phải danh sách bêu tên.
+Đóng khung mang tính xây dựng: *"một benchmark, một giao thức đánh giá, và một công cụ cho phép bất kỳ ai tính trước trần của cả họ phương pháp mình sắp dùng"*. Bảng trắc lượng thư mục trình bày ở dạng **tổng hợp thống kê**, không phải danh sách bêu tên.
+
+> ⚠️ **Bỏ cụm "nhanh hơn 250 lần"** khỏi mọi cách đóng khung — nó là artifact cài đặt (Python chậm), không phải một kết quả, và **chưa ai đo**. Nếu dùng nó, reviewer sẽ viết đúng một câu: *"metaheuristic của các anh chậm vì Python của các anh chậm."*
+> **Và đổi tiêu đề bài.** *"Optimizing the Wrong Variable"* nghe hay với tác giả, nhưng với reviewer bị audit thì nó là một cái tát — mà editor lại chọn reviewer từ **chính cộng đồng đó**. Dùng tiêu đề mô tả, trung tính, positive-first, ví dụ: *"An exact-optimum benchmark, decoding degeneracy, and performance ceilings in intensity-based multilevel thresholding for brain tumour MRI."*
 
 ---
 

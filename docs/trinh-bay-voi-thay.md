@@ -111,13 +111,15 @@ Em đã tra cứu kỹ (mọi mục dưới đây đều có DOI, verify đượ
 | Vấn đề | Bằng chứng |
 |---|---|
 | **Sai venue.** IEEE JBHI là tạp chí *health informatics*, có điều khoản desk-reject "does not fit the scope"; em không tìm thấy bài metaheuristic-thresholding nào từng đăng ở JBHI. | [JBHI Editorial Policy](https://www.embs.org/jbhi/editorial-policy/) |
-| **"Quantum Grasshopper Optimization" đã tồn tại.** | *A novel quantum grasshopper optimization algorithm*, Int. J. Approximate Reasoning 127:33–53 (2020), Q1. DOI `10.1016/j.ijar.2020.08.011` |
+| **"Quantum Grasshopper Optimization" đã tồn tại.** | Wang, Chen, Li, Wan, *A novel quantum grasshopper optimization algorithm **for feature selection***, Int. J. Approximate Reasoning 127:33–53 (2020), Q1. DOI **`10.1016/j.ijar.2020.08.010`** *(đã verify qua Crossref 14/07/2026; DOI `…08.011` ghi trong bản trước là **SAI** — nó resolve ra một bài khác)* |
 | **QI-metaheuristic + Kapur + multilevel thresholding đã xong từ 2016–2017**, và nhóm Dey/Bhattacharyya/Maulik có hẳn **một cuốn sách Wiley 2019** về đúng chủ đề. | Applied Soft Computing 46:677–702 (2016); 56:472–513 (2017) |
-| **Near-scoop 2025:** quantum + entropy thresholding + brain MRI. | *Alzheimer's disease brain image segmentation using 3D Rényi entropy and quantum hybrid optimization*, Artificial Intelligence Review (2025), Q1. DOI `10.1007/s10462-025-11438-w` |
+| **Dòng văn liệu vẫn sống tới 2026** (KHÔNG phải near-scoop). | *Alzheimer's disease brain image segmentation using 3D Rényi entropy and quantum hybrid optimization*, AI Review 59(3) (2026), Q1. DOI `10.1007/s10462-025-11438-w`. *(Đã kiểm: dataset Alzheimer + breast cancer, **không phải BraTS**; thuật toán QHEEFO, không phải GOA ⇒ **không** phải near-scoop. Dùng làm bằng chứng dòng văn liệu còn sống.)* |
 | **QIEA đã bị chứng minh chỉ là một EDA** (Estimation of Distribution Algorithm) — Q-bit + rotation gate về mặt toán học là một vector xác suất + luật cập nhật xác suất. Không có superposition/entanglement thật. | Platel, Schliebs, Kasabov, **IEEE Trans. Evolutionary Computation** 13(6):1218–1232 (2009). DOI `10.1109/TEVC.2008.2003010` |
 | **Không có quantum advantage** khi chạy trên phần cứng cổ điển. | Tang, *A quantum-inspired classical algorithm for recommendation systems*, STOC 2019, arXiv:1807.04271 |
 | **Phong trào chống metaphor-based metaheuristic đang mạnh.** Journal of Heuristics và 4OR đã có **policy từ chối**. | Sörensen, ITOR 2015 (`10.1111/itor.12001`); Aranha et al., Swarm Intelligence 2022 (`10.1007/s11721-021-00202-9`); Camacho-Villalón et al., ITOR 2023 (`10.1111/itor.13176`) |
-| **GOA bị chứng minh chỉ là biến thể PSO.** *[cần verify lại nguyên văn trước khi trích]* | Springer 2024, `10.1007/978-3-031-70932-6_7` — hiện mới đọc được qua search snippet, chưa fetch được toàn văn |
+| **GOA bị chứng minh chỉ là biến thể PSO.** ✅ **Đã verify** (bỏ nhãn "cần verify"). | Harandi, Van Messem, De Neve, Vankerschaver, *Grasshopper Optimization Algorithm (GOA): A Novel Algorithm or A Variant of PSO?*, **ANTS 2024**, LNCS pp. 84–97, `10.1007/978-3-031-70932-6_7`. Cặp với Platel 2009 (QIEA = EDA) ⇒ **QIGOA = "EDA-flavoured PSO"** — hai lớp metaphor bị bóc bằng hai bài peer-reviewed. |
+| 🔴 **Bộ giải chính xác cho ĐÚNG Kapur đã có từ 2015** — và ta đã suýt claim nó là đóng góp của mình. | **Menotti, Najman & de A. Araújo**, *Efficient Polynomial Implementation of Several Multithresholding Methods for Gray-Level Image Segmentation*, **LNCS/CIARP 2015, pp. 350–357**, `10.1007/978-3-319-25751-8_42` — exact DP cho **Otsu + KAPUR + Kittler–Illingworth**, `O((K−1)L²)`, *"<160 ms … in whatever the number of classes"*. *(Verify Crossref 14/07/2026.)* |
+| 🔴 **Đo gap/hit-rate của metaheuristic tới nghiệm vét cạn cũng đã có — từ 2010.** | **Hammouche, Diaf & Siarry**, EAAI 23(5):676–688 (2010), `10.1016/j.engappai.2009.09.011`. Bảng 8 = nghiệm vét cạn; Bảng 10 = hội tụ định nghĩa bằng \|F−F_opt\| ≤ **1e−9**. ⚠️ Họ còn thấy **ACO/SA không đạt tối ưu khi k>2**. |
 
 Nói thẳng: đề tài hiện tại là một **hoán vị** — thay PSO/DE/ABC bằng GOA trong một template đã có từ 2014. Reviewer sẽ hỏi *"Tại sao GOA? Kết quả này khác gì suy ra từ Dey 2017 + QGOA 2020?"* — và ta không có câu trả lời.
 
@@ -133,11 +135,17 @@ Nói thẳng: đề tài hiện tại là một **hoán vị** — thay PSO/DE/A
 - **P1 — Suy biến.** Mask lâm sàng phụ thuộc ≤ 2 trong k ngưỡng, bất kể k. *Bác bỏ được nếu:* tìm ra một nhóm `(ảnh, dải-lớp)` có Dice không hằng số.
 - **P2 — Không còn gì để tối ưu.** Với ngân sách bằng nhau, mọi metaheuristic đạt ≥ 99,99% nghiệm tối ưu **chính xác** (tính được bằng quy hoạch động trong mili-giây). *Bác bỏ được nếu:* có thuật toán nào vượt nghiệm chính xác — điều bất khả.
 - **P3 — Goodhart.** fitness/PSNR/SSIM tăng theo k trong khi Dice/HD95 xấu đi. *Bác bỏ được nếu:* tương quan hoá ra dương.
-- **P4 — Trần.** Oracle vét cạn trên mọi mask-một-khoảng là trần đúng của MỌI phương pháp thresholding cường độ. Một 2D U-Net trên **đúng cùng input** vượt trần đó. *Bác bỏ được nếu:* có thresholding nào vượt oracle — điều bất khả theo định nghĩa.
+- **P4 — Trần.** *(Đã sửa 14/07/2026 — bản trước SAI về toán.)* Oracle trên **tập mức xám tuỳ ý** (không phải "mọi mask-một-khoảng") là trần đúng của MỌI decoder chỉ-dùng-cường-độ; tính chính xác trong `O(L·log L)`. Ta đo xem 2D U-Net cùng đầu vào có vượt trần đó không. *Bác bỏ được nếu:* U-Net **không** vượt trần — và **điều này hoàn toàn có thể xảy ra** (trần trên WT/FLAIR ≈ **0,83**, François & Tinarrage JMIV 2026 — **không thấp**). Fallback đã khoá trong [preregistration.md](preregistration.md) §6/A2 **trước khi nhìn số**. ⛔ **Không claim "we establish the ceiling"** — François đã in nó; và định lý level-set thuộc về Lipton et al. (2014).
 
-**Đóng góp DƯƠNG** (phần "Positive" trong công thức reframe của thầy ở [:213](lam-va-viet-paper-chuan-IEEE.md#L213)):
-1. Một **bộ giải chính xác mili-giây, 1 tham số**, đánh bại cả 7 metaheuristic — nhanh hơn ~250 lần.
-2. Một **checklist giao thức đánh giá** cho dòng văn liệu này: đo Dice/HD95, báo cáo decoding rule, ngân sách NFE bằng nhau, thống kê ở cấp bệnh nhân.
+**Đóng góp DƯƠNG** (phần "Positive" trong công thức reframe của thầy ở [:213](lam-va-viet-paper-chuan-IEEE.md#L213)) — ⚠️ **đã viết lại 14/07/2026 sau collision-check**:
+
+> ❌ **Bản trước ghi "một bộ giải chính xác mili-giây" — PHẢI BỎ.** **Menotti et al. (CIARP 2015)** đã in đúng thuật toán đó cho đúng Kapur, 11 năm trước. Ta chỉ **dùng** nó làm reference optimum và **cite trang trọng ở Abstract**. ❌ **Bỏ luôn claim "nhanh hơn ~250 lần"** — đó là artifact của vòng lặp Python, không phải của thuật toán, và **chưa ai đo**.
+
+1. **Ceiling decomposition** — trần chỉ-FLAIR vs trần trên histogram chung 4-modality vs 2D U-Net cùng input ⇒ phân rã khoảng cách thành *"thông tin không có trong CƯỜNG ĐỘ"* vs *"không có trong PIXEL"*. **Chưa ai làm.** François & Tinarrage (JMIV 2026) nói *rằng* thresholding thất bại; ta nói **TẠI SAO**, định lượng.
+2. **Công cụ chẩn đoán `O(L·log L)`** — cho phép tác giả bất kỳ, trên dataset bất kỳ, tính trước **trần Dice của cả họ phương pháp của mình** trong micro-giây, **trước khi viết dòng optimizer đầu tiên**. *(Nền toán: Lipton et al., arXiv:1402.1892 — **cite, không claim là của mình**.)*
+3. **Checklist giao thức đánh giá** + **Bảng I trắc lượng có mã hoá** (2 coder, Cohen's κ): đo Dice/HD95, **báo cáo decoding rule**, ngân sách NFE bằng nhau, thống kê ở cấp bệnh nhân.
+
+> **Điều còn sống mạnh nhất, và nó rẻ:** **random search ở equal-NFE** — đã tìm và xác nhận **VẮNG MẶT khỏi toàn bộ văn liệu multilevel thresholding**. Một dòng bảng này đáng giá hơn cả section DP.
 
 **Và bài trả lời TRỰC DIỆN câu hỏi thầy giao:** *thành phần quantum-inspired đóng góp bao nhiêu?* — bằng một ablation `full / −quantum / −memetic / −OBL / −Lévy` trên dữ liệu BraTS thật, cùng ngân sách. Đây là điều bản cũ chưa hề có (nó chỉ ablate trên ảnh phantom tổng hợp).
 
