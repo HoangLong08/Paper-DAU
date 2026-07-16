@@ -120,6 +120,8 @@ Thầy Hảo giao đề QIGOA (Kapur + Q-bit + rotation gate, brain tumor MRI). 
 
 ## 4. Chuẩn viết journal / IEEE Transaction
 
+> 🚦 **CỔNG BẮT BUỘC (IRON RULE cho việc viết).** TRƯỚC KHI viết/sửa **bất kỳ** câu nào của paper (abstract, section, related work, formulation, bảng, caption, rebuttal…), Claude **PHẢI đọc trọn [docs/lam-va-viet-paper-chuan-IEEE.md](docs/lam-va-viet-paper-chuan-IEEE.md)** — playbook chuẩn IEEE Transactions do **thầy Đỗ Phúc Hảo** cung cấp — và viết **đúng theo nó**. Bản gốc trực quan: 10 trang ảnh trong [docs/lam-va-viet-paper-chuan-IEEE/](docs/lam-va-viet-paper-chuan-IEEE/). Đây là **NGUỒN CHUẨN DUY NHẤT** cho phong cách viết; không được viết tự do bỏ qua nó. Việc viết section đi qua skill **academic-paper** (§6). *(Một hook `UserPromptSubmit` cũng tự nhắc điều này mỗi khi prompt có ý định viết paper — xem `.claude/hooks/paper-ieee-guard.ps1`. Hook là lớp phụ; luật này mới là nguồn.)*
+
 Nguồn chuẩn: [docs/lam-va-viet-paper-chuan-IEEE.md](docs/lam-va-viet-paper-chuan-IEEE.md). Điểm chốt:
 
 - **Transaction khác conference:** đòi formulation cứng, evaluation như *phép thử bác bỏ*, và định vị related work sắc.
