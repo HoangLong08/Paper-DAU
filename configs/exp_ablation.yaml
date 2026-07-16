@@ -1,0 +1,83 @@
+# =============================================================================
+# E3 — ABLATION QIGOA trên dữ liệu THẬT (trả lời trực diện đề bài của thầy)
+#   scripts/run_ablation.py --config configs/exp_ablation.yaml [--resume]
+#   → results/ablation/raw.csv · summary.csv  → Bảng IV
+# =============================================================================
+# RÀNG BUỘC BẤT KHẢ XÂM PHẠM: cùng NFE **và cùng MỌI hyperparameter khác** — khớp
+# tới từng tham số (playbook thầy §4.1; CLAUDE.md §3 "ablation cùng tham số").
+# Mọi biến thể dùng chung khối `hyperparams` dưới; `variants[].hp` CHỈ được chứa
+# các cờ bật/tắt thành phần (quantum / obl / levy / memetic). run_ablation.py
+# ASSERT điều đó và dừng nếu một variant cố đổi hp khác.
+#
+# Dự đoán khai báo trước (prereg §2): thành phần quantum đóng góp ≈ 0 vào Dice.
+# Nếu SAI — quantum thực sự cải thiện Dice có ý nghĩa — đó là finding DƯƠNG và ta
+# báo cáo đúng như vậy (§4 cờ đỏ (a) ⇒ reframe theo hướng ngược lại).
+#
+# Lô cũ chỉ ablate trên phantom, KHÔNG phải BraTS ⇒ claim cũ không có provenance.
+# E3 vá đúng lỗ đó ⇒ `data.source` PHẢI là brats.
+# =============================================================================
+experiment: ablation
+
+data:
+  source: brats
+  root_kaggle: /kaggle/input/brats20-dataset-training-validation/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData
+  root_local: data/brats20/MICCAI_BraTS2020_TrainingData
+  cohort_csv: data/splits/brats_cohort.csv
+  splits_dir: data/splits
+  n_patients: 369
+  version: kaggle:awsaf49/brats20-dataset-training-validation
+
+targets: [wt_flair, et_t1ce]
+fitness: kapur
+include_zero_bg: [true, false]
+k_list: [2, 3, 4, 5, 6, 8, 10]
+k_primary: 4
+seeds: [0, 1, 2, 3, 4]
+budget: 5000                 # ĐÚNG bằng E2 ⇒ Bảng III và Bảng IV so được với nhau
+
+hyperparams:                 # dùng chung cho MỌI variant — không variant nào override
+  pop: 30
+  c_max: 1.0
+  c_min: 0.00004
+  rot_step: 0.05
+  levy_scale: 0.01
+  w: 0.7
+  c1: 1.5
+  c2: 1.5
+  vmax_frac: 0.2
+
+# Chỉ cờ thành phần. QIGOA-<X> = "full trừ X" (one-factor-at-a-time).
+variants:
+  - {name: QIGOA-full,    base: QIGOA,       hp: {quantum: true,  obl: true,  levy: true,  memetic: true}}
+  - {name: QIGOA-quantum, base: QIGOA,       hp: {quantum: false, obl: true,  levy: true,  memetic: true}}
+  - {name: QIGOA-memetic, base: QIGOA,       hp: {quantum: true,  obl: true,  levy: true,  memetic: false}}
+  - {name: QIGOA-OBL,     base: QIGOA,       hp: {quantum: true,  obl: false, levy: true,  memetic: true}}
+  - {name: QIGOA-Levy,    base: QIGOA,       hp: {quantum: true,  obl: true,  levy: false, memetic: true}}
+  - {name: PSO+memetic,   base: PSO+memetic, hp: {memetic: true}}
+  - {name: PSO,           base: PSO,         hp: {}}     # đối chứng của QIGOA (QIEA ≡ EDA)
+
+decoding:
+  rules: [brightest]         # A4e — ablation đọc ở decoding primary
+  labelmap: []
+  labelmap_primary_only: true
+  primary: brightest
+
+metrics:
+  spacing_mm: [1.0, 1.0]
+  nsd_tau_mm: 2.0
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null
+  connectivity: 1
+  bootstrap_n: 10000
+
+stats:
+  sesoi: 0.01
+  rope: [-0.01, 0.01]
+  hit_gap_tol: 1.0e-4
+  reference_method: DP-exact
+  decoding_primary: brightest
+  k_primary: 4
+  bayes_samples: 20000
+
+output_dir: results/ablation
+cache_dir: results/main/cache      # dùng chung cache histogram với E2

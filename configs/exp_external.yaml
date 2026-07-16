@@ -1,0 +1,77 @@
+# =============================================================================
+# E7 — NGOẠI KIỂM LGG (Buda et al.) — ZERO-SHOT
+#   scripts/run_external.py --config configs/exp_external.yaml [--resume]
+#   → results/external/raw.csv · summary.csv  → Replication table (lặp Bảng III–IV)
+# =============================================================================
+# 🔴 A3 — CẤM RE-TUNE. Ngưỡng 1-tham-số q* được NẠP ĐÔNG LẠNH từ
+#    results/ceiling/qstar.csv (fit trên BraTS). Re-tune trên LGG ⇒ không còn là
+#    external validation. `allow_retune: false` — run_external.py assert và dừng
+#    nếu ai đó bật nó lên.
+#
+# 🔴 A8 — "NGOẠI KIỂM" NÀY CÓ THỂ KHÔNG NGOẠI (RỦI RO LIÊM CHÍNH, KHÔNG PHẢI LỖI
+#    THIẾT KẾ). Buda et al. = 110 BN TCGA-LGG (TCIA); BraTS 2020 đã nuốt 108 ca
+#    TCGA-LGG từ ĐÚNG collection đó. BẮT BUỘC trước khi dùng chữ "external
+#    validation": tải name_mapping.csv, đối chiếu, BÁO CÁO SỐ TRÙNG BẰNG CON SỐ,
+#    rồi chọn (a) loại BN trùng / (b) gọi đúng tên "annotation-preprocessing
+#    replication on an overlapping cohort" / (c) ngoại kiểm theo chiều TASK
+#    (tune WT/FLAIR → test ET/T1ce; rẻ nhất, mạnh nhất, trùng khớp A2).
+#    `cohort_overlap_checked: false` ⇒ script CHỈ được ghi nhãn
+#    "replication (overlap UNVERIFIED)". Đặt true CHỈ SAU KHI đã đối chiếu thật.
+#
+# 🔴 A8 — BẪY KÊNH: ảnh LGG là TIFF 3 kênh (pre / FLAIR / post-contrast). FLAIR là
+#    kênh GIỮA (index 1). lgg_loader.py đã bake + unit test tests/test_lgg_loader.py.
+# =============================================================================
+experiment: external
+
+data:
+  source: lgg
+  root_kaggle: /kaggle/input/lgg-mri-segmentation/kaggle_3m
+  root_local: data/lgg/kaggle_3m
+  tumor_only: true
+  n_patients: 110            # số lát có u sẽ nhiều hơn; đặt null/all để lấy hết
+  version: kaggle:mateuszbuda/lgg-mri-segmentation
+
+targets: [wt_flair]          # LGG không có nhãn ET ⇒ chỉ WT trên kênh FLAIR
+fitness: kapur
+include_zero_bg: [true, false]
+k_list: [2, 3, 4]            # lưới RÚT GỌN (~8 h) — E7 là replication, không phải E2
+k_primary: 4
+seeds: [0, 1, 2, 3, 4]
+budget: 5000                 # ĐÚNG bằng E2 ⇒ so được
+optimizers: [GA, PSO, GOA-fixed, GWO, WOA, MPA, QIGOA, random]
+include_exact_dp: true
+include_classical: true
+classical: [otsu, li, triangle, kmeans, gmm]
+
+hyperparams:
+  pop: 30
+
+decoding:
+  rules: [brightest]
+  labelmap: []
+  labelmap_primary_only: true
+  primary: brightest
+
+metrics:
+  spacing_mm: [1.0, 1.0]     # LGG TIFF ~ in-plane; spacing thật khác BraTS ⇒ nêu caveat
+  nsd_tau_mm: 2.0
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null
+  connectivity: 1
+  bootstrap_n: 10000
+
+stats:
+  sesoi: 0.01
+  rope: [-0.01, 0.01]
+  hit_gap_tol: 1.0e-4
+  reference_method: DP-exact
+  decoding_primary: brightest
+  k_primary: 4
+
+allow_retune: false                        # A3 — bất khả xâm phạm
+cohort_overlap_checked: false              # A8 — đặt true CHỈ SAU khi đối chiếu thật
+cohort_overlap_n: null                     # điền CON SỐ trùng sau khi đối chiếu
+frozen_qstar_csv: results/ceiling/qstar.csv
+
+output_dir: results/external
+cache_dir: results/external/cache

@@ -1,0 +1,120 @@
+# =============================================================================
+# SMOKE TEST — phantom SYNTHETIC, chạy TOÀN BỘ pipeline ở local.
+# =============================================================================
+# Mục đích DUY NHẤT: bắt lỗi cấu trúc trước khi đẩy lên Kaggle
+# (docs/ke-hoach-trien-khai.md §0 nguyên tắc 4, §5 "Smoke test trước mọi thứ").
+#
+# Thời gian ĐO ĐƯỢC (local CPU, 16/07/2026 — số đo, không phải ước lượng):
+#   run_exact_check ~35 s · run_main_grid ~23 s → hai script này < 60 s ✅
+#   trọn chuỗi 9 script ~105 s (gồm ~2–3 s khởi động interpreter mỗi script),
+#   chi phối bởi vét cạn k=3 của cổng E1 (~29 s tính toán).
+#   Muốn nhanh hơn: hạ exact_check.n_images — nhưng cổng THẬT cần >= 20 ảnh.
+#
+# 🔴 [PLACEHOLDER] — MỌI số sinh từ config này là số phantom. Theo CLAUDE.md §2
+# IRON RULE 1/3 chúng KHÔNG BAO GIỜ được vào bản thảo như kết quả. Script tự dán
+# nhãn: banner `#` đầu mỗi CSV, cột `placeholder`, và README của thư mục output.
+# =============================================================================
+experiment: smoke
+
+data:
+  source: synthetic          # phantom, không chạm đĩa
+  n_patients: 3              # lưới chính: 3 "bệnh nhân"
+  version: synthetic-phantom-v1
+
+targets: [wt_flair]          # smoke chỉ 1 target; lưới thật chạy cả et_t1ce (A2)
+fitness: kapur
+include_zero_bg: [true, false]   # A5c — chạy CẢ HAI biến thể, luôn luôn
+k_list: [2, 3]
+k_primary: 2                 # (lưới thật: 4 — A4e)
+seeds: [0]                   # (lưới thật: >= 5 seed — §3)
+budget: 150                  # NFE nhỏ để smoke chạy nhanh
+optimizers: [GA, PSO, GOA, GOA-fixed, GWO, WOA, MPA, QIGOA, random]
+include_exact_dp: true
+include_classical: true
+classical: [otsu, li, triangle, kmeans, gmm]
+
+hyperparams:                 # ĐỒNG NHẤT cho mọi thuật toán (equal tuning budget — A6)
+  pop: 10
+
+decoding:
+  rules: [brightest, upper_union, otsu_pick, morph]
+  labelmap: [kmeans]         # Horn-2 (A1) — smoke chỉ 1 decoder cho nhanh
+  labelmap_primary_only: true   # Horn-2 chỉ chạy ở k_primary + seed đầu
+  primary: brightest         # A4e
+
+metrics:
+  spacing_mm: [1.0, 1.0]     # BraTS 1 mm isotropic, in-plane
+  nsd_tau_mm: 2.0            # A7 — τ = 2 mm PRIMARY
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null   # null ⇒ đường chéo ảnh (A7, hình phạt đã khai báo)
+  connectivity: 1
+  bootstrap_n: 200           # smoke: ít resample (thật: 10000)
+
+stats:
+  sesoi: 0.01                # Δ₁ strict / primary (A4c)
+  sesoi_hierarchy: [0.01, 0.05]   # thật: [0.01, Δ₂ inter-rater, 0.05]
+  rope: [-0.01, 0.01]
+  hit_gap_tol: 1.0e-4
+  reference_method: DP-exact # A4e
+  decoding_primary: brightest
+  k_primary: 2
+  bayes_samples: 2000
+  output_dir: results/smoke/stats
+  main_dir: results/smoke            # nguồn raw.csv của E2
+  ceiling_dir: results/smoke/ceiling # Family A: oracle level-set
+  unet_dir: results/smoke/unet       # Family A: U-Net
+
+output_dir: results/smoke
+
+# --- E1: cổng cứng DP vs vét cạn ------------------------------------------- #
+exact_check:
+  n_images: 20               # >= 20 ảnh (prereg §1/P2 "bảo hiểm bắt buộc")
+  k_list: [2, 3]
+  include_zero_bg: [true]    # smoke: 1 biến thể để giữ < 60 s. CỔNG THẬT
+                             # (exp_main.yaml) chạy CẢ HAI (A5c).
+  tol: 1.0e-9                # A5a — |f_DP − f_brute| <= 1e-9 + mask giống hệt
+  output_dir: results/smoke/exact
+
+# --- E3: ablation ----------------------------------------------------------- #
+ablation:
+  budget: 150
+  k_list: [2, 3]
+  seeds: [0]
+  output_dir: results/smoke/ablation
+  variants:
+    - {name: QIGOA-full,   base: QIGOA, hp: {quantum: true,  obl: true,  levy: true,  memetic: true}}
+    - {name: QIGOA-quantum, base: QIGOA, hp: {quantum: false, obl: true,  levy: true,  memetic: true}}
+    - {name: QIGOA-memetic, base: QIGOA, hp: {quantum: true,  obl: true,  levy: true,  memetic: false}}
+    - {name: QIGOA-OBL,     base: QIGOA, hp: {quantum: true,  obl: false, levy: true,  memetic: true}}
+    - {name: QIGOA-Levy,    base: QIGOA, hp: {quantum: true,  obl: true,  levy: false, memetic: true}}
+    - {name: PSO+memetic,   base: PSO+memetic, hp: {memetic: true}}
+
+# --- E4: ceiling ladder + P5 ------------------------------------------------ #
+ceiling:
+  n_folds: 2                 # smoke: 2 fold (thật: 5, dùng data/splits/fold_*.json)
+  q_grid_start: 90.0         # P5: lưới phân vị của ngưỡng 1-tham-số
+  q_grid_stop: 99.5
+  q_grid_num: 8
+  oracles: [oracle_single, oracle_interval, oracle_levelset]
+  output_dir: results/smoke/ceiling
+
+# --- E4: U-Net -------------------------------------------------------------- #
+unet:
+  folds: [0]
+  seeds: [0]
+  output_dir: results/smoke/unet
+  cfg:
+    smoke: true              # unet2d.py: dữ liệu synthetic + 2 epoch CPU
+    epochs: 2
+    batch_size: 4
+    base_channels: 4
+    device: cpu
+
+# --- E7: ngoại kiểm LGG ----------------------------------------------------- #
+external:
+  output_dir: results/smoke/external
+  k_list: [2]                          # smoke: lưới tối thiểu cho nhanh
+  optimizers: [PSO, QIGOA, random]     # (lưới thật: 8 thuật toán — exp_external.yaml)
+  allow_retune: false        # A3 — CẤM re-tune trên LGG (zero-shot)
+  cohort_overlap_checked: false   # A8 — chưa đối chiếu name_mapping.csv
+  frozen_qstar_csv: results/smoke/ceiling/qstar.csv

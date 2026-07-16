@@ -1,0 +1,61 @@
+# =============================================================================
+# E4 — 2D U-Net (GPU) — baseline DL CÔNG BẰNG (cùng input: 1 lát FLAIR)
+#   scripts/run_unet.py --config configs/exp_unet.yaml [--resume]
+#   → results/unet/raw.csv · summary.csv  → bậc 8 của Hình 4
+# =============================================================================
+# ❌ KHÔNG train nnU-Net (3D full-res × 5 fold = nhiều ngày GPU; Kaggle cho 30 GPU-h
+#    /tuần, session <= 12 h ⇒ bất khả). Số nnU-Net CHỈ trích từ văn liệu và phải dán
+#    nhãn "reference from literature, not run by us, different input protocol"
+#    (Isensee et al., BraTS 2020, arXiv:2011.00848 — WT Dice 0,9124 val / 0,8895 test).
+#    Xem `literature_reference` dưới — build_figures.py in nhãn đó kèm số.
+#
+# ✅ A3 — "CÙNG INPUT" LÀ RÀNG BUỘC LÚC INFERENCE, KHÔNG PHẢI LÚC TRAIN:
+#    train trên TẤT CẢ lát có u của bệnh nhân outer-train (hàng nghìn lát), infer
+#    trên ĐÚNG 1 lát chỉ định của bệnh nhân held-out. Nếu không làm vậy, kết quả P4
+#    — dù dương hay âm — đều KHÔNG diễn giải được (confound U-Net-thiếu-dữ-liệu).
+#    U-Net là loại B ⇒ CHỈ chấm out-of-fold. 5 fold × 3 seed, KHÔNG phải 1 lần train.
+# =============================================================================
+experiment: unet
+
+data:
+  source: brats
+  root_kaggle: /kaggle/input/brats20-dataset-training-validation/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData
+  root_local: data/brats20/MICCAI_BraTS2020_TrainingData
+  cohort_csv: data/splits/brats_cohort.csv
+  splits_dir: data/splits
+  n_patients: 369
+  version: kaggle:awsaf49/brats20-dataset-training-validation
+
+targets: [wt_flair]          # U-Net dùng đúng input của thresholding: lát FLAIR
+folds: [0, 1, 2, 3, 4]       # A3 — 5 outer fold
+seeds: [0, 1, 2]             # A3 — >= 3 seed × 5 fold
+
+metrics:
+  spacing_mm: [1.0, 1.0]
+  nsd_tau_mm: 2.0
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null
+  connectivity: 1
+  bootstrap_n: 10000
+
+# Chuyển thẳng cho src.baselines.unet2d.train_unet_cv(cfg=...)
+cfg:
+  base_channels: 16
+  epochs: 40
+  batch_size: 16
+  lr: 0.001
+  weight_decay: 0.00001
+  device: auto               # auto ⇒ cuda nếu có, else cpu
+  smoke: false
+  out_dir: results/unet/checkpoints
+  num_workers: 0
+
+# Chỉ để in kèm nhãn ở Hình 4 — KHÔNG phải baseline được so trực tiếp.
+literature_reference:
+  name: nnU-Net 3D multi-modal
+  wt_dice_val: 0.9124
+  wt_dice_test: 0.8895
+  source: "Isensee et al., BraTS 2020, arXiv:2011.00848"
+  label: "reference from literature, not run by us, different input protocol (3D multi-modal)"
+
+output_dir: results/unet

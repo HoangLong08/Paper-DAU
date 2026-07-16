@@ -1,0 +1,88 @@
+# =============================================================================
+# E2 — LƯỚI CHÍNH, equal-NFE (xương sống của bài)
+#   scripts/run_main_grid.py --config configs/exp_main.yaml [--resume]
+#   → results/main/raw.csv · summary.csv · mask_identity.csv · run-manifest.json
+#   → Bảng III · Hình 2 (CD) · Hình 3 (Goodhart)
+# =============================================================================
+# ⛔ KHÔNG chạy file này trước khi:
+#    (1) `run_exact_check.py` PASS (cổng cứng E1), và
+#    (2) bốn thí nghiệm rủi ro của Tuần 1 sống sót (prereg §6/A10).
+#    Chi compute ngược thứ tự = confirmation bias, trong một bài đi tố cáo
+#    confirmation bias. Xem scripts/README.md.
+# =============================================================================
+experiment: main
+
+data:
+  source: brats
+  # Kaggle trước, local sau — script chọn cái nào TỒN TẠI (_common.data_root).
+  root_kaggle: /kaggle/input/brats20-dataset-training-validation/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData
+  root_local: data/brats20/MICCAI_BraTS2020_TrainingData
+  cohort_csv: data/splits/brats_cohort.csv
+  splits_dir: data/splits
+  n_patients: 369            # A8 — DÙNG CẢ 369 CA. Cắt lưới algo×seed×k nếu cần,
+                             # ĐỪNG cắt n (n=369 nâng ngưỡng 80%-power của SD_d
+                             # từ 0,042 → 0,066 ⇒ de-risk trực tiếp lỗi TOST A4c).
+  version: kaggle:awsaf49/brats20-dataset-training-validation
+
+targets: [wt_flair, et_t1ce] # A2 — ET/T1ce là target KHÓ, BẮT BUỘC. WT/FLAIR giữ
+                             # nguyên làm ca thuận lợi nhất cho phe bị audit.
+fitness: kapur
+include_zero_bg: [true, false]   # A5c — nền cường-độ-0 (~65% lát skull-strip) đổi
+                                 # HOÀN TOÀN ngưỡng tối ưu ⇒ chạy & báo cáo CẢ HAI.
+k_list: [2, 3, 4, 5, 6, 8, 10]
+k_primary: 4                 # A4e
+seeds: [0, 1, 2, 3, 4]       # >= 5 seed độc lập (§3)
+budget: 5000                 # HARD NFE budget — BẰNG NHAU TUYỆT ĐỐI cho mọi
+                             # metaheuristic (base.py assert used == budget, ±0).
+optimizers: [GA, PSO, GOA, GOA-fixed, GWO, WOA, MPA, QIGOA, random]
+                             # GOA (hỏng) VÀ GOA-fixed chạy CẢ HAI — một baseline lỗi
+                             # sinh "significance" giả; đó là bài học phương pháp luận.
+include_exact_dp: true       # reference optimum (Menotti 2015 — KHÔNG phải đóng góp của ta)
+include_classical: true
+classical: [otsu, li, triangle, kmeans, gmm]
+
+hyperparams:                 # A6 — equal TUNING budget: hp Y HỆT cho mọi thuật toán
+  pop: 30
+
+decoding:
+  rules: [brightest, upper_union, otsu_pick, morph]   # Horn-1 (band-selection)
+  labelmap: [kmeans, watershed, chanvese]             # Horn-2 (A1) — bắt buộc, vì 4
+                                                      # rule Horn-1 KHÔNG THỂ bác bỏ P1
+  labelmap_primary_only: true    # Horn-2 chỉ ở k_primary + seed đầu (chi phí)
+  primary: brightest             # A4e — rule ta KIỂM TRA, KHÔNG phải rule ta quy kết
+
+metrics:
+  spacing_mm: [1.0, 1.0]
+  nsd_tau_mm: 2.0
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null   # ⇒ đường chéo ảnh; CẤM loại ca mask rỗng khỏi HD95 (A7)
+  connectivity: 1
+  bootstrap_n: 10000
+
+stats:
+  sesoi: 0.01
+  sesoi_hierarchy: [0.01, 0.05]   # Δ₂ (inter-rater, Menze 2015) điền sau khi web-verify
+  rope: [-0.01, 0.01]
+  hit_gap_tol: 1.0e-4
+  reference_method: DP-exact
+  decoding_primary: brightest
+  k_primary: 4
+  bayes_samples: 20000
+  output_dir: results/stats
+  main_dir: results/main
+  ceiling_dir: results/ceiling
+  unet_dir: results/unet
+
+# --- E1: CỔNG CỨNG trên dữ liệu THẬT (chạy TRƯỚC lưới này) ------------------ #
+#   python scripts/run_exact_check.py --config configs/exp_main.yaml
+#   ~10–20 phút CPU (vét cạn k=3 trên histogram BraTS đầy đủ). FAIL ⇒ DỪNG TOÀN BỘ.
+exact_check:
+  n_images: 20               # >= 20 ảnh (prereg §1/P2)
+  k_list: [2, 3]             # vét cạn chỉ khả thi tới k=3
+  include_zero_bg: [true, false]
+  tol: 1.0e-9                # A5a
+  output_dir: results/exact
+
+# Kaggle: session <= 12 h ⇒ chia theo k, mỗi session 2–3 giá trị k, --resume, merge sau.
+output_dir: results/main
+cache_dir: results/main/cache      # histogram .npy — phần chậm nhất mà lại tất định

@@ -1,0 +1,73 @@
+# =============================================================================
+# E4 — THANG BẬC TRẦN (ceiling ladder) + P5 ngưỡng-1-tham-số (nested CV)
+#   scripts/run_ceiling.py --config configs/exp_ceiling.yaml [--resume]
+#   → results/ceiling/raw.csv · summary.csv · qstar.csv  → Bảng V · Hình 4
+# =============================================================================
+# ⚠️ HAI LẰN RANH ĐỎ ĐƯỢC BAKE VÀO ĐÂY:
+#
+# 1. ORACLE KHÔNG PHẢI "PHƯƠNG PHÁP" (A3, loại C). Nó dùng ground truth lúc test
+#    ⇒ mọi dòng oracle trong CSV mang cột `method_class = "C: uses test-time
+#    ground truth"`, và MỌI bảng/hình phải in nhãn đó.
+#    ⛔ CẤM câu "we establish the ceiling" — François & Tinarrage (JMIV 68:20, 2026)
+#    đã in trần 0,83±0,18 trên BraTS FLAIR. Ta claim PHÂN RÃ trần, không claim trần.
+#    ⛔ oracle_levelset KHÔNG được ship như "Theorem 1 (ours)" — Lipton et al.
+#    (arXiv:1402.1892, 2014) + RankSEG (JMLR 2023) sở hữu định lý. CLAIM ỨNG DỤNG.
+#
+# 2. P5 (ngưỡng 1-tham-số) LÀ LOẠI B ⇒ **CHỈ out-of-fold** (A3). q* fit trên
+#    outer-train fold, ĐÓNG BĂNG, đánh giá trên test fold. Công bố cả 5 giá trị q*
+#    (ổn định giữa fold ⇒ finding mạnh). Fit trên 10 ảnh rồi test trên cả 150 =
+#    train-on-test = lỗi DUY NHẤT có thể bị reject vì LIÊM CHÍNH.
+#    Fallback (khoá trước khi thấy số — A10 mục 2): nếu P5 THUA metaheuristic ⇒
+#    đóng góp dương rơi về ceiling decomposition + công cụ chẩn đoán + checklist.
+# =============================================================================
+experiment: ceiling
+
+data:
+  source: brats
+  root_kaggle: /kaggle/input/brats20-dataset-training-validation/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData
+  root_local: data/brats20/MICCAI_BraTS2020_TrainingData
+  cohort_csv: data/splits/brats_cohort.csv
+  splits_dir: data/splits          # fold_{0..4}.json — split ở cấp BỆNH NHÂN (A3)
+  n_patients: 369
+  version: kaggle:awsaf49/brats20-dataset-training-validation
+
+targets: [wt_flair, et_t1ce]       # A2 — ET/T1ce: vành sáng bao lõi tối ⇒ về mặt
+                                   # toán học KHÔNG biểu diễn được bằng 1 dải liên tiếp
+fitness: kapur
+include_zero_bg: [true, false]
+k_primary: 4
+seeds: [0, 1, 2, 3, 4]
+
+n_folds: 5                         # A3 — nested CV, phân tầng grade × tertile thể tích
+oracles: [oracle_single, oracle_interval, oracle_levelset]
+include_classical: true
+classical: [otsu, li, triangle, kmeans, gmm]
+
+# --- P5: ngưỡng 1-tham-số (phân vị q của CHÍNH ảnh đó — per-image, A3) -------
+q_grid_start: 80.0
+q_grid_stop: 99.9
+q_grid_num: 100                    # lưới q duyệt trên outer-train; nghiệm ĐÓNG BĂNG
+learning_curve_sizes: [5, 10, 20, 50, 100, 0]   # 0 = toàn bộ outer-train (A3)
+
+decoding:
+  primary: brightest
+  rules: [brightest]
+  labelmap: []
+
+metrics:
+  spacing_mm: [1.0, 1.0]
+  nsd_tau_mm: 2.0
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null
+  connectivity: 1
+  bootstrap_n: 10000
+
+stats:
+  sesoi: 0.01
+  rope: [-0.01, 0.01]
+  k_primary: 4
+  decoding_primary: brightest
+  reference_method: DP-exact
+
+output_dir: results/ceiling
+cache_dir: results/main/cache
