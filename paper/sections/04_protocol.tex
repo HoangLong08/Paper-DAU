@@ -1,0 +1,145 @@
+% =============================================================================
+% §4 EXPERIMENTAL PROTOCOL
+% Every choice below is preregistered (docs/preregistration.md, §2/§3 + §6
+% amendments). Nothing here may be decided after seeing a number; if a choice
+% must change, amend the preregistration first (append-only) and say so here.
+%
+% Evaluation is a REFUTATION TEST (playbook §6.3): each experiment is designed
+% so that, if our claim is wrong, the experiment shows it.
+% =============================================================================
+\section{Experimental Protocol}
+\label{sec:protocol}
+
+\subsection{Preregistration}
+
+\TODO{one paragraph. Call the protocol by its honest name (prereg §6/A9):
+``confirmatory analysis protocol for exploratory findings'' --- the degeneracy
+and metric observations were found exploratorily on an earlier, flawed pipeline
+whose numbers are discarded in their entirety; this protocol pre-specifies the
+confirmatory re-analysis. Cite the OSF/Zenodo DOI. Mislabeling a protocol as a
+preregistration is worse than having none.}
+
+\subsection{Data and Cohort}
+
+\TODO{BraTS 2020 training split (the only split with public ground truth); the
+preregistered slice rule (largest whole-tumor area per patient); cohort size and
+the cohort selection rule, both declared a priori; the committed cohort manifest
+data/splits/brats\_cohort.csv with per-image checksums.}
+
+% ⚠️ Never claim "state of the art on the BraTS leaderboard": the real test set
+% is held out on Synapse. We use the training split and split it ourselves.
+% ⚠️ A8: the LGG cohort may NOT be external — BraTS 2020 absorbed TCGA-LGG cases
+% from the same collection. name_mapping.csv MUST be cross-checked and the
+% overlap REPORTED AS A NUMBER before the words "external validation" are used.
+We evaluate on the publicly annotated training split and construct our own
+patient-level splits; we make no claim relating to the withheld BraTS test set.
+\TODO{state the primary target (whole tumor on FLAIR, the most favorable case
+for the methods under audit) and the hard target (enhancing tumor on T1ce, a
+bright rim around a dark core, which no single contiguous intensity band can
+represent) --- the a fortiori structure of the argument.}
+
+\subsection{Splits and Leakage Control}
+
+% 🔴 A3: this subsection exists because the positive contribution was, as
+% originally planned, train-on-test. Inside a paper that criticizes unsound
+% comparison, that is the ONE error that gets rejected for INTEGRITY.
+Splitting is at the \textbf{patient} level, never the slice level.
+\nfolds-fold outer cross-validation, stratified by grade and tumor-volume
+tertile, with an inner validation fold inside each outer-training fold for
+epoch selection. Methods are classified once, a priori, into three families and
+evaluated accordingly:
+
+\TODO{table or list of the three families (a) unsupervised per-image methods
+(classical thresholds, k-means, GMM, exact DP, the metaheuristics, random
+search), evaluated on every patient; (b) methods WITH LEARNED PARAMETERS (the
+U-Net, the single-parameter threshold, and the SELECTION OF $k$), evaluated
+out-of-fold ONLY; (c) oracles, which are not methods but unattainable upper
+bounds and MUST be labeled ``uses test-time ground truth'' in every table and
+figure.}
+
+Nested cross-validation yields exactly one out-of-fold value per patient for
+every method, on the same patient set, which is what makes paired Wilcoxon,
+Friedman, and equivalence testing well defined at all. Intensity normalization
+is computed per image; dataset-level statistics would leak through preprocessing.
+The ``identical input'' constraint on the learned baseline is a constraint at
+\emph{inference}: the network is trained on the tumor-bearing slices of the
+outer-training patients and evaluated on the single designated slice of each
+held-out patient.
+
+\subsection{Budget}
+
+All metaheuristics, including the quantum-inspired variant and random search,
+receive an identical hard budget of objective function evaluations. Every
+evaluation passes through a single gate, so that opposition-based
+initialization, Lévy steps and memetic refinement are counted; an assertion
+requires each algorithm to consume exactly the same number of evaluations,
+and the grid is void if it fails.
+% This is the module that killed the earlier batch (a 13.4% budget surplus).
+% tests/test_nfe_budget.py is a HARD GATE: fail => the grid must not run.
+% Equal TUNING budget too, not just equal NFE (prereg §6/A6): apparent advantage
+% in this field almost always comes from uneven tuning.
+
+% A6: breaking the circularity. We must not label an implementation "broken"
+% because it fails to reach the optimum — that is the very hypothesis under test.
+Implementation correctness is established \emph{independently} of the
+thresholding hypothesis: every implementation must first reproduce published
+multilevel-threshold benchmark tables on standard gray-level images at the
+published evaluation budget. Exclusion is by this a priori criterion only, and
+excluded implementations are reported separately rather than dropped.
+
+\subsection{Metrics}
+
+\TODO{Dice and HD95 as the clinical endpoints; NSD at tolerance $\nsdtau$~mm
+primary with a sensitivity analysis, with the implementation NAMED (a paper
+auditing metrics may not use an unnamed or self-rolled implementation); PSNR and
+SSIM from a standard library, present as EVIDENCE about the surrogate criteria
+rather than as results; the connected-component count of the predicted mask; the
+empty-mask rate as an independent reported result. IoU is dropped: it is a
+monotone bijection of Dice.}
+
+% A7 conventions, locked before running:
+% - empty predicted mask with non-empty GT => Dice 0, HD95 = declared fixed
+%   penalty (image diagonal). Both empty => Dice 1, HD95 0.
+% - 🔴 It is FORBIDDEN to silently drop empty-mask cases from HD95 statistics:
+%   that is selection bias favoring thresholding exactly at large k.
+% - mean±std is the WRONG summary for Dice (bounded, skewed, often bimodal):
+%   report median [IQR] + bootstrap CI + the per-patient distribution.
+
+\subsection{Statistics}
+
+\TODO{Wilcoxon signed-rank at patient level with rank-biserial effect size;
+Friedman with Nemenyi and a critical-difference diagram~\cite{demsar_cd};
+equivalence by TOST reported as a 90\% CI of the paired difference PLUS the
+smallest bound at which equivalence holds, so the analysis always returns a
+number rather than a pass/fail; Bayesian signed-rank with a ROPE as the primary
+equivalence analysis~\cite{benavoli_bayes}. State the SESOI hierarchy
+($\sesoistrict$ strict, an inter-rater-anchored bound~\cite{menze_brats}, and
+$\sesoilenient$ lenient) and report all three, always. State the multiple-testing
+families explicitly, and that intersection--union equivalence tests are not
+corrected. Name the primary threshold count ($\kprimary$), the primary decoding
+rule, and the reference algorithm for equivalence.}
+
+% 🔴 A4d — THE scipy TRAP. Under the degeneracy mechanism, two algorithms that
+% find the same threshold produce bit-identical masks => paired difference is
+% EXACTLY 0. scipy.stats.wilcoxon defaults to zero_method='wilcox', which DROPS
+% all zero pairs: effective n collapses, and the test silently becomes a
+% statement about the minority of patients where the algorithms disagree — the
+% opposite of the paper's message, and a manufactured "significance" of exactly
+% the kind this paper documents.
+% LOCKED: zero_method='pratt', and report n_zero/n_total in EVERY paired table.
+Tied pairs are handled by Pratt's method rather than being discarded, and the
+number of exactly tied patients is reported in every paired comparison; under
+the mechanism of §\ref{sec:degeneracy} such ties are the expected outcome, not a
+nuisance.
+
+% --- FIGURE 1 — pipeline + budget diagram (drawio-skill, manual) -------------
+% Provenance: docs/RESULTS.md "Hình 1". Flow figures are drawn, not bitmapped
+% (playbook §6.4).
+\begin{figure}[t]
+  \centering
+  \inputfigure{fig1_pipeline}
+  \caption{Pipeline and evaluation budget. \TODO{self-explanatory caption:
+  data path, the decoding stage as an explicit separate box, the single
+  evaluation gate that enforces the budget, and the split boundary.}}
+  \label{fig:pipeline}
+\end{figure}

@@ -1,0 +1,76 @@
+% =============================================================================
+% §6 R2 — SURROGATE CRITERIA AND THE CLINICAL SCORE DISAGREE ALONG k
+% ⚠️ POSITIONING (CLAUDE.md §1, P3): this is a DOMAIN EXTENSION of Hegazy & Gabr
+% (metric bias, natural images) and a confirmation of the future work THEY
+% themselves declare. It is NOT an independent discovery. Fardo et al. (2016)
+% already covered PSNR-as-segmentation-metric including the k axis.
+%
+% ⚠️ A4a: the old decision rule (rho < -0.5 AND p < 0.05 over 7 values of k) is
+% mathematically self-contradictory (critical |rho| ~ 0.786 at n=7) and rank
+% correlation is the WRONG instrument for an inverted-U relationship. Averaging
+% over k before correlating is an aggregation fallacy that HIDES the very
+% Simpson's paradox this section is about.
+% PRIMARY (locked): per-patient Delta_i = Dice_i(k*_Dice) - Dice_i(k*_PSNR),
+% one-sample Wilcoxon over patients, rank-biserial + BCa bootstrap CI.
+% The headline is a COST WITH CLINICAL UNITS, not a correlation coefficient.
+%
+% ⚠️ MANDATORY HONESTY (prereg §1/P3): within a FIXED k, the PSNR-Dice
+% correlation across algorithms is POSITIVE. This must be stated by us, in this
+% section. A reviewer reproduces it in ten minutes; concealing it kills the paper.
+% NO RESULTS PROSE until results/main/summary.csv exists.
+% =============================================================================
+\section{Surrogate Criteria Along the Threshold-Count Axis}
+\label{sec:r2}
+
+\TODO{setup paragraph: credit Hegazy \& Gabr~\cite{hegazy_metricbias} for
+establishing surrogate-metric bias on natural images and state plainly that this
+section extends the question to clinical ground truth and to the threshold-count
+axis; we claim the extension, not the discovery.}
+
+\subsection{An Analytic Argument, Not Only a Correlation}
+
+% Prove it, don't correlate it (A4a): PSNR is a monotone function of the
+% quantization error, so it increases with k BY CONSTRUCTION (Lloyd-Max). An
+% analytic argument cannot be defeated by sample size.
+\TODO{short analytic argument that reconstruction-error-based surrogates
+increase with the number of thresholds by construction, independently of any
+segmentation quality. This is the part of the section that no sample size can
+attack.}
+
+\subsection{The Cost of Selecting the Threshold Count by a Surrogate}
+
+% ⚠️ Selecting k is a LEARNED choice (prereg §6/A3, family B) => it may ONLY be
+% evaluated out-of-fold. Selecting k on the test patients would be exactly the
+% error this paper documents.
+\TODO{primary analysis: per-patient difference between the Dice at the
+Dice-optimal threshold count and the Dice at the surrogate-optimal threshold
+count, one-sample Wilcoxon over patients with effect size and bootstrap CI.
+Report as a per-patient clinical cost. Provenance: results/main/summary.csv.}
+
+% --- FIGURE 3 — dual axis: surrogate up, clinical down, along k --------------
+% results/main/summary.csv <- scripts/build_figures.py -> figures/fig3_goodhart.pdf
+\begin{figure}[t]
+  \centering
+  \inputfigure{fig3_goodhart}
+  \caption{Surrogate criteria and clinical scores along the threshold-count
+  axis. \TODO{caption: both axes labeled with units and direction of goodness,
+  n patients, seeds, error bars defined, decoding rule named.}}
+  \label{fig:goodhart}
+\end{figure}
+
+\subsection{What This Does Not Show}
+
+% Written BEFORE the numbers, on purpose: it is the paragraph that survives
+% adversarial reading.
+Within a fixed threshold count, the association between surrogate scores and the
+clinical score across algorithms is positive; the disagreement we examine is
+along the threshold-count axis, not along the algorithm axis.
+\TODO{report the within-$k$ association explicitly from results/, and explain
+why a positive within-$k$ association is compatible with, and indeed expected
+under, an opposite trend along $k$.}
+
+\TODO{report the trend separately FOR EACH decoding rule (Week-1 risky
+experiment 3, prereg §6/A10). If the negative trend exists only under one rule,
+then the finding is about that decoder, not about the metrics, and this section
+must be retitled accordingly. This is preregistered and is not negotiable after
+seeing the numbers.}

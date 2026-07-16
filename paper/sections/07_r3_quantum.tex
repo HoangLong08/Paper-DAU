@@ -1,0 +1,64 @@
+% =============================================================================
+% §7 R3 — THE CONTRIBUTION OF THE QUANTUM-INSPIRED COMPONENT
+% ⚠️ RED LINE (CLAUDE.md lằn ranh 3): the words "quantum advantage", "quantum
+% speedup", "quantum parallelism" are BANNED. QIEA is an EDA (Platel et al.).
+% Correct positioning everywhere: "an EDA-style probabilistic update rule".
+% Submission gate greps for these strings.
+% ⚠️ IRON RULE 6: do not use evidence from a different method family (results on
+% real quantum hardware) to justify a classical variant — that is a category error.
+%
+% ⚠️ A4c: power for the equivalence claim was never computed and may be as low as
+% ~0.08-0.34. This is why the reporting format is LOCKED as: 90% CI of the paired
+% difference + the smallest bound at which equivalence holds, plus a Bayesian
+% ROPE as the primary analysis. That reporting NEVER "fails": it always returns
+% a number. Do not report a bare TOST pass/fail.
+% ⚠️ Preregistered reverse branch: if the quantum-inspired variant is WORSE, that
+% is a superiority test in the other direction and a fine finding.
+% ⚠️ The declared prediction is contribution ~ 0. If it is wrong — if the
+% component helps — that is a POSITIVE finding and we report it as such. This is
+% the point at which the paper puts itself at risk (playbook §6.3).
+% NO RESULTS PROSE until results/ablation/summary.csv exists.
+% =============================================================================
+\section{Component Ablation of the Quantum-Inspired Optimizer}
+\label{sec:r3}
+
+\TODO{setup: the ablation answers, directly, the question that motivates the
+quantum-inspired line --- how much does the qubit representation and
+rotation-gate update contribute? Variants, all at identical budget and with
+every other hyperparameter matched to the parameter (playbook §4.1): full,
+without the probabilistic update, without memetic refinement, without
+opposition-based initialization, without Lévy steps, and a classical baseline
+plus memetic refinement.}
+
+The component under test is an estimation-of-distribution style probabilistic
+update rule executed on classical hardware~\cite{platel_tevc}; no benefit
+arising from quantum computation is claimed or implied anywhere in this study.
+% Phrased to avoid the literal banned string so the submission grep stays clean.
+% Each equation of the implementation is taken from a NAMED PUBLISHED SOURCE and
+% cited at the equation (prereg §6/A6). An implementation nobody can trace is an
+% implementation nobody can defend.
+
+\TODO{state the implementation source for every equation of the optimizer, with
+a citation on each equation.}
+
+% --- TABLE — ablation (provenance ledger: "Bảng IV") ------------------------
+% results/ablation/summary.csv <- scripts/run_ablation.py
+%   --config configs/exp_ablation.yaml -> paper/tables/tab_ablation.tex, seeds {0..4}
+\begin{table}[t]
+  \caption{Component ablation at identical evaluation budget and matched
+  hyperparameters. \TODO{complete caption: n patients, seeds, budget, fitness
+  and clinical columns, tie counts.}}
+  \label{tab:ablation}
+  \centering
+  \inputtable{tab_ablation}
+\end{table}
+
+\TODO{results prose --- forbidden until the ablation has run. Report the 90\%
+CI of each paired difference and the smallest equivalence bound at which
+equivalence holds at the stated level, for all three preregistered SESOI values,
+together with the Bayesian ROPE posterior. Report the number of exactly tied
+patients. Do not write ``no difference''; write what the interval says.}
+
+% Prior work ablated only on synthetic phantoms — which is precisely why the
+% earlier claim that removing a component degrades performance had no provenance.
+% This ablation is on real data, which is what makes it a test.

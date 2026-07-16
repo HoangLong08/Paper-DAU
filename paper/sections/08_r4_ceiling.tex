@@ -1,0 +1,101 @@
+% =============================================================================
+% §8 R4 — THE CEILING  ★ write this section FIRST, with §3 (ke-hoach §4)
+%
+% 🔴🔴 RED LINE A2 (prereg §6/A2 · CLAUDE.md lằn ranh 5) — READ BEFORE WRITING:
+%   1. "We establish the ceiling" / "we are the first to show a ceiling" is
+%      ABSOLUTELY FORBIDDEN. François & Tinarrage (JMIV 2026) PUBLISHED the
+%      concept + the dataset (BraTS FLAIR) + the number (0.83±0.18) + the DL
+%      comparison. Overclaiming here, in a paper that punishes overclaiming,
+%      is death with no defense.
+%   2. The level-set / purity-prefix theorem is NOT OURS. It belongs to Lipton,
+%      Elkan & Narayanaswamy (arXiv:1402.1892) and RankSEG. Dice = F1; purity is
+%      a calibrated posterior. Shipping it as "Theorem 1 (ours)" repeats the
+%      exact fabricated-novelty offense this paper exists to document.
+%      => CLAIM THE APPLICATION AND THE DECOMPOSITION. NEVER THE MATHEMATICS.
+%   3. The old statement "the single-interval oracle is the ceiling of ALL
+%      intensity thresholding" is MATHEMATICALLY FALSE — a non-contiguous
+%      gray-level set beats it. The correct tightest bound is the arbitrary
+%      gray-level-set oracle.
+%
+% 🔴 PREREGISTERED FALLBACK (locked BEFORE seeing numbers, prereg §6/A2): the
+% oracle bound on WT/FLAIR is NOT low (0.83 sits inside the inter-rater
+% consensus band), so a FLAIR-only 2D U-Net may well NOT beat it. If it does not,
+% the headline does NOT retreat to "thresholding saturates" (that is exactly what
+% François printed = zero novelty). It becomes: "the ceiling is HIGH — so the
+% failure of thresholding is not a limit of the representation but of the
+% THRESHOLD-SELECTION problem, which no metaheuristic in this line addresses."
+%
+% Oracles are NOT methods (A3, family C): label "uses test-time ground truth" on
+% EVERY row and EVERY figure element.
+% NO RESULTS PROSE until results/ceiling/ and results/unet/ exist.
+% =============================================================================
+\section{Decomposing the Ceiling}
+\label{sec:ceiling}
+
+\subsection{What Is Already Known}
+
+The existence of an upper bound on thresholding-based segmentation of brain MRI
+is an established result, reported on BraTS FLAIR by François and
+Tinarrage~\cite{francois_jmiv}. We do not restate it as a finding of ours. Our
+question is different: \emph{what does that bound consist of?}
+
+\subsection{The Tightest Intensity-Only Bound}
+
+% APPLICATION, not mathematics. Attribute in the same breath as the statement.
+For a fixed image, the mask that maximizes Dice among all masks defined by an
+arbitrary set of gray levels is obtained by ordering gray levels by the purity
+of their voxels with respect to the reference mask and taking the best prefix;
+this is the F1-threshold result of Lipton \emph{et al.}~\cite{lipton_f1}
+transposed to the segmentation setting, where Dice coincides with F1 and purity
+plays the role of a calibrated posterior. We claim no mathematical novelty for
+it. Its consequence here is practical: the bound is computable in $O(L \log L)$
+from a histogram, so the attainable performance of the entire thresholding
+family is knowable before any optimizer is written.
+
+\TODO{state the bound formally, with attribution in the statement itself, and
+note that it is strictly tighter than the contiguous-band oracle because a
+non-contiguous gray-level set is admissible. Do NOT label it Theorem 1 (ours).}
+
+\subsection{The Ladder}
+
+\TODO{describe the ladder on a single Dice axis over the same held-out patients:
+random search at the shared budget; the metaheuristics; the exact optimum;
+classical thresholds and clustering baselines; the out-of-fold single-parameter
+threshold; the contiguous-band oracle; the arbitrary-gray-level-set oracle; a
+2D U-Net on identical single-slice input; and, as CONTEXT ONLY, a literature
+value for a 3D multi-modal network~\cite{isensee_nnunet}, explicitly labeled
+``reference from literature, not run by us, different input protocol'' and never
+compared as a baseline.}
+
+% --- FIGURE 4 — ceiling ladder ★ the most valuable figure in the paper -------
+% results/ceiling/ + results/unet/ <- scripts/build_figures.py
+%   -> figures/fig4_ceiling_ladder.pdf
+\begin{figure}[t]
+  \centering
+  \inputfigure{fig4_ceiling_ladder}
+  \caption{Ceiling ladder on a common Dice axis over the same held-out patients.
+  \TODO{caption: every oracle rung labeled ``uses test-time ground truth'';
+  n patients, folds, seeds; the literature reference rung labeled as not run by
+  us and using a different input protocol.}}
+  \label{fig:ladder}
+\end{figure}
+
+\subsection{Decomposition}
+
+\TODO{the two gaps that constitute the contribution: (i) band oracle to
+gray-level-set oracle = what is lost by insisting on a contiguous intensity
+band; (ii) gray-level-set oracle to the learned model on identical input = what
+is absent from intensity but present in the pixels. Report both with CIs, from
+results/. This decomposition, not the existence of the ceiling, is what is ours.}
+
+\subsection{Where the Representational Limit Is Provably Real}
+
+\TODO{the hard target: enhancing tumor on T1ce is a bright rim around a dark
+core and therefore cannot be represented by any single contiguous intensity
+band; the favorable target (whole tumor on FLAIR) is retained as the best case
+for the methods under audit, making the argument a fortiori.}
+
+\TODO{preregistered branch statement: if the learned model does not exceed the
+oracle bound, report that plainly and adopt the preregistered headline (the
+ceiling is high; the failure is one of threshold SELECTION, not of
+representation). Do not retreat to a restatement of prior work.}

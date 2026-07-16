@@ -1,0 +1,137 @@
+% =============================================================================
+% §3 THE DEGENERACY OF THE OBJECTIVE  ★ write this section FIRST (ke-hoach §4)
+%
+% 🔴 RED LINE A1 (prereg §6/A1 · CLAUDE.md lằn ranh 4) — READ BEFORE WRITING:
+% It is FORBIDDEN to write "the literature decodes by the brightest class
+% [refs]". That rule was NOT FOUND in the literature — it is our own old code.
+% Attributing it to cited works is MISREPRESENTATION OF CITED WORK = violation
+% of IRON RULE 2, which is worse than any rejection risk.
+%   - Most papers in this line produce no binary mask and use no ground truth.
+%   - The minority that report Dice decode via a downstream segmenter (region
+%     growing / k-means + morphology / morphological reconstruction).
+%   - Papers that do binarize DO NOT STATE THE RULE.
+% => Write the DILEMMA (Horn 1 / Horn 2). Both horns convict; the paper does not
+%    need to know which horn the literature is on.
+%
+% Also (prereg §6/A1): std(Dice) < 1e-12 is a UNIT TEST (tests/test_degeneracy.py),
+% NOT a Result. It has no p-value and passes on random noise. Present the
+% mechanism as a Proposition + 3-line proof + Corollary; the headline number is
+% the CARDINALITY RATIO, which is arithmetic, not an experiment.
+% =============================================================================
+\section{The Degeneracy of the Objective}
+\label{sec:degeneracy}
+
+\subsection{Problem Statement}
+
+\TODO{formal setup, playbook §3.3: image $I: \Omega \to \{0,\dots,L-1\}$ with
+$\graylevels$; threshold vector $T = \{t_1 < \dots < t_k\}$ partitioning the
+intensity range into $k+1$ classes; Kapur's entropy objective written out with
+the $0\log 0$ convention stated explicitly; the decoding map $\mathcal{D}$ from
+label map to binary mask stated as a separate, explicit object --- because the
+whole point of this section is that the literature leaves $\mathcal{D}$
+unstated.}
+
+% ⚠️ Conventions must be DECLARED here and locked before running (prereg §6/A5c):
+% the 0log0 convention; whether empty classes are admissible; how duplicate
+% thresholds are repaired; and above all WHETHER THE INTENSITY-ZERO BACKGROUND
+% IS COUNTED IN THE HISTOGRAM (skull-stripped slices are ~65% zeros; this single
+% choice changes the optimal thresholds, the Dice, and every PSNR/SSIM number).
+% Both variants are run and both are reported.
+
+\subsection{A Checkable Observation}
+
+% This — not the attribution — is the empirical claim, and it is falsifiable by
+% the supplementary bibliometric survey (two coders, Cohen's kappa).
+Across the studies we surveyed, we did not find an explicit statement of the map
+from the reported $k$-threshold vector to the binary mask that is scored.
+\TODO{state the survey counts and $\kappa$ once the coded survey exists;
+provenance: docs/RESULTS.md, supplementary table.}
+
+\subsection{The Dilemma}
+
+Because that map is unstated, we treat both possibilities, which are exhaustive.
+
+\begin{itemize}
+  \item \textbf{Horn 1 --- decoding by a band mask.} If the mask is the set of
+  pixels whose intensity falls in a contiguous band of classes, possibly followed
+  by morphological post-processing or connected-component selection on that
+  binary mask, then the mask depends on at most two of the $k$ thresholds, and
+  the remaining thresholds are free variables with respect to the reported score.
+
+  \item \textbf{Horn 2 --- decoding by a downstream segmenter.} If the mask is
+  produced by a downstream segmenter operating on the label map (k-means,
+  watershed, region growing, active contours), then the mask is produced by that
+  segmenter, and the thresholding stage has not been ablated in the studies we
+  surveyed; the causal claim that a better optimizer yields a better mask is
+  then untested rather than false.
+\end{itemize}
+
+\TODO{one closing sentence stating that the paper measures both horns rather
+than assuming either --- the decoder set in §\ref{sec:protocol} includes both
+band-selection rules and label-map-consuming segmenters, precisely so that the
+mechanism below can be falsified.}
+
+\subsection{Mechanism Under Horn 1}
+
+\begin{proposition}[Band-selection decoding is at most two-dimensional]
+\label{prop:degeneracy}
+\TODO{statement: for any decoding that selects a contiguous band of classes
+$[c_a, c_b]$, the induced mask $M = \{p : t_a \le I(p) < t_{b+1}\}$ depends only
+on the pair $(t_a, t_{b+1})$, for any $k$.}
+\end{proposition}
+
+\begin{proof}
+\TODO{three lines. This is arithmetic, not an experiment.}
+\end{proof}
+
+\begin{corollary}[Cardinality of the reachable mask family]
+\label{cor:cardinality}
+\TODO{the set of masks reachable by ANY band-selection decoding on an $L$-level
+image has cardinality at most $\binom{L-1}{2}$, independent of $k$, while the
+threshold search space at a given $k$ is $\binom{L-2}{k}$. State the ratio; it is
+computed by arithmetic from $\graylevels$ and the preregistered $k$ grid, not
+measured, so it carries no provenance row --- but it must still be produced by
+the build script, not typed.}
+\end{corollary}
+
+\begin{remark}
+Proposition~\ref{prop:degeneracy} is a statement about the decoding map, not
+about any author's algorithm. It says nothing about whether an optimizer works;
+it says what the reported score can possibly depend on.
+\end{remark}
+
+\subsection{The Optimization Problem Is Not Open}
+
+Kapur's entropy is additive over intervals, so the optimal threshold vector is
+computable exactly by dynamic programming in $O((K-1)L^2)$; this is
+established~\cite{menotti_ciarp}, with related exact
+formulations in~\cite{luessi_jei,merzban_eswa}, and we claim no novelty for it.
+% ⛔ "Millisecond exact solver" was REMOVED from our contributions: Menotti et al.
+% published exact Kapur, O((K-1)L^2), <160 ms, eleven years ago (CLAUDE.md §1).
+% ⛔ Do NOT report a wall-clock speedup ("~250x"): that was an artifact of a
+% Python loop. The currency is NFE + complexity; wall-clock is secondary.
+We use it solely as the reference optimum. \TODO{one sentence on why an exact
+reference changes the meaning of every comparison in this literature: gaps become
+absolute rather than relative.}
+
+% --- TABLE I of the manuscript = DP vs. exhaustive (framing decision #3) ------
+% Provenance ledger row: "Bảng II" in docs/RESULTS.md.
+% results/exact/dp_vs_bruteforce.csv <- scripts/run_exact_check.py
+%   --config configs/exp_main.yaml   -> paper/tables/tab_dp_vs_bruteforce.tex
+%   via scripts/build_tables.py. DO NOT TYPE THESE NUMBERS.
+\begin{table}[t]
+  \caption{Exact dynamic programming versus exhaustive search on real BraTS
+  slices. Agreement criterion is preregistered: $|f_{\mathrm{DP}} -
+  f_{\mathrm{brute}}| \le 10^{-9}$ \emph{and} identical induced mask under
+  canonicalized thresholds. \TODO{complete caption: n images, k values, units,
+  hardware --- self-explanatory per playbook §6.4.}}
+  \label{tab:dp_vs_brute}
+  \centering
+  \inputtable{tab_dp_vs_bruteforce}
+\end{table}
+
+Table~\ref{tab:dp_vs_brute} reports the verification of the reference optimum
+against exhaustive search. \TODO{one factual sentence once the gate has run.
+This gate is hard: if it fails, no other experiment in this paper is valid, and
+the first debugging step is an audit of the histogram conventions above, not of
+the dynamic program.}

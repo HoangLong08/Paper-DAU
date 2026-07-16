@@ -1,0 +1,220 @@
+% =============================================================================
+% refs.bib — QIGOA Reality-Check
+% =============================================================================
+% IRON RULE 2 (CLAUDE.md §2): no invented references. Every entry below appears
+% in docs/related-work-positioning.md or CLAUDE.md §1 with its DOI/arXiv ID
+% verified against a primary source (Crossref API / arXiv API).
+%
+% VERIFICATION LABELS used in the comments:
+%   [VERIFIED]  metadata confirmed from a primary source (see
+%               docs/related-work-positioning.md, session 16/07/2026).
+%   [VERIFY]    the DOI/ID and the fields carried in our own docs are verified,
+%               but a field written here (given names, volume, pages, title
+%               wording) has NOT been re-read from the primary record in this
+%               repo. MUST be reconciled against the publisher record before
+%               submission. Do not quote such an entry's numbers in prose.
+%
+% Citation keys deliberately carry NO year digits, so that
+%   grep -nE '[0-9]' paper/sections/*.tex
+% stays a meaningful check for hardcoded numbers.
+%
+% NOTHING may be added here that has not been verified. If a paper is needed
+% but unverified, it stays out of this file and is marked [UNVERIFIED] in prose.
+% =============================================================================
+
+
+% --- 1. EXACT SOLVER — scoops any "millisecond exact Kapur" claim ------------
+% [VERIFIED] Crossref 10.1007/978-3-319-25751-8_42 (docs/related-work-positioning.md §5).
+% Cite in the ABSTRACT. We claim NO novelty for the exact DP solver.
+@inproceedings{menotti_ciarp,
+  author    = {Menotti, David and Najman, Laurent and de A. Ara{\'u}jo, Arnaldo},
+  title     = {Efficient Polynomial Implementation of Several Multithresholding
+               Methods for Gray-Level Image Segmentation},
+  booktitle = {Progress in Pattern Recognition, Image Analysis, Computer Vision,
+               and Applications (CIARP)},
+  series    = {Lecture Notes in Computer Science},
+  pages     = {350--357},
+  year      = {2015},
+  publisher = {Springer},
+  doi       = {10.1007/978-3-319-25751-8_42}
+}
+
+% --- 2. THE CEILING — already published on BraTS FLAIR -----------------------
+% [VERIFIED] Crossref 10.1007/s10851-026-01300-1; oracle Dice 0.83+/-0.18 read
+% verbatim from the full text (docs/related-work-positioning.md §2).
+% [VERIFY] given names not re-read from the publisher record in this repo.
+% RED LINE (prereg §6/A2): "we establish the ceiling" is FORBIDDEN — this paper
+% established it. We decompose it and cite them for it.
+@article{francois_jmiv,
+  author  = {Fran{\c{c}}ois and Tinarrage},
+  title   = {Train-Free Segmentation in {MRI} with Cubical Persistent Homology},
+  journal = {Journal of Mathematical Imaging and Vision},
+  volume  = {68},
+  number  = {20},
+  year    = {2026},
+  doi     = {10.1007/s10851-026-01300-1},
+  note    = {arXiv:2401.01160}
+}
+
+% --- 3. METAHEURISTICS vs. GLOBAL OPTIMUM — scoops P2 by 16 years ------------
+% [VERIFIED] Crossref 10.1016/j.engappai.2009.09.011 (positioning §6).
+% Their Tables 8--10 (exhaustive global optimum; convergence at |F-F_opt|<=1e-9)
+% are [PARTIAL] in our records: re-open the full text before quoting any number.
+@article{hammouche_eaai,
+  author  = {Hammouche, Kamal and Diaf, Moussa and Siarry, Patrick},
+  title   = {A Comparative Study of Various Meta-Heuristic Techniques Applied to
+             the Multilevel Thresholding Problem},
+  journal = {Engineering Applications of Artificial Intelligence},
+  volume  = {23},
+  number  = {5},
+  pages   = {676--688},
+  year    = {2010},
+  doi     = {10.1016/j.engappai.2009.09.011}
+}
+
+% --- 4. "ARE METAHEURISTICS EFFECTIVE?" in variance space --------------------
+% [VERIFIED] Crossref 10.1016/j.knosys.2023.110587 (positioning §1).
+% Their conclusion (algorithms differ) vs. ours (clinically equivalent) is
+% reconciled in positioning §HOA GIAI #1 — different measurement axis.
+@article{mousavirad_kbs,
+  author  = {Mousavirad, Seyed Jalaleddin and Schaefer, Gerald and Zhou, Huiyu
+             and Helali Moghadam, Mahshid},
+  title   = {How Effective Are Current Population-Based Metaheuristic Algorithms
+             for Variance-Based Multi-Level Image Thresholding?},
+  journal = {Knowledge-Based Systems},
+  volume  = {272},
+  pages   = {110587},
+  year    = {2023},
+  doi     = {10.1016/j.knosys.2023.110587}
+}
+
+% --- 5. METRIC BIAS on natural images — P3 is a DOMAIN EXTENSION of this -----
+% [VERIFIED] arXiv:2605.27132 (positioning §3).
+@misc{hegazy_metricbias,
+  author = {Hegazy, Eslam and Gabr, Mohamed},
+  title  = {Image Thresholding: Understanding Bias of Evaluation Metrics towards
+            Specific Evaluation Functions},
+  year   = {2026},
+  eprint = {2605.27132},
+  archivePrefix = {arXiv}
+}
+
+% --- 6. DP FRAMEWORK + SELECTION OF k — same group, same seam ----------------
+% [VERIFIED] arXiv:2605.27287 (positioning §4). Reason to preprint early.
+@misc{hegazy_dp,
+  author = {Hegazy, Eslam and Gabr, Mohamed},
+  title  = {A Dynamic Programming Framework for Discovering Count and Values of
+            Multilevel Image Thresholding},
+  year   = {2026},
+  eprint = {2605.27287},
+  archivePrefix = {arXiv}
+}
+
+% --- 7. RECENT LARGE OPTIMIZER BENCHMARK ON MEDICAL IMAGES ------------------
+% [VERIFIED] Crossref 10.1038/s41598-025-14261-z (positioning §7).
+% Their reported overlap scores and their "absence of ground truth annotations"
+% limitation are [PARTIAL] (gated): re-open full text before quoting.
+@article{alnajdawi_scirep,
+  author  = {Al-Najdawi, Nijad A. and Al-Shawabkeh, Ali F. and Tedmori, Sara
+             and Ikhries, Ibrahim I. and Dorgham, Osama},
+  title   = {Comprehensive Evaluation of Optimization Algorithms for Medical
+             Image Segmentation},
+  journal = {Scientific Reports},
+  volume  = {15},
+  pages   = {37190},
+  year    = {2025},
+  doi     = {10.1038/s41598-025-14261-z}
+}
+
+% --- 8. THE LEVEL-SET / PURITY-PREFIX THEOREM — NOT OURS --------------------
+% [VERIFIED] arXiv:1402.1892 (CLAUDE.md §1 near-rival table; prereg §6/A2).
+% [VERIFY] given names + ECML-PKDD venue fields not re-read here.
+% RED LINE: we claim the APPLICATION, never the MATHEMATICS. Shipping this as
+% "Theorem 1 (ours)" repeats the exact fabricated-novelty offense this paper
+% exists to document.
+@misc{lipton_f1,
+  author = {Lipton and Elkan and Narayanaswamy},
+  title  = {Thresholding Classifiers to Maximize {F1} Score},
+  year   = {2014},
+  eprint = {1402.1892},
+  archivePrefix = {arXiv}
+}
+
+% --- 9. QIEA IS AN EDA — the anti-"quantum advantage" citation --------------
+% [VERIFIED] DOI 10.1109/TEVC.2008.2003010 (CLAUDE.md §1, §9).
+% [VERIFY] given names, volume, pages, exact title wording.
+% Cite this wherever the quantum-inspired component is positioned, so the
+% positioning "an EDA-style probabilistic update rule" is anchored, not asserted.
+@article{platel_tevc,
+  author  = {Platel and Schliebs and Kasabov},
+  title   = {Quantum-Inspired Evolutionary Algorithm: A Multimodel {EDA}},
+  journal = {IEEE Transactions on Evolutionary Computation},
+  year    = {2009},
+  doi     = {10.1109/TEVC.2008.2003010}
+}
+
+% --- 10/11. EXACT DP PRECEDENTS (Otsu) --------------------------------------
+% [VERIFIED] DOIs 10.1016/j.eswa.2018.09.008 and 10.1117/1.3073891 (CLAUDE.md §1).
+% [VERIFY] given names / exact title wording not re-read in this repo.
+@article{merzban_eswa,
+  author  = {Merzban and Elbayoumi},
+  title   = {Efficient Solution of {O}tsu Multilevel Image Thresholding: A
+             Comparative Study},
+  journal = {Expert Systems with Applications},
+  volume  = {116},
+  pages   = {299--309},
+  year    = {2019},
+  doi     = {10.1016/j.eswa.2018.09.008}
+}
+
+@article{luessi_jei,
+  author  = {Luessi and Eichmann and Schuster and Katsaggelos},
+  title   = {Framework for Efficient Optimal Multilevel Image Thresholding},
+  journal = {Journal of Electronic Imaging},
+  volume  = {18},
+  number  = {1},
+  pages   = {013004},
+  year    = {2009},
+  doi     = {10.1117/1.3073891}
+}
+
+% --- 12. BraTS BENCHMARK — source of the inter-rater anchor for SESOI -------
+% [VERIFY] volume/pages/title wording. prereg §6/A4c requires the inter-rater
+% number to be WEB-VERIFIED before the anchor-based SESOI is locked.
+@article{menze_brats,
+  author  = {Menze and others},
+  title   = {The Multimodal Brain Tumor Image Segmentation Benchmark ({BRATS})},
+  journal = {IEEE Transactions on Medical Imaging},
+  year    = {2015}
+}
+
+% --- 13. nnU-Net — CONTEXT REFERENCE ONLY, NOT RUN BY US -------------------
+% [VERIFIED] arXiv:2011.00848 (CLAUDE.md §1; prereg §1/P4).
+% Any number taken from here MUST be labeled "reference from literature, not run
+% by us, different input protocol (3D multi-modal)".
+@misc{isensee_nnunet,
+  author = {Isensee and others},
+  title  = {{nnU-Net} for Brain Tumor Segmentation},
+  year   = {2020},
+  eprint = {2011.00848},
+  archivePrefix = {arXiv}
+}
+
+% --- 14/15. STATISTICS -----------------------------------------------------
+% [VERIFY] fields. Standard references named in prereg §3 / §6/A4.
+@article{demsar_cd,
+  author  = {Dem{\v{s}}ar, Janez},
+  title   = {Statistical Comparisons of Classifiers over Multiple Data Sets},
+  journal = {Journal of Machine Learning Research},
+  volume  = {7},
+  pages   = {1--30},
+  year    = {2006}
+}
+
+@article{benavoli_bayes,
+  author  = {Benavoli and Corani and Dem{\v{s}}ar and Zaffalon},
+  title   = {Time for a Change: A Tutorial for Comparing Multiple Classifiers
+             through {B}ayesian Analysis},
+  journal = {Journal of Machine Learning Research},
+  year    = {2017}
+}

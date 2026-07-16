@@ -1,0 +1,73 @@
+% =============================================================================
+% §1 INTRODUCTION
+% WRITE THIS SECTION LAST (ke-hoach §4): reading order != writing order. §3 and
+% §8 are the soul of the paper; the introduction can only be written once we
+% know what the paper actually says.
+%
+% TONE (ke-hoach §4, framing): criticize PRACTICE, never name an author to
+% disparage them. The editor draws reviewers from this community.
+% =============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+% --- Frame: the line of work is alive, on medical images, into 2026 ----------
+Multilevel thresholding remains one of the most widely used unsupervised
+segmentation primitives, and the search for the threshold vector that maximizes
+a criterion such as Kapur's entropy continues to be posed as an optimization
+contest between population-based metaheuristics, including quantum-inspired
+variants, on medical images~\cite{alnajdawi_scirep,mousavirad_kbs}.
+
+% --- The two facts that reframe the contest, both already in print -----------
+Two established results bracket that contest. First, the optimization problem
+is not open: exact, polynomial-time dynamic programming for Kapur, Otsu and
+Kittler--Illingworth criteria has been available for over a
+decade~\cite{menotti_ciarp,luessi_jei,merzban_eswa}, and metaheuristics have
+been benchmarked against a global optimum on gray-level images since at least
+2010~\cite{hammouche_eaai}. Second, on brain MRI the segmentation quality
+attainable by \emph{any} intensity threshold is bounded, and that bound has
+been reported on BraTS FLAIR~\cite{francois_jmiv}.
+% RED LINE (prereg §6/A2): never write "we establish the ceiling" — Francois &
+% Tinarrage established it. We cite it as an established result.
+
+What is missing is the projection between them: whether the optimization gap
+these algorithms compete over survives the mapping onto a clinically scored
+binary mask. That mapping is where ground truth enters, and it is exactly the
+step that is absent from evaluations conducted in the objective's own units, or
+on images without segmentation ground truth~\cite{mousavirad_kbs,hegazy_metricbias}.
+
+\subsection{Contributions}
+% Framing: contributions are a BENCHMARK + a TOOL + a PROTOCOL (CLAUDE.md §1).
+% "Millisecond exact solver" is NOT a contribution — Menotti et al. published it
+% eleven years ago. "We establish the ceiling" is NOT a contribution — Francois &
+% Tinarrage published it. Anything resembling either must be deleted on sight.
+\begin{enumerate}
+  \item \textbf{A ground-truth-anchored benchmark under an exactly equal
+  evaluation budget.} Every metaheuristic, the quantum-inspired variant and
+  random search consume an identical, asserted number of objective function
+  evaluations, and all are referenced against the \emph{exact} global optimum
+  obtained by dynamic programming~\cite{menotti_ciarp} rather than against one
+  another. Solutions are scored both in fitness units and in clinical Dice on
+  BraTS whole-tumor masks.
+
+  \item \textbf{A decomposition of the thresholding ceiling.} We separate the
+  bound attainable by a contiguous-intensity-band mask, the bound attainable by
+  an arbitrary gray-level set --- the tightest bound for any intensity-only
+  decoder, obtained by applying the F1-threshold result of Lipton \emph{et
+  al.}~\cite{lipton_f1} --- and the performance of a learned model on identical
+  single-slice input. This separates the shortfall into ``information absent
+  from intensity'' and ``information absent from the pixels.''
+  % We claim the APPLICATION and the DECOMPOSITION, never the mathematics.
+
+  \item \textbf{A histogram-time diagnostic and an evaluation-protocol
+  checklist.} The attainable Dice of the entire thresholding family follows from
+  the image histogram and the reference mask in $O(L \log L)$, i.e. before the
+  first line of an optimizer is written.
+\end{enumerate}
+
+% --- Honest statement of what this paper is ---------------------------------
+This is a benchmark and protocol paper: a reality check with a constructive
+component, in the sense of a rigorously conducted negative finding paired with a
+usable tool. \TODO{one sentence naming the empirical headline, once results/
+exists --- phrased as an observation, never as a verdict.}
+
+\TODO{closing paragraph: paper roadmap, written last.}

@@ -1,0 +1,83 @@
+% =============================================================================
+% §9 A BETTER BASELINE — the POSITIVE contribution (rewritten 14/07/2026)
+%
+% ⛔ REMOVED FROM THE CONTRIBUTIONS, PERMANENTLY: "a millisecond exact solver".
+%    Menotti et al. published exact Kapur, O((K-1)L^2), <160 ms, ELEVEN YEARS
+%    AGO. We USE it and cite it in the Abstract. Any sentence here that reads as
+%    a novelty claim for the DP must be deleted.
+% ⛔ REMOVED: "~250x faster". Never measured; artifact of a Python loop. The
+%    currency is NFE + complexity; the properties we do claim for the reference
+%    solver are exactness, determinism, and the absence of hyperparameters.
+%
+% 🔴 LEAKAGE (prereg §6/A3): the single-parameter threshold MUST be fitted
+% out-of-fold, at patient level, frozen, and evaluated on held-out patients. A
+% threshold calibrated on images that are also scored is train-on-test — inside
+% the positive contribution of a paper that criticizes unsound comparison. That
+% is the one error here that gets rejected for INTEGRITY rather than novelty.
+%
+% Contribution triad (CLAUDE.md §1): (1) ceiling decomposition, (2) the
+% histogram-time diagnostic, (3) the protocol checklist + the coded survey.
+% These three MUST stand alone if the single-parameter baseline loses (P5
+% fallback, prereg §6/A10 item 2).
+% NO RESULTS PROSE until results/ceiling/summary.csv exists.
+% =============================================================================
+\section{A Better Baseline and a Diagnostic}
+\label{sec:baseline}
+
+\subsection{A Single-Parameter Threshold, Evaluated Out-of-Fold}
+
+\TODO{describe the baseline: one intensity percentile, fitted on the outer
+training patients of each fold, frozen, and evaluated on the held-out patients
+of that fold only. Report the fitted values across folds (their stability across
+folds is itself the finding) and a learning curve against the size of the
+fitting set. Normalization is per image.}
+
+% --- TABLE — proposed baseline vs. the optimizers (ledger: "Bảng V") ---------
+% results/ceiling/summary.csv <- scripts/run_ceiling.py --config configs/exp_ceiling.yaml
+%   -> paper/tables/tab_baseline.tex, seeds {0..2} x 5 folds
+\begin{table}[t]
+  \caption{Out-of-fold single-parameter threshold versus the optimizer family at
+  identical evaluation budget. \TODO{complete caption: n patients, folds, seeds;
+  state that the baseline is evaluated out-of-fold only; state the fitted
+  parameter per fold.}}
+  \label{tab:baseline}
+  \centering
+  \inputtable{tab_baseline}
+\end{table}
+
+\TODO{results prose --- forbidden until run. Preregistered fallback: if the
+single-parameter baseline does not match the optimizer family, say so plainly;
+the positive contribution then rests on the decomposition, the diagnostic, and
+the protocol, which are stated here to stand on their own.}
+
+\subsection{A Histogram-Time Diagnostic}
+
+The bound of §\ref{sec:ceiling} is computable from an image histogram and a
+reference mask in $O(L \log L)$, i.e. in microseconds per image and independently
+of the threshold count. This makes a previously post-hoc question --- how much
+Dice is attainable by \emph{any} intensity-only method on this dataset? ---
+answerable before an optimizer is chosen. The underlying result is not
+ours~\cite{lipton_f1}; the contribution is its use as a screening step and its
+availability as code.
+
+\TODO{one paragraph specifying the tool's interface and its use: given a
+histogram and a reference mask, it returns the attainable Dice for the whole
+family. Report its cost from results/, never from memory.}
+
+\subsection{An Evaluation-Protocol Checklist}
+
+\TODO{the checklist, as a boxed list. Each item must be a checkable statement,
+addressed to practice and not to any author: state the decoding map explicitly;
+report a ground-truth-anchored overlap metric alongside any surrogate; reference
+solutions against the exact optimum where one exists; equalize evaluation
+budgets and report the consumed count; report the attainable bound of the method
+family before claiming an improvement within it; evaluate any tuned component
+out-of-fold at the subject level.}
+
+% The coded bibliometric survey (two coders, Cohen's kappa) accompanies this
+% checklist IN THE SUPPLEMENTARY MATERIAL (framing decision #3). It is evidence
+% that each checklist item is a real gap, not a hypothetical one — but it must
+% not be the first table an editor sees, or the paper is reclassified as
+% meta-science and desk-rejected as out of scope.
+\TODO{one sentence pointing to the supplementary coded survey as the evidence
+base for the checklist, reporting its inter-coder agreement.}

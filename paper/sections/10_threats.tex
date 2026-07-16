@@ -1,0 +1,80 @@
+% =============================================================================
+% §10 THREATS TO VALIDITY
+% Write this section as a self-audit, in our own words, BEFORE a reviewer writes
+% it for us (playbook §3.1: "write your own Reviewer 2 section"). Every item
+% below is a known, documented threat from the adversarial audit; none may be
+% dropped because the numbers turned out favorable.
+% =============================================================================
+\section{Threats to Validity}
+\label{sec:threats}
+
+\subsection{Construct: the Decoding Map}
+
+The map from a threshold vector to a scored binary mask is unstated in the
+studies we surveyed, so no attribution of any particular decoding rule to prior
+work is made anywhere in this paper.
+% 🔴 A1: never write "the literature decodes by the brightest class". That rule
+% is our own old code, not a finding about anyone's paper. Attributing it would
+% be misrepresentation of cited work (IRON RULE 2).
+We therefore evaluate several decoding rules, including rules that consume the
+entire label map, and report results per rule. \TODO{state the residual threat:
+a decoder we did not test could behave differently, and name the property of the
+gray-level-set bound that limits how much better any intensity-only decoder can
+do.}
+
+\subsection{Scope of the Objective}
+
+\TODO{Kapur's entropy is additive over intervals, which is what admits an exact
+dynamic program; criteria that are only pseudo-additive (e.g. Tsallis) do not
+admit the same construction, and are outside our scope. Say this plainly rather
+than implying the reference optimum generalizes to every criterion.}
+
+\subsection{Statistical Power and the Equivalence Claims}
+
+\TODO{state the power limitation honestly: equivalence at the strictest
+preregistered bound may be underpowered at this sample size. This is why the
+paper reports interval estimates and the smallest bound at which equivalence
+holds, rather than a pass/fail verdict, and why the Bayesian analysis with a
+region of practical equivalence is primary~\cite{benavoli_bayes}. Report the
+achieved intervals; do not describe a wide interval as evidence of no
+difference.}
+
+\subsection{External Validity}
+
+% 🔴 A8: THE integrity trap of this project. Buda et al.'s LGG cohort is
+% TCGA-LGG; BraTS 2020 absorbed TCGA-LGG cases from the same collection. If the
+% cohorts overlap and we still call it "external validation", and a BraTS
+% reviewer catches it, that does not read as a design error — it reads as
+% MISREPRESENTATION.
+% MANDATORY before the words "external validation" appear anywhere: cross-check
+% name_mapping.csv and REPORT THE OVERLAP AS A NUMBER. Then either exclude the
+% overlapping patients, or call it by its correct name ("replication on an
+% overlapping cohort"), or externalize along the TASK axis instead.
+\TODO{report the cohort overlap between the replication dataset and the primary
+dataset AS A NUMBER, obtained by cross-checking the released identifier mapping.
+Only after that number is in the manuscript may the replication be named; if the
+cohorts overlap, it is a replication on an overlapping cohort, not an external
+validation. State the retained option explicitly.}
+
+\TODO{remaining scope threats: a single slice per patient rather than a volume;
+one primary modality and target, with the hard target as the counterweight; the
+training split only, since the withheld test set is not public; two-dimensional
+rather than three-dimensional processing for the learned baseline, chosen so that
+its input is identical to that of the thresholding methods.}
+
+\subsection{Implementation}
+
+\TODO{state that implementation correctness was established on published
+benchmark tables independently of the hypothesis under test, that any
+implementation failing that a priori criterion is reported separately rather
+than silently excluded, and that per-seed convergence curves and distributions
+are provided in the supplement so that a reader can detect a broken
+implementation without trusting us.}
+
+\subsection{Provenance}
+
+Numbers reported in this paper are produced by scripts from configuration files
+and recorded with a run manifest; earlier results from a pipeline with a budget
+defect, a defective baseline, and self-rolled metrics were discarded in their
+entirety and none are reused here.
+\TODO{point to the public code, the seeds, and the results ledger.}

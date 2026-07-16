@@ -1,0 +1,74 @@
+% =============================================================================
+% §5 R1 — THERE IS NOTHING LEFT TO OPTIMIZE
+% ⚠️ SCOPE (CLAUDE.md §1, ke-hoach §4): this proposition is DOWNGRADED to a
+% short, citation-backed setup section. Menotti (exact solver), Hammouche
+% (metaheuristics vs. exhaustive optimum, |F-F_opt|<=1e-9) and Merzban (exact DP
+% beats metaheuristics) took nearly all of it. The only live piece is the
+% equal-NFE comparison INCLUDING RANDOM SEARCH, and the projection onto Dice.
+%
+% ⚠️ Cost is reported as NFE + complexity. NOT wall-clock. The "~250x faster"
+% claim is BANNED (Python-loop artifact, never measured).
+% ⚠️ A6: an algorithm that misses the optimum is NOT evidence of a bug; the
+% independent implementation gate (§4) decides that, not this result.
+% ⚠️ Graded fallback (A4b): report k*, the largest k at which every algorithm
+% reaches the optimum. If k* < max k, the preregistered sentence is that the
+% algorithms fall short only where, by §3, the mask no longer changes — a
+% STRONGER result, not a failure.
+% NO RESULTS PROSE until results/main/summary.csv exists.
+% =============================================================================
+\section{The Optimization Gap}
+\label{sec:r1}
+
+\TODO{2 paragraphs of setup, citation-backed: that this comparison has been run
+before on gray-level images~\cite{hammouche_eaai,merzban_eswa} and that we claim
+no novelty for it; what is new here is (i) random search at an identical budget
+and (ii) the projection of the fitness gap onto a clinically scored mask.}
+
+% --- TABLE — gap to optimum, hit rate, NFE (provenance ledger: "Bảng III") ---
+% results/main/summary.csv <- scripts/run_main_grid.py --config configs/exp_main.yaml
+%   -> paper/tables/tab_main_grid.tex via scripts/build_tables.py, seeds {0..4}.
+% Report median [IQR] + bootstrap CI (A7), NOT mean±std, for Dice columns.
+\begin{table*}[t]
+  \caption{Relative fitness gap to the exact optimum, hit rate, and consumed
+  function evaluations, per algorithm and threshold count. \TODO{complete
+  caption: n patients, seeds, budget, the equal-NFE assertion, and the fact that
+  every algorithm consumed exactly the same budget.}}
+  \label{tab:main_grid}
+  \centering
+  \inputtable{tab_main_grid}
+\end{table*}
+
+\TODO{results prose --- forbidden until the grid has run and its provenance row
+in docs/RESULTS.md is filled.}
+
+% --- FIGURE 2 — critical difference diagram ---------------------------------
+% results/stats/cd.csv <- scripts/run_stats.py -> figures/fig2_cd.pdf
+\begin{figure}[t]
+  \centering
+  \inputfigure{fig2_cd}
+  \caption{Critical-difference diagram over patients~\cite{demsar_cd}.
+  \TODO{caption: metric, n, seeds, post-hoc test.}}
+  \label{fig:cd}
+\end{figure}
+
+\subsection{Decoupling Fitness from the Clinical Score}
+
+% P2c (prereg §6/A4b): 5 lines of code, fully falsifiable, and it converts the
+% "circularity" objection from a hole into a RESULT.
+% Prediction, declared in advance: the correlation is approximately zero.
+% If it is strong and positive, fitness IS a good proxy for Dice and the whole
+% Goodhart argument weakens — that is what makes this a test rather than a demo.
+We pre-specified a decoupling test: the rank correlation between an algorithm's
+residual fitness gap and the magnitude of its Dice difference from the exact
+solution. \TODO{report the coefficient and CI once available; state the
+preregistered prediction and whether it survived. If the correlation is strong
+and positive, the surrogate is a good proxy and we say so.}
+
+\subsection{Mask Identity}
+
+% The headline that needs no test: X% of (patient, k) cells where all algorithms
+% emit BYTE-IDENTICAL masks. Report n_zero/n_total everywhere (A4d).
+\TODO{report the fraction of (patient, threshold-count) cells on which the
+compared algorithms produce byte-identical binary masks. This is a count, not an
+inference; it requires no statistical test and admits no rebuttal. Source:
+results/main/raw.csv via build\_tables.py.}

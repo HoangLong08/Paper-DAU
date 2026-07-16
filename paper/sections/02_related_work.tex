@@ -1,0 +1,129 @@
+% =============================================================================
+% §2 RELATED WORK & THE CITATION GAP
+% Source of every paragraph below: docs/related-work-positioning.md (Week-0 gate,
+% completed 16/07/2026). Those paragraphs were written as drop-in positioning
+% text against VERIFIED metadata; do not paraphrase them into stronger claims.
+%
+% Related work = POSITIONING, not a list (playbook §6.5): lead with the
+% integrated contribution, name and DISTINGUISH the near-rivals.
+%
+% ⚠️ FRAMING DECISION #3 (ke-hoach §4): the BIBLIOMETRIC table (N papers that do
+% not cite an exact solution / do not measure Dice) goes to SUPPLEMENTARY. If
+% the first table an editor sees is "we counted papers that failed to cite X",
+% the paper is classified as meta-science and desk-rejected as out of scope.
+% Table I of the manuscript is DP vs. exhaustive search (§3) — mathematics, not
+% an accusation.
+% =============================================================================
+\section{Related Work and the Citation Gap}
+\label{sec:related}
+
+\subsection{Metaheuristic and Quantum-Inspired Multilevel Thresholding}
+
+\TODO{2--3 paragraphs surveying the line of work, at the level of PRACTICE, not
+of named authors. Cite from refs.bib only. Any count of papers ("N of M studies
+report no Dice") comes from the coded bibliometric survey and may be stated only
+once that survey exists with its two-coder Cohen's $\kappa$ --- see the
+supplementary table and docs/RESULTS.md.}
+
+% Recent, large, medical-image optimizer benchmark: the strongest checkable
+% evidence for the thesis. Numbers in this paper's records are [PARTIAL] —
+% re-open the full text before quoting any of them (positioning §7).
+Al-Najdawi \emph{et al.}~\cite{alnajdawi_scirep} provide a large-scale, recent
+benchmark of optimization algorithms coupled with Otsu's method on medical
+images, reporting strong overlap scores while acknowledging in their limitations
+the absence of ground-truth annotations. We treat this not as a competitor but
+as evidence for the question we ask: the field continues to rank optimizers on
+medical images by surrogate criteria. \TODO{quote their exact figures only after
+re-opening the full text --- currently [PARTIAL], gated.}
+
+% Positioning of the quantum-inspired branch.
+% RED LINE (CLAUDE.md §1, lằn ranh 3): the words "quantum advantage", "quantum
+% speedup", "quantum parallelism" are BANNED anywhere in this manuscript.
+% Correct positioning: "an EDA-style probabilistic update rule", anchored to
+% Platel et al., who showed QIEA is an EDA. Submission gate greps for this.
+Quantum-inspired evolutionary algorithms are classical algorithms: their qubit
+representation and rotation-gate update have been characterized as an
+estimation-of-distribution update rule~\cite{platel_tevc}. We therefore describe
+the quantum-inspired component throughout as an EDA-style probabilistic update
+rule. No benefit arising from quantum computation is claimed or implied: such a
+claim would require quantum hardware, which is not involved here, and the
+algorithms studied are classical throughout.
+% Phrased to avoid the literal banned string so the submission grep stays clean.
+
+\subsection{The Exact Solution Already Exists}
+
+% Drop-in paragraph, positioning §5. Cited in the ABSTRACT as well.
+Exact, polynomial-time computation of optimal multilevel thresholds --- for
+Otsu, Kapur, and Kittler--Illingworth criteria alike --- was given by Menotti
+\emph{et al.}~\cite{menotti_ciarp}, with an $O((K-1)L^2)$ dynamic program.
+Related exact formulations appear in Luessi \emph{et al.}~\cite{luessi_jei} and
+Merzban and Elbayoumi~\cite{merzban_eswa}, the latter demonstrating that the
+exact solver dominates metaheuristics for the Otsu criterion on natural images.
+We claim \emph{no novelty} for the exact solver; it is the reference optimum
+against which we benchmark. Nor do we claim novelty for benchmarking
+metaheuristics against a global optimum: Hammouche \emph{et
+al.}~\cite{hammouche_eaai} compared six metaheuristics against an exhaustive
+% ⚠️ [PARTIAL] — the 1e-9 convergence criterion and their Tables 8--10 are
+% recorded in docs/related-work-positioning.md §6 from an earlier full-text read;
+% the metadata is [VERIFIED] but this number was NOT re-read from the publisher
+% record. RE-OPEN THE FULL TEXT before submission, or drop the number and keep
+% the qualitative statement.
+global optimum, defining convergence as $|F - F_{\mathrm{opt}}| \le 10^{-9}$, a
+stricter criterion than ours, sixteen years earlier. Two things distinguish our
+study. First, those studies operate on gray-level images without clinical ground
+truth, so a residual fitness gap cannot be projected onto a Dice-scored mask; we
+make exactly that projection the primary endpoint. Second, Hammouche \emph{et
+al.} already observe that some methods fail to reach the optimum for larger
+threshold counts --- a finding we corroborate and reframe rather than contradict.
+
+A dynamic-programming treatment that also \emph{selects} the number of
+thresholds, including on medical images, has recently been given by Hegazy and
+Gabr~\cite{hegazy_dp}. We claim novelty for neither the exact solver nor
+data-driven selection of the threshold count; our use of dynamic programming is
+purely as a reference optimum, and our treatment of the threshold count is to
+measure what selecting it under surrogate criteria costs in clinical terms.
+
+\subsection{Evaluation Standards for Segmentation}
+
+Mousavirad \emph{et al.}~\cite{mousavirad_kbs} pose precisely our optimization
+question --- whether population-based metaheuristics are effective for
+multilevel thresholding --- but in a setting that structurally cannot detect the
+phenomenon we study: the objective is Otsu between-class variance on natural
+benchmark images without segmentation ground truth, so performance is measured
+\emph{in the objective's own units}. They report that recent algorithms differ
+substantially, some failing to reach the optimum.
+% RECONCILIATION #1 (positioning §HOA GIAI #1) — this apparent contradiction
+% with our equivalence prediction MUST be addressed here, not left for a
+% reviewer to find. It is resolved by the axis of measurement, and it is turned
+% into a testable result by the decoupling test (prereg §6/A4b, P2c).
+Our contribution is orthogonal on two axes: we evaluate against an exact global
+optimum rather than against each other, and we project every solution onto a
+clinical binary mask with ground truth. A fitness gap that is real in variance
+units need not survive that projection; whether it does is itself one of our
+pre-specified tests, rather than an assumption.
+
+Hegazy and Gabr~\cite{hegazy_metricbias} demonstrate, on natural images, that
+PSNR and SSIM correlate systematically more with Otsu's objective than with
+Kapur's, cautioning that reported gains may reflect this bias rather than
+genuine improvements. Our corresponding analysis is a \emph{domain extension},
+not an independent discovery: we move the argument to clinical ground truth on
+brain MRI and add the threshold-count axis.
+
+% RECONCILIATION #2 (positioning §HOA GIAI #2) — the ceiling belongs to
+% Francois & Tinarrage. Stating this plainly, in Related Work, is the defense.
+The claim that intensity thresholding has a performance ceiling on brain MRI is
+not ours to make: François and Tinarrage~\cite{francois_jmiv} already report, on
+BraTS FLAIR, an oracle best Dice of $0.83 \pm 0.18$, describing this explicitly
+as an upper bound on the achievable performance within the considered
+thresholding framework. We take this as an established result and make no claim
+to establishing a ceiling; our contribution is its \emph{decomposition}
+(§\ref{sec:ceiling}).
+% The one quoted number in this manuscript that is NOT ours: it is a quotation
+% from a [VERIFIED] full text (positioning §2), attributed in the same sentence.
+% Everything else numeric must come from results/ via build_tables.py.
+
+\subsection{The Gap}
+
+\TODO{closing paragraph naming the gap in one sentence, written after §3 and
+§8. It must be a statement about what has not been MEASURED, not a statement
+about what other authors failed to do.}
