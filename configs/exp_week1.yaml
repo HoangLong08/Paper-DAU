@@ -1,0 +1,83 @@
+# =============================================================================
+# TUẦN 1 — LƯỚI SÀNG LỌC cho 2 trong 4 THÍ NGHIỆM RỦI RO (prereg §6/A10 #3, #4)
+#   scripts/run_main_grid.py --config configs/exp_week1.yaml [--resume]
+#   scripts/run_stats.py     --config configs/exp_week1.yaml
+#   → results/week1/raw.csv · summary.csv  →  QUYẾT ĐỊNH, không phải bảng của paper
+# =============================================================================
+# ĐÂY LÀ CỔNG QUYẾT ĐỊNH, KHÔNG PHẢI NGUỒN SỐ CHO BẢN THẢO.
+#
+#   #3  Spearman(k, Dice) tính RIÊNG cho TỪNG decoding rule.
+#       Nếu tương quan âm CHỈ tồn tại dưới rule `brightest` ⇒ headline
+#       "metrics are anti-correlated" SAI, và bài thật ra chỉ là "một decoding
+#       rule có bias theo k" — nhỏ hơn nhiều.  ⇒ cần TRỌN trục k + CẢ 4 rule.
+#   #4  `morph` vs `oracle_interval`. morph VƯỢT oracle ⇒ P4 TỰ BÁC BỎ.
+#       ⇒ cần rule `morph` ở đây + `oracle_interval` từ run_ceiling.py.
+#
+# ⛔ Số từ file này KHÔNG vào Bảng III / Hình 2 / Hình 3 của bản thảo. Bảng của
+#    paper đến từ exp_main.yaml (n = 369, 5 seed, cả 2 bg — A8). Lưới này rút n,
+#    rút seed, khoá bg để vừa MỘT session Kaggle: nó trả lời "dấu và hướng", đủ
+#    để giết bài sớm, KHÔNG đủ để công bố. Mọi dòng provenance sinh từ đây phải
+#    ghi rõ "screening".
+#
+# 📌 Vì sao rút n mà vẫn hợp lệ: hai câu hỏi trên là câu hỏi về DẤU (tương quan âm
+#    hay không; morph > oracle hay không), không phải về ĐỘ LỚN cần CI hẹp. Nếu
+#    kết quả sàng lọc SÁT ngưỡng ⇒ KHÔNG kết luận, chạy lại trên exp_main.
+# =============================================================================
+experiment: week1
+
+data:
+  source: brats
+  root_kaggle: /kaggle/input/brats20-dataset-training-validation/BraTS2020_TrainingData/MICCAI_BraTS2020_TrainingData
+  root_local: data/brats20/MICCAI_BraTS2020_TrainingData
+  cohort_csv: data/splits/brats_cohort.csv
+  splits_dir: data/splits
+  n_patients: 60             # RÚT từ 369 → 60 (~1/6 compute). Chỉ cho sàng lọc.
+  version: kaggle:awsaf49/brats20-dataset-training-validation
+
+targets: [wt_flair, et_t1ce] # A2 — giữ CẢ HAI. ET/T1ce là ca KHÓ; bỏ nó đi thì
+                             # cổng sàng lọc chỉ nhìn ca thuận lợi nhất = vô nghĩa.
+fitness: kapur
+include_zero_bg: [true]      # RÚT: chỉ 1 biến thể (exp_main chạy CẢ HAI — A5c).
+k_list: [2, 3, 4, 5, 6, 8, 10]   # GIỮ TRỌN trục k — #3 LÀ câu hỏi về trục k.
+k_primary: 4
+seeds: [0, 1, 2]             # RÚT 5 → 3. Đủ thấy dấu; KHÔNG đủ cho mean±std của paper.
+budget: 5000                 # NFE bằng nhau tuyệt đối — KHÔNG rút (base.py assert ±0).
+optimizers: [GA, PSO, GOA, GOA-fixed, GWO, WOA, MPA, QIGOA, random]
+include_exact_dp: true       # DP-exact = tối ưu tham chiếu (Menotti 2015)
+include_classical: true
+classical: [otsu, li, triangle, kmeans, gmm]
+
+hyperparams:
+  pop: 30
+
+decoding:
+  rules: [brightest, upper_union, otsu_pick, morph]  # CẢ 4 — #3 so sánh GIỮA các rule
+  labelmap: [kmeans, watershed, chanvese]            # Horn-2 (A1)
+  labelmap_primary_only: true
+  primary: brightest
+
+metrics:
+  spacing_mm: [1.0, 1.0]
+  nsd_tau_mm: 2.0
+  nsd_tau_sensitivity: [1.0, 3.0, 5.0]
+  hd95_empty_penalty: null   # CẤM loại ca mask rỗng khỏi HD95 (A7)
+  connectivity: 1
+  bootstrap_n: 10000
+
+stats:
+  sesoi: 0.01
+  sesoi_hierarchy: [0.01, 0.05]
+  rope: [-0.01, 0.01]
+  hit_gap_tol: 1.0e-4
+  reference_method: DP-exact
+  decoding_primary: brightest
+  k_primary: 4
+  bayes_samples: 20000
+  output_dir: results/week1/stats
+  main_dir: results/week1
+  ceiling_dir: results/ceiling
+  unet_dir: results/unet
+
+output_dir: results/week1
+cache_dir: results/main/cache    # DÙNG CHUNG cache histogram với E2 — histogram của
+                                 # một ảnh là tất định, tính lại là phí giờ Kaggle.

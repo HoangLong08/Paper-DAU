@@ -1,249 +1,187 @@
-# Hướng dẫn setup Kaggle — QIGOA Reality-Check
+# Hướng dẫn chạy Kaggle — QIGOA Reality-Check
 
-**Ngày:** 16/07/2026 · **Dành cho:** tác giả (Nguyễn Võ Hoàng Long) · **Môi trường chạy thí nghiệm:** Kaggle Notebook (CPU + GPU miễn phí)
+**Ngày:** 16/07/2026 · **Dành cho:** tác giả (Nguyễn Võ Hoàng Long) · **Repo:** [github.com/HoangLong08/Paper-DAU](https://github.com/HoangLong08/Paper-DAU)
 
-> **File này trả lời đúng một câu:** *từ một tài khoản Kaggle trống tới khi có `results/` đầy đủ trong tay — làm theo thứ tự nào, gõ lệnh gì, và ở bước nào thì DỪNG.*
+> ### 👉 Khuyến nghị: chạy ĐÚNG MỘT lô — **LÔ QUYẾT ĐỊNH**
 >
-> **Quy tắc bao trùm (CLAUDE.md §2, §5):** Kaggle là **môi trường chạy**, không phải môi trường phát triển. Mọi code đã smoke-test ở local trước. Mỗi con số phải truy được về `configs/ → scripts/ → results/`. Số synthetic **không bao giờ** là kết quả.
+> **Một session Kaggle · CPU · ~3–5 giờ · KHÔNG bật GPU · 7 lệnh copy-paste.**
 >
-> ⚠️ **Đọc trước khi làm gì:** thứ tự chạy ở **Bước 3** là bắt buộc theo preregistration §6/A10. **CẤM chạy E2 (lưới chính) trước** khi cổng bit-exact (E1) pass và cả 4 thí nghiệm rủi ro Tuần-1 còn sống. Chi được ~35h compute cho thứ có xác suất bất ngờ ≈ 0 rồi mới kiểm 4 câu hỏi thật sự bất định = confirmation bias — trong một bài đi tố cáo người khác confirmation bias.
+> Lô này trả về:
+> - **Bảng II** — kết quả THẬT đầu tiên đi thẳng vào bản thảo (DP khớp vét cạn trên BraTS).
+> - **Câu trả lời cho 3/4 câu hỏi có thể GIẾT BÀI** — trước khi anh chi 20 giờ cho lưới chính.
+>
+> **Đừng chạy gì khác cho tới khi lô này xong.** Mọi thứ còn lại (E2 lưới chính 20h, E3, E4 U-Net/GPU, E7 ngoại kiểm) nằm ở [Phụ lục B](#phụ-lục-b--những-gì-KHÔNG-nằm-trong-lô-này) và **chỉ mở khi lô này pass**.
+>
+> **Vì sao chỉ một lô này (prereg §6/A10):** kế hoạch cũ chi ~35/40 giờ cho các thí nghiệm có **xác suất bất ngờ ≈ 0** (E2 chỉ fail nếu code có bug; "U-Net thắng thresholding" đã biết từ 2015), rồi mới kiểm 4 câu hỏi thật sự bất định. Đó là **dấu vân tay của confirmation bias — trong một bài đi tố cáo người khác confirmation bias.** Lô này đảo ngược: **~4 giờ để biết bài có sống không.** Một trong các cổng chết ⇒ reframe ngay, tiết kiệm 8 tuần.
 
 ---
 
-## Bước 0 — Tài khoản Kaggle + mở khoá GPU/Internet
+## Bước 0 — Tài khoản Kaggle
 
-1. Tạo tài khoản tại [kaggle.com](https://www.kaggle.com) (miễn phí).
-2. **Verify số điện thoại** (Settings → Phone Verification). **Bắt buộc** — nếu không verify, Kaggle **khoá GPU và khoá Internet** trong Notebook, và ta cần cả hai (GPU cho U-Net, Internet để `git clone` + `pip install`).
-3. Tạo một Notebook mới: **Create → New Notebook**.
-4. Mở panel bên phải (**Settings / ⚙️ hoặc menu ⋮ → Settings**), bật:
-   - **Internet: ON** (để clone repo + pip install).
-   - **Accelerator: GPU T4 x2** *chỉ khi chạy `run_unet.py`*. **Mọi thí nghiệm khác chạy CPU** — để **Accelerator: None** cho chúng nhằm **tiết kiệm quota GPU** (chỉ 30 GPU-h/tuần).
-   - **Persistence: Variables and Files** (nếu có) — giúp giữ `/kaggle/working/` giữa các lần bấm Save, nhưng **đừng tin tuyệt đối**: luôn tải `results/` về (Bước 5).
+1. Tạo tài khoản tại [kaggle.com](https://www.kaggle.com).
+2. **Verify số điện thoại** (Settings → Phone Verification). Bắt buộc — không verify thì Kaggle **khoá Internet** trong Notebook, mà ta cần Internet để `git clone`.
+3. **Create → New Notebook** → panel phải (⚙️ Settings):
+   - **Internet: ON**
+   - **Accelerator: None** ← **toàn bộ lô này chạy CPU. Đừng bật GPU** (quota 30 GPU-h/tuần để dành cho U-Net sau này).
 
-> 💡 **Quota cần nhớ:** session ≤ **12 giờ** · GPU ≤ **30 giờ/tuần** · CPU ~ không giới hạn thực tế nhưng vẫn theo session 12h. `/kaggle/input/` **read-only**; `/kaggle/working/` ghi được nhưng **mất khi session hết hạn** nếu không lưu.
+> **Quota:** session ≤ **12 giờ** · `/kaggle/input/` **read-only** · `/kaggle/working/` ghi được nhưng **mất khi hết session** ⇒ phải tải `results/` về (Bước 4).
 
 ---
 
-## Bước 1 — Add data (2 dataset)
+## Bước 1 — Add data (chỉ MỘT dataset)
 
-Trong Notebook, panel phải → **Add Input / Add Data**, tìm và thêm:
+Panel phải → **Add Input** → tìm và thêm:
 
-| Dataset (slug) | Vai trò | Mount tại |
-|---|---|---|
-| `awsaf49/brats20-dataset-training-validation` | **CHÍNH** — BraTS 2020, dùng cho E1–E6 | `/kaggle/input/brats20-dataset-training-validation/` |
-| `mateuszbuda/lgg-mri-segmentation` | **E7** — ngoại kiểm LGG (⚠️ đọc cảnh báo A8 cuối file) | `/kaggle/input/lgg-mri-segmentation/` |
+| Dataset (slug) | Mount tại |
+|---|---|
+| `awsaf49/brats20-dataset-training-validation` | `/kaggle/input/brats20-dataset-training-validation/` |
 
-**Giải thích cấu trúc thư mục Kaggle:**
-
-```
-/kaggle/input/    ← READ-ONLY. Dataset mount vào đây. Không ghi được, không xoá được.
-/kaggle/working/  ← GHI ĐƯỢC (thư mục làm việc). results/ sẽ nằm ở đây.
-                    ⚠️ Mất khi session hết hạn — PHẢI tải về (Bước 5) trước khi đóng.
-/kaggle/temp/     ← scratch tạm, cũng mất.
-```
-
-> ⚠️ Kaggle chỉ có **training split** của BraTS (có ground truth). Test set thật giữ kín trên Synapse. ⇒ **KHÔNG** claim "SOTA trên BraTS leaderboard" ở bất kỳ đâu. Ta tự chia theo bệnh nhân (`data/splits/fold_{0..4}.json`, đã commit vào repo).
+> Dataset LGG (`mateuszbuda/lgg-mri-segmentation`) **chưa cần** — nó cho E7, nằm ngoài lô này, và **có thể không phải ngoại kiểm thật** ([Phụ lục A](#phụ-lục-a--cảnh-báo-liêm-chính-a8)).
+>
+> ⚠️ Kaggle chỉ có **training split** của BraTS (phần có ground truth). Test set thật giữ kín trên Synapse ⇒ **KHÔNG** claim "SOTA trên BraTS leaderboard" ở bất kỳ đâu.
 
 ---
 
-## Bước 2 — Đưa code lên Kaggle
+## Bước 2 — LÔ QUYẾT ĐỊNH: 7 lệnh, chạy theo đúng thứ tự
 
-**Cách A (khuyến nghị) — clone GitHub repo.** Cần Internet ON (Bước 0). Trong cell đầu:
+> Mỗi lệnh là một cell. **Cell nào FAIL thì DỪNG** — đọc cột "nếu fail" rồi mới đi tiếp.
+
+### Cell 1 — lấy code + cài package thiếu (~2 phút)
 
 ```bash
-!git clone https://github.com/HoangLong08/<TEN_REPO>.git /kaggle/working/qigoa
+!git clone https://github.com/HoangLong08/Paper-DAU.git /kaggle/working/qigoa
 %cd /kaggle/working/qigoa
-!git rev-parse HEAD    # ghi lại commit hash — nó vào run-manifest.json
-```
-
-**Cách B — upload repo làm "Utility dataset".** Nếu chưa muốn public repo: nén repo (`git archive` hoặc zip thư mục, **loại `__pycache__/`, `.git/`**), lên **Datasets → New Dataset → Upload**, rồi Add Input như Bước 1. Code sẽ nằm ở `/kaggle/input/<slug>/` (read-only) — copy sang `/kaggle/working/` để chạy:
-
-```bash
-!cp -r /kaggle/input/<slug-code>/qigoa /kaggle/working/qigoa
-%cd /kaggle/working/qigoa
-```
-
-**Cài các package Kaggle còn thiếu** (thường chỉ `medpy` + `tifffile`):
-
-```bash
+!git rev-parse HEAD          # ← GHI LẠI hash này, nó vào dòng provenance
 !pip install -q medpy tifffile
-# Nếu medpy lỗi build trên Kaggle, dùng surface-distance của Google thay thế:
-# !pip install -q git+https://github.com/deepmind/surface-distance.git
 ```
 
-> Phần lớn `requirements.txt` (numpy, scipy, scikit-image, scikit-learn, pandas, nibabel, PyYAML, matplotlib, torch, tqdm) **đã có sẵn** trên image Kaggle. Không cần `pip install -r requirements.txt` toàn bộ — chỉ cài phần thiếu để khỏi làm hỏng môi trường đã pin của Kaggle.
+Kaggle đã có sẵn numpy/scipy/scikit-image/scikit-learn/pandas/nibabel/PyYAML/matplotlib/torch/tqdm ⇒ **đừng** `pip install -r requirements.txt` (làm hỏng môi trường đã pin của Kaggle). Nếu `medpy` lỗi build: `!pip install -q git+https://github.com/deepmind/surface-distance.git`.
 
----
-
-## Bước 3 — THỨ TỰ CHẠY (bắt buộc — preregistration §6/A10)
-
-> 🔴 **CẤM chạy E2 (lưới chính, `run_main_grid.py`) trước.** Thứ tự dưới đây được thiết kế để **giết bài sớm nếu nó phải chết**, tiết kiệm 8 tuần. Chỉ tiến sang bước sau khi bước trước **pass cổng**.
-
-| # | Bước | Compute | Accel | Cổng — nếu KHÔNG qua thì sao |
-|---|---|---|---|---|
-| 0 | **Cổng Tuần-0** — đọc 6 near-rival + viết đoạn định vị | 0 | — | ✅ **ĐÃ XONG** → [docs/related-work-positioning.md](related-work-positioning.md) |
-| 0b | **A9** — OSF/Zenodo DOI + điền commit hash vào prereg dòng 4 | 0 | — | **Việc của tác giả.** Chưa làm ⇒ câu "chúng tôi đã preregister" **không verify được** (Bước 6) |
-| 1 | **Smoke test local** (synthetic, `exp_smoke.yaml`) | < 60s | CPU (máy nhà) | Fail ⇒ sửa ở local. Số = `[PLACEHOLDER]` |
-| 2 | **E1 — cổng bit-exact** (DP vs vét cạn, k=2,3) | < 30ph | CPU | 🔴 **FAIL ⇒ DỪNG TOÀN BỘ.** Mọi kết luận P2 dựng trên DP. Debug đầu tiên = **audit quy ước histogram** (A5c), KHÔNG phải debug DP |
-| 3 | **E1b — đúng-đắn implementation** (tái tạo bảng đã công bố, A6) | ~1h | CPU | Chưa qua ⇒ **cấm dùng hit-rate-to-DP làm kết quả** (nếu không thì "GOA hỏng" = vòng tròn logic) |
-| 4 | **TUẦN 1 — 4 thí nghiệm RỦI RO** (xem 3.3) | ~3h + 1 tuần khảo sát | CPU | 🔴 **Một trong bốn chết ⇒ reframe/dừng NGAY — đã tiết kiệm 8 tuần** |
-| 5 | **E2 — lưới chính** (chia stage theo k) | ~20h | CPU | Chỉ chạy khi **cả 4 ở trên còn sống** |
-| 6 | E3 ablation → E4 ceiling → **E4 U-Net** → E5 → E6 → E7 | ~18h + 2h GPU | CPU, **GPU chỉ cho `run_unet.py`** | E7: đọc **A8** trước khi dùng chữ "external validation" |
-
-> **Vì sao đảo ngược thứ tự (prereg §6/A10):** kế hoạch cũ chi **~35/40 giờ** cho các thí nghiệm có **xác suất bất ngờ ≈ 0** (E2 chỉ fail nếu code có bug; "U-Net thắng thresholding" đã biết từ 2015), và xếp **cả bốn câu hỏi thật sự bất định** vào mục "làm sau". Đó là **dấu vân tay của confirmation bias — trong một bài đi tố cáo người khác confirmation bias.** Bốn thí nghiệm rủi ro tốn ~3h và **quyết định bài có sống không**; chạy chúng trước.
-
-### Cổng Tuần-0 — lit-review (KHÔNG compute, ĐÃ XONG)
-`docs/related-work-positioning.md` đã hoàn thành: 6 near-rival + Al-Najdawi đã đọc & có đoạn định vị. ✅ Đủ điều kiện mở E2 **về mặt lit-review**.
-
-### 3.0 · Smoke test local (làm ở MÁY, trước khi lên Kaggle)
-Chạy toàn bộ pipeline trên dữ liệu synthetic < 60s. Bắt lỗi cấu trúc ở local rẻ hơn nhiều so với sau 8h chạy Kaggle:
+### Cell 2 — ★ CỔNG CỨNG 1: unit test (~1 phút)
 
 ```bash
-python -m pytest tests/ -q                       # 3 unit test cổng cứng phải PASS
-python scripts/run_exact_check.py --config configs/exp_smoke.yaml   # synthetic, [PLACEHOLDER]
-```
-Số synthetic **không bao giờ** là kết quả — luôn gắn `[PLACEHOLDER]`.
-
-### 3.1 · E1 — cổng bit-exact ★ CỔNG CỨNG ĐẦU TIÊN
-```bash
-python scripts/run_exact_check.py --config configs/exp_main.yaml
-```
-- DP phải khớp **bit-exact** với vét cạn tại k=2,3 (theo quy ước A5a: `|f_DP − f_brute| ≤ 1e-9` **VÀ** mask cảm sinh giống hệt, ngưỡng canonicalise).
-- 🔴 **Nếu cổng này FAIL → DỪNG TOÀN BỘ.** Mọi kết luận về P2 dựng trên DP. Bước debug ĐẦU TIÊN là **audit quy ước** (`0log0`, lớp rỗng, có tính nền cường-độ-0 hay không — A5b/A5c), **KHÔNG** phải debug DP.
-- Cho ra: **Bảng II** (DP vs vét cạn).
-
-### 3.2 · E1b — cổng đúng-đắn implementation (A6) ★ CỔNG CỨNG THỨ HAI
-Tái tạo bảng Kapur/Otsu multilevel **đã công bố** trên ảnh chuẩn (Lena/Cameraman/Baboon/Peppers, k=2..5) ở **đúng NFE đã công bố**, cho **MỌI** thuật toán. Chỉ sau khi qua cổng này, hit-rate-to-DP mới được dùng làm *kết quả*. (Phá vòng tròn logic: không được dán nhãn "GOA hỏng" chỉ vì nó không đạt tối ưu — đó chính là P2.)
-
-### 3.3 · TUẦN 1 — bốn thí nghiệm rủi ro (~10h compute + 1 tuần khảo sát tay)
-Chạy **cả bốn** trước khi đụng E2. Nếu **một** trong bốn chết → reframe/dừng, đã tiết kiệm 8 tuần:
-
-1. **Bảng I — trắc lượng thư mục** (search string + PRISMA-lite + **2 coder + Cohen's κ**). **0 compute.** *Quyết định: P1 có mục tiêu, hay là strawman?* (Bảng I xuống **Supplementary** — quyết định đóng khung #3; Bảng I của bản thảo = DP vs vét cạn.)
-2. **Bậc-5 / P5 — ngưỡng 1-tham-số vs 7 metaheuristic, nested CV** (~1h). *Quyết định: bài có đóng góp dương không?*
-   ```bash
-   python scripts/run_ceiling.py --config configs/exp_ceiling.yaml --stage p5_nested_cv
-   ```
-   ⚠️ Phải chạy **nested CV cấp bệnh nhân** (A3) — fit `q*` trên outer-train fold, đóng băng, đánh giá out-of-fold. **KHÔNG** train-on-test.
-3. **Spearman(k, Dice) theo TỪNG decoding rule** (~1h). *Quyết định: "metric sai" hay chỉ "decoder sai"?* Nếu tương quan âm chỉ tồn tại dưới rule `brightest` ⇒ headline "metrics are anti-correlated" SAI.
-4. **`morph` vs `oracle_interval`** (~1h). Nếu morph **vượt** oracle ⇒ **P4 tự bác bỏ**.
-
-### 3.4 · E2 — lưới chính (CHỈ khi cả 4 ở trên sống)
-```bash
-python scripts/run_main_grid.py --config configs/exp_main.yaml
-```
-- Lưới: các bệnh nhân × k ∈ {2,3,4,5,6,8,10} × 11 phương pháp × ≥5 seed.
-- **Chia stage theo k** (Bước 4) — không chạy hết trong 1 session.
-- Cho ra: **Bảng III**, **Hình 2** (CD diagram), **Hình 3** (Goodhart).
-
-### 3.5 · E3 — ablation QIGOA
-```bash
-python scripts/run_ablation.py --config configs/exp_ablation.yaml
-```
-Cùng NFE, **cùng mọi hyperparameter khác**. Cho ra **Bảng IV**.
-
-### 3.6 · E4 — ceiling + U-Net (bước GPU duy nhất)
-```bash
-python scripts/run_ceiling.py --config configs/exp_ceiling.yaml       # CPU: oracle scans
-python scripts/run_unet.py    --config configs/exp_unet.yaml          # GPU: 2D U-Net
-```
-Bật **GPU T4** chỉ cho `run_unet.py`. Cho ra **Bảng V** + **Hình 4** (ceiling ladder).
-
-### 3.7 · E5 — metric đầy đủ
-Nằm trong các script E2/E3/E4 (Dice, HD95, NSD, PSNR, SSIM, số thành phần liên thông, empty-mask rate). Không có script riêng.
-
-### 3.8 · E6 — thống kê
-```bash
-python scripts/run_stats.py --config configs/exp_main.yaml
-```
-Đơn vị = **bệnh nhân**. Wilcoxon (`zero_method='pratt'` — A4d) + rank-biserial · Friedman + Nemenyi + CD · TOST (90% CI + Δ_ach) · Bayesian ROPE.
-
-### 3.9 · E7 — ngoại kiểm LGG (đọc cảnh báo A8 dưới đây TRƯỚC)
-```bash
-python scripts/run_external.py --config configs/exp_external.yaml
-```
-**Zero-shot** — CẤM re-tune ngưỡng 1-tham-số trên LGG.
-
-### 3.10 · Build bảng + hình từ results/
-```bash
-python scripts/build_tables.py     # results/ → paper/tables/*.tex
-python scripts/build_figures.py    # results/ → paper/figures/*.pdf
+!python -m pytest tests/test_exact_dp.py tests/test_nfe_budget.py tests/test_degeneracy.py -q
 ```
 
-> 📌 Tên script/config ở trên theo `docs/ke-hoach-trien-khai.md` §1–§2. `scripts/` đang được viết song song — nếu một cờ (`--stage`, `--k-subset`) chưa có, xem `--help` của script tương ứng.
+| Fail | Nghĩa là |
+|---|---|
+| `test_exact_dp` | Mọi kết luận P2 dựng trên DP ⇒ **DỪNG TOÀN BỘ**. |
+| `test_nfe_budget` | **Lưới vô hiệu** — đây đúng là lỗi đã giết lô cũ (thừa 13,4% NFE). |
+| `test_degeneracy` | Cơ chế suy biến không đúng như phát biểu ⇒ đọc lại prereg §6/A1. |
 
----
-
-## Bước 4 — Resume-được: chia stage, checkpoint, merge
-
-Session ≤ 12h ⇒ E2 (~20h wall CPU) **không** chạy hết trong một lần. Thiết kế resume:
-
-1. **Chia theo `k`.** Mỗi session chạy 2–3 giá trị k, ghi CSV riêng:
-   ```bash
-   python scripts/run_main_grid.py --config configs/exp_main.yaml --k-subset 2,3,4
-   # session sau:
-   python scripts/run_main_grid.py --config configs/exp_main.yaml --k-subset 5,6,8,10
-   ```
-2. **Cache histogram.** Histogram của các ảnh tính một lần, lưu `.npy` → mọi run sau đọc từ cache (phần chậm nhất mà lại tất định).
-3. **Checkpoint sau mỗi (image, k, algo, seed).** Session chết → chạy lại chỉ tốn phần chưa xong. Ghi ra `results/main/partial/`.
-4. **Merge CSV** ở cuối: gộp các CSV partial thành `results/main/raw.csv` + `summary.csv`.
-5. **GPU CHỈ cho `run_unet.py`.** Mọi thứ khác để **Accelerator: None** để không đốt 30 GPU-h/tuần.
-
-`run-manifest.json` sinh cho **MỖI session** (`src/manifest.py`): `{git_commit, config_hash, seeds, dataset_version, lib_versions, timestamp, output_paths}`. **Không manifest = run không tồn tại với paper.**
-
----
-
-## Bước 5 — Cuối mỗi session: tải results/ về + provenance + commit
-
-1. **Tải `results/` về máy.** Kaggle: menu ⋮ → **Download** output, hoặc nén rồi tải:
-   ```bash
-   !cd /kaggle/working/qigoa && tar czf /kaggle/working/results_$(date +%Y%m%d).tgz results/
-   ```
-   Tải file `.tgz` từ tab **Output**.
-2. **Giải nén vào repo local**, ghi đè `results/` (kết quả là output do script sinh — không sửa tay).
-3. **Thêm dòng provenance** vào `docs/RESULTS.md` (append-only) cho mỗi Bảng/Hình vừa sinh: `Bảng X ← results/<path> ← scripts/<script> --config <config> @commit <hash>, seeds {0..4}`.
-4. **Commit** (khi tác giả muốn): `git add results/ docs/RESULTS.md && git commit`.
-
-> 🔴 **Không xoá run xấu** (prereg §5). Run âm là dữ liệu — ghi vào `RESULTS.md` như mọi run khác.
-
----
-
-## Bước 6 — Timestamp preregistration (A9) — VIỆC CỦA TÁC GIẢ, làm TRƯỚC khi chạy thật
-
-Trước khi chạy bất kỳ thí nghiệm **thật** nào (không phải smoke test), tác giả cần **cắm cọc thời gian** cho preregistration để câu "chúng tôi đã preregister" **verify được** bởi bên thứ ba (git history rewrite được, nên tự nó không đủ):
-
-1. Đăng ký **OSF** (miễn phí, [osf.io](https://osf.io) → Registrations) **HOẶC** archive `docs/preregistration.md` lên **Zenodo** ([zenodo.org](https://zenodo.org)) để lấy **DOI có timestamp**.
-2. Điền **commit hash** của commit chứa `docs/preregistration.md` vào **dòng 4** của file đó ("Commit khi khoá").
-3. **Cite DOI/OSF link đó trong Abstract** của paper.
-
-> ⚠️ Và gọi đúng tên file này trong bản thảo: *"Confirmatory analysis protocol for exploratory findings"* — vì P1/P3 được phát hiện exploratorily trên pipeline có lỗi (A9). **Dán nhãn sai một preregistration còn tệ hơn không có.**
-
----
-
-## ⚠️ Cảnh báo liêm chính A8 — đọc trước khi dùng chữ "external validation"
-
-1. **Chỉ training split có ground truth.** KHÔNG claim "SOTA BraTS leaderboard".
-2. **LGG có thể KHÔNG ngoại kiểm.** Buda et al. = 110 ca **TCGA-LGG**; BraTS 2020 đã nuốt **108 ca TCGA-LGG** từ đúng collection đó. **BẮT BUỘC** tải `name_mapping.csv`, đối chiếu, **báo cáo số trùng bằng con số** trước khi gọi LGG là "external". Nếu trùng mà vẫn gọi ngoại kiểm và reviewer BraTS bắt được → đọc như **misrepresentation**. Lựa chọn thay thế mạnh nhất: ngoại kiểm theo **chiều TASK** (tune WT/FLAIR → test ET/T1ce).
-3. **Bẫy kênh LGG:** ảnh Kaggle LGG là **TIFF 3 kênh** (pre-contrast / FLAIR / post-contrast). FLAIR = **kênh giữa, index 1**. Lấy nhầm kênh ⇒ histogram sai ⇒ toàn bộ Kapur/DP sai. `src/data/lgg_loader.py` đã có unit test cho việc này (`tests/test_lgg_loader.py`).
-
----
-
-## Phụ lục — lệnh copy-paste nhanh (khởi động một session mới)
+### Cell 3 — E0: cohort + split cấp bệnh nhân (~10–30 phút, ước tính)
 
 ```bash
-# 1. Lấy code
-!git clone https://github.com/HoangLong08/<TEN_REPO>.git /kaggle/working/qigoa
-%cd /kaggle/working/qigoa
-!git rev-parse HEAD
+!python scripts/make_splits.py --config configs/exp_main.yaml
+```
 
-# 2. Cài phần thiếu
-!pip install -q medpy tifffile
+Sinh `data/splits/brats_cohort.csv` + `fold_{0..4}.json`, chia ở **cấp BỆNH NHÂN**, phân tầng grade × tertile thể tích WT (A3).
 
-# 3. Sanity: unit test cổng cứng
-!python -m pytest tests/test_exact_dp.py tests/test_nfe_budget.py -q
+> 🔴 **Không bỏ qua cell này.** `run_ceiling.py` không thấy `fold_*.json` sẽ **âm thầm rơi về chia vòng tròn** kèm một dòng `[WARN]` dễ trôi qua mắt — và Cell 5 (P5) sẽ đánh giá **đóng góp dương của bài** trên một split không phân tầng. Đó đúng là thứ kỷ luật mà bài này đi tố cáo người khác vi phạm.
 
-# 4. Chạy theo đúng thứ tự A10 (ví dụ E1 trước)
+### Cell 4 — ★ CỔNG CỨNG 2: E1 bit-exact trên dữ liệu THẬT (~10–20 phút) → **BẢNG II**
+
+```bash
 !python scripts/run_exact_check.py --config configs/exp_main.yaml
-
-# 5. Cuối session: đóng gói results để tải về
-!tar czf /kaggle/working/results_$(date +%Y%m%d_%H%M).tgz results/
 ```
+
+DP phải khớp vét cạn tại k=2,3: `|f_DP − f_brute| ≤ 1e-9` **VÀ** mask cảm sinh giống hệt (A5a). Cho ra `results/exact/dp_vs_bruteforce.csv` → **Bảng II của bản thảo — con số thật đầu tiên**.
+
+> 🔴 **FAIL ⇒ DỪNG TOÀN BỘ.** Bước debug **ĐẦU TIÊN** là **audit quy ước histogram** (`0log0` · lớp rỗng · ngưỡng trùng · **có tính nền cường-độ-0 hay không** — A5b/A5c), **KHÔNG** phải sửa DP. Xác suất lỗi nằm ở quy ước cao hơn nhiều so với ở DP.
+
+### Cell 5 — RỦI RO #2: P5 nested CV (~1 giờ) → *bài có đóng góp dương không?*
+
+```bash
+!python scripts/run_ceiling.py --config configs/exp_ceiling.yaml --stage p5_nested_cv
+```
+
+Ngưỡng 1-tham-số (phân vị q) vs 7 metaheuristic, **nested CV cấp bệnh nhân**: `q*` fit trên outer-train, **đóng băng**, đánh giá out-of-fold.
+
+- **Nếu P5 THẮNG** ⇒ đóng góp dương đứng vững.
+- **Nếu P5 THUA** ⇒ **không phải bài chết**. Fallback đã khoá TRƯỚC khi thấy số (prereg A10 #2): đóng góp dương rơi về **ceiling decomposition + công cụ chẩn đoán + checklist**. Ghi kết quả âm vào `RESULTS.md` như mọi run khác.
+
+### Cell 6 — RỦI RO #3 + #4: lưới sàng lọc (~1–2 giờ, ước tính)
+
+```bash
+!python scripts/run_main_grid.py --config configs/exp_week1.yaml --resume
+!python scripts/run_stats.py     --config configs/exp_week1.yaml
+```
+
+`configs/exp_week1.yaml` = lưới **sàng lọc**: n=60 ca (thay vì 369), 3 seed (thay vì 5), 1 biến thể bg — nhưng **giữ trọn trục k và cả 4 decoding rule**, vì đó chính là hai câu hỏi:
+
+| Rủi ro | Câu hỏi | Kết quả giết bài |
+|---|---|---|
+| **#3** | Spearman(k, Dice) tính RIÊNG cho **từng** decoding rule | Tương quan âm **chỉ** xuất hiện dưới rule `brightest` ⇒ headline *"metrics are anti-correlated"* **SAI**; bài co lại thành *"một decoding rule có bias theo k"* |
+| **#4** | `morph` vs `oracle_interval` | `morph` **vượt** oracle ⇒ **P4 tự bác bỏ** |
+
+> ⛔ **Số từ `exp_week1.yaml` KHÔNG vào Bảng III / Hình 2 / Hình 3.** Nó trả lời **dấu và hướng**, đủ để quyết định, **không đủ để công bố**. Bảng của paper đến từ `exp_main.yaml` (n=369, 5 seed, cả 2 bg — A8). Dòng provenance sinh từ đây **phải ghi chữ `screening`**. Kết quả **sát ngưỡng** ⇒ **không kết luận**, chạy lại trên `exp_main.yaml`.
+
+### Cell 7 — đóng gói để tải về
+
+```python
+import time
+stamp = time.strftime('%Y%m%d_%H%M')
+!cd /kaggle/working/qigoa && tar czf /kaggle/working/results_{stamp}.tgz results/ data/splits/
+print('Tải file này từ tab Output:', f'/kaggle/working/results_{stamp}.tgz')
+```
+
+---
+
+### Rủi ro #1 — **Bảng I** (0 compute, KHÔNG chạy trên Kaggle)
+
+Câu hỏi thứ tư *"P1 có mục tiêu, hay là strawman?"* **không có script** — và đó chính là lý do nó dễ bị hoãn vô hạn. Nó là **khảo sát tay**: search string + PRISMA-lite + **2 coder + Cohen's κ** (~1 tuần).
+
+**Nó quyết định bài không kém gì 3 cell trên.** Nếu văn liệu **không** decode bằng "lớp sáng nhất" thì P1 đang đánh một strawman — và viết *"văn liệu decode bằng lớp sáng nhất [refs]"* = **xuyên tạc công trình được cite = vi phạm IRON RULE 2** (CLAUDE.md lằn ranh đỏ #4). Làm song song trong lúc Kaggle chạy.
+
+---
+
+## Bước 3 — Sau khi lô chạy xong: provenance + commit
+
+1. Tải `.tgz` từ tab **Output** → giải nén vào repo local (ghi đè `results/` — kết quả là output do script sinh, **không sửa tay**).
+2. **Thêm dòng provenance** vào `docs/RESULTS.md` (append-only), dùng `git_commit` từ Cell 1:
+   ```
+   Bảng II ← results/exact/dp_vs_bruteforce.csv ← scripts/run_exact_check.py --config configs/exp_main.yaml @commit <hash>
+   [screening] Rủi ro #3/#4 ← results/week1/raw.csv ← scripts/run_main_grid.py --config configs/exp_week1.yaml @commit <hash>, seeds {0..2}
+   ```
+3. Kiểm tra **mỗi** thư mục output có `run-manifest.json` — **không manifest = run không tồn tại với paper** (CLAUDE.md §5.2).
+4. Commit khi anh muốn: `git add -f results/ data/splits/ docs/RESULTS.md`.
+
+> 🔴 **Không xoá run xấu** (prereg §5). **Run âm là dữ liệu** — ghi vào `RESULTS.md` như mọi run khác.
+
+---
+
+## Bước 4 — Việc của tác giả: timestamp preregistration (A9)
+
+Làm **trước** khi chạy thật, để câu *"chúng tôi đã preregister"* **verify được bởi bên thứ ba** (git history rewrite được nên tự nó không đủ):
+
+1. **OSF** ([osf.io](https://osf.io) → Registrations) **hoặc** archive `docs/preregistration.md` lên **Zenodo** ([zenodo.org](https://zenodo.org)) → lấy **DOI có timestamp**.
+2. Điền **commit hash** của commit chứa `docs/preregistration.md` vào **dòng 4** của file đó.
+3. **Cite DOI/OSF link trong Abstract.**
+4. Gọi đúng tên nó trong bản thảo: ***"Confirmatory analysis protocol for exploratory findings"*** — vì P1/P3 được phát hiện exploratorily trên pipeline có lỗi. **Dán nhãn sai một preregistration còn tệ hơn không có.**
+
+---
+
+## Phụ lục A — Cảnh báo liêm chính (A8)
+
+1. **Chỉ training split có ground truth** ⇒ KHÔNG claim "SOTA BraTS leaderboard".
+2. **LGG có thể KHÔNG ngoại kiểm.** Buda et al. = 110 ca **TCGA-LGG**; BraTS 2020 đã nuốt **108 ca TCGA-LGG** từ đúng collection đó. **BẮT BUỘC** đối chiếu `name_mapping.csv` và **báo cáo số ca trùng bằng con số** trước khi dùng chữ *"external validation"*. Trùng mà vẫn gọi ngoại kiểm ⇒ reviewer BraTS đọc đó là **misrepresentation**. Thay thế mạnh nhất: ngoại kiểm theo **chiều TASK** (tune WT/FLAIR → test ET/T1ce).
+3. **Bẫy kênh LGG:** ảnh Kaggle LGG là **TIFF 3 kênh**; FLAIR = **kênh giữa (index 1)**. Lấy nhầm kênh ⇒ histogram sai ⇒ toàn bộ Kapur/DP sai.
+
+## Phụ lục B — Những gì KHÔNG nằm trong lô này
+
+**Chỉ mở sau khi cả 4 rủi ro sống sót.** Chạy trước = đốt ~35 giờ cho thứ có xác suất bất ngờ ≈ 0.
+
+| Bước | Lệnh | Compute | Accel |
+|---|---|---|---|
+| E1b — đúng-đắn implementation (A6) | tái tạo bảng Kapur/Otsu đã công bố trên Lena/Cameraman/Baboon/Peppers ở đúng NFE đã công bố | ~1h | CPU |
+| **E2 — lưới chính** | `run_main_grid.py --config configs/exp_main.yaml --k-subset 2,3,4` rồi `--k-subset 5,6,8,10` | ~20h | CPU |
+| E3 — ablation | `run_ablation.py --config configs/exp_ablation.yaml --resume` | ~6h | CPU |
+| E4 — ceiling | `run_ceiling.py --config configs/exp_ceiling.yaml --resume` | ~2h | CPU |
+| E4 — U-Net | `run_unet.py --config configs/exp_unet.yaml --resume` | ~2h | **GPU T4** ← bước GPU DUY NHẤT |
+| E6 — thống kê | `run_stats.py --config configs/exp_main.yaml` | phút | CPU |
+| E7 — ngoại kiểm LGG | `run_external.py --config configs/exp_external.yaml` | ~8h | CPU — **đọc Phụ lục A trước** |
+| Build bảng/hình | `build_tables.py` · `build_figures.py` | phút | CPU |
+
+**E1b là cổng cứng, không phải tuỳ chọn:** chưa qua E1b thì **cấm dùng hit-rate-to-DP làm kết quả** — nếu không, dán nhãn "GOA hỏng" chỉ vì nó không đạt tối ưu chính là **vòng tròn logic** (đó *là* P2).
+
+**Session ≤ 12h ⇒ E2 (~20h) phải chia stage:** chia theo `k` qua nhiều session, `--resume` bỏ qua ô đã tính, checkpoint sau mỗi `(image, k, algo, seed)`, cache histogram `.npy` dùng chung (`results/main/cache`). Cuối mỗi session: tải `results/` về + thêm dòng provenance.
