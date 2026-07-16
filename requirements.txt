@@ -1,0 +1,42 @@
+# =============================================================================
+# QIGOA Reality-Check — Python dependencies
+# =============================================================================
+# Soft version pins (>=) so the pipeline runs on Kaggle's rolling image while
+# still recording the EXACT resolved versions in every run-manifest.json
+# (src/manifest.py records lib_versions per run — that is the ground truth of
+# what actually ran, this file is only the floor).
+#
+# On Kaggle MOST of these are PRE-INSTALLED. The two that usually need an
+# explicit `pip install` are `medpy` (HD95 / surface distances) and `tifffile`
+# (LGG 3-channel TIFFs). See docs/huong-dan-setup-kaggle.md, Bước 2.
+# -----------------------------------------------------------------------------
+
+# --- Core numerics (pre-installed on Kaggle) --------------------------------
+numpy>=1.24
+scipy>=1.10            # scipy.stats.wilcoxon (zero_method='pratt' — prereg A4d)
+pandas>=2.0
+
+# --- Imaging / metrics (pre-installed on Kaggle) ----------------------------
+scikit-image>=0.21     # skimage.metrics: PSNR, SSIM (sliding-window — NOT self-rolled)
+scikit-learn>=1.3      # k-means / GMM baselines
+nibabel>=5.1           # BraTS .nii.gz volumes
+tifffile>=2023.7       # LGG 3-channel TIFF (channel-1 = FLAIR; see lgg_loader A8)
+
+# --- Surface-distance metrics (USUALLY NEEDS pip install on Kaggle) ---------
+# HD95 + NSD per Metrics Reloaded. medpy is the named implementation (A7 forbids
+# self-rolled metrics). If medpy is unavailable, the alternative is Google's
+# `surface-distance` (git+https://github.com/deepmind/surface-distance.git).
+medpy>=0.4.0
+
+# --- Config / IO / progress (pre-installed on Kaggle) -----------------------
+PyYAML>=6.0            # config-driven runs (configs/*.yaml)
+matplotlib>=3.7        # build_figures.py — CD diagram, ceiling ladder, Goodhart
+tqdm>=4.65
+
+# --- Deep-learning baseline: 2D U-Net (GPU, run_unet.py ONLY) ---------------
+# Pre-installed on Kaggle GPU images. CPU-only sessions do not need torch for
+# any experiment except E4's U-Net.
+torch>=2.0
+
+# --- Testing (local smoke tests; not needed on Kaggle) ----------------------
+pytest>=7.4
