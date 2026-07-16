@@ -23,3 +23,21 @@ __pycache__/
 *.fdb_latexmk
 
 pro-p.txt
+
+# --- Output sinh tự động (hàng rào IRON RULE 1/3) ---------------------------
+# Số synthetic KHÔNG BAO GIỜ là kết quả. Smoke test sinh CSV/hình trông y như
+# thật; commit chúng là đóng băng số phantom vào repo, nơi một phiên sau có thể
+# nhầm chúng là kết quả Kaggle.
+results/smoke/
+results/_*/
+**/cache/*.npy
+
+# Bảng & hình là BUILD ARTIFACT — build_tables.py / build_figures.py sinh lại
+# chúng từ results/ (CLAUDE.md §5.3: số chảy một chiều results/ → paper/).
+# Giữ .gitkeep để cấu trúc thư mục còn trong repo.
+paper/tables/*.tex
+paper/figures/*.pdf
+
+# Kết quả THẬT từ Kaggle được commit CÓ CHỦ Ý kèm dòng provenance trong
+# docs/RESULTS.md (xem docs/huong-dan-setup-kaggle.md Bước 5), dùng:
+#     git add -f results/<exp>/
