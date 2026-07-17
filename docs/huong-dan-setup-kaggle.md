@@ -48,12 +48,31 @@ Panel phải → **Add Input** → tìm và thêm:
 
 ### Cell 1 — lấy code + cài package thiếu (~2 phút)
 
+```python
+import subprocess, pathlib
+REPO, DIR = 'https://github.com/HoangLong08/Paper-DAU.git', '/kaggle/working/qigoa'
+
+if pathlib.Path(DIR, '.git').is_dir():          # đã có từ session trước → ĐỒNG BỘ, không clone
+    subprocess.run(['git', '-C', DIR, 'fetch', 'origin', 'main'], check=True)
+    subprocess.run(['git', '-C', DIR, 'reset', '--hard', 'origin/main'], check=True)
+else:
+    subprocess.run(['git', 'clone', REPO, DIR], check=True)
+
+COMMIT = subprocess.run(['git', '-C', DIR, 'rev-parse', 'HEAD'],
+                        capture_output=True, text=True).stdout.strip()
+print('git commit:', COMMIT, '← GHI LẠI hash này, nó vào dòng provenance')
+
+missing = [f for f in ('scripts/make_splits.py', 'configs/exp_main.yaml',
+                       'configs/exp_week1.yaml') if not pathlib.Path(DIR, f).exists()]
+assert not missing, f'THIẾU FILE: {missing} — repo chưa đồng bộ. DỪNG, đừng chạy tiếp.'
+```
+
 ```bash
-!git clone https://github.com/HoangLong08/Paper-DAU.git /kaggle/working/qigoa
 %cd /kaggle/working/qigoa
-!git rev-parse HEAD          # ← GHI LẠI hash này, nó vào dòng provenance
 !pip install -q medpy tifffile
 ```
+
+> 🔴 **Vì sao không phải `!git clone` trần.** `/kaggle/working/` **sống sót qua các session** (nó là Output của notebook). Re-run một `git clone` trần vào thư mục đã tồn tại ⇒ `fatal: destination path already exists`, clone **không làm gì**, và `rev-parse` ngay sau đó vẫn vui vẻ in ra hash **cũ** — trông y hệt thành công. Anh sẽ chạy cả một stage trên code cũ mà không biết. `check=True` + `assert` ở trên làm cell **chết to tiếng** thay vì trôi qua. (Đã cắn một lần thật: 17/07/2026.)
 
 Kaggle đã có sẵn numpy/scipy/scikit-image/scikit-learn/pandas/nibabel/PyYAML/matplotlib/torch/tqdm ⇒ **đừng** `pip install -r requirements.txt` (làm hỏng môi trường đã pin của Kaggle). Nếu `medpy` lỗi build: `!pip install -q git+https://github.com/deepmind/surface-distance.git`.
 
