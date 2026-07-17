@@ -428,3 +428,62 @@ Kế hoạch hiện chi **~35/40 giờ** cho các thí nghiệm có **xác suấ
 > **Nếu cả bốn sống sót → khi đó mới đáng chi 20 giờ cho E2.** Nếu một trong bốn chết → **đã tiết kiệm 8 tuần.**
 
 **+ CỔNG TUẦN 0 (đọc toàn văn, trước khi chạy bất cứ gì):** Mousavirad (KBS 2023) · François & Tinarrage (JMIV 2026) · Hegazy & Gabr (arXiv:2605.27132 **và** 2605.27287) · Menotti (CIARP 2015) · Hammouche (EAAI 2010) · Al-Najdawi (Sci Rep 2025). **Không chạy E2 trước khi cả sáu đã đọc và có đoạn định vị viết sẵn.**
+
+---
+
+### 📌 AMENDMENT #2 — 17/07/2026 · Sau LÔ QUYẾT ĐỊNH (A10 Tuần-1) chạy trên Kaggle · Duyệt: Nguyễn Võ Hoàng Long
+
+> 🔴 **KHÁC BẢN CHẤT với Amendment #1: amendment này viết SAU khi đã thấy số.** Amendment #1 là sửa *thiết kế* (chưa thấy số nào). Amendment #2 là **reframe hậu-screening**, và nó chỉ **hợp lệ về liêm chính vì mọi fallback dùng ở đây đã được KHOÁ TỪ TRƯỚC** khi thấy số — cụ thể: **A2 fallback** (P4), **A10 #2 fallback** (đóng góp dương), **A10 #4** (tiêu chí morph>oracle giết P4). Không có fallback nào được phát minh sau khi thấy số. Đây đúng là cơ chế preregistration được thiết kế để làm (§9). **Mọi con số screening dưới đây là `[SCREENING]` — n=60, 3 seed, 1 bg (`exp_week1.yaml`); chúng cho HƯỚNG, KHÔNG đủ công bố, và PHẢI tái lập trên `exp_main.yaml` (n=369, 5 seed) trước khi vào bản thảo.** Provenance đầy đủ: [RESULTS.md](RESULTS.md) mục 3, các dòng 17/07/2026.
+
+**Bối cảnh.** Lô quyết định A10 Tuần-1 chạy trọn trên Kaggle (`@commit 1461520`, hai notebook: `qigoa-reality-check-lo-quyet-dinh-batch` + `qigoa-oracle-stage`). Ba trong bốn câu hỏi rủi ro có tín hiệu screening; câu #1 (Bảng I) vẫn là khảo sát tay chưa làm. **Kết quả: bài SỐNG, luận đề trung tâm (A0) MẠNH HƠN — nhưng hai sừng con (P4-ceiling, P5-đóng-góp-dương) tự bác bỏ / phải hạ cấp đúng như fallback đã lường.**
+
+---
+
+#### B1 · CỔNG CỨNG E1 PASS — Bảng II là số THẬT đầu tiên ✅
+
+DP-exact khớp vét cạn **bit-exact** trên BraTS thật: 160/160 ô (20 ảnh × 2 target × 2 bg × k∈{2,3}), mọi `|Δf| = 0`, mọi mask cảm sinh giống hệt (A5a canonicalise hoạt động). `results/exact/dp_vs_bruteforce.csv`. **P2a đứng vững** (Kapur giải được chính xác, mili-giây — Menotti 2015). Không sửa gì ở P2.
+
+---
+
+#### B2 · P4 — HẠ TỪ "CEILING" XUỐNG "DECOMPOSITION"; RỦI RO #4 ĐÃ NỔ 🔴
+
+**Ceiling decomposition (n=368, THẬT, loại C — đây là đóng góp dương vững nhất còn lại):**
+
+| target | oracle_single | oracle_interval | oracle_levelset | đọc ra |
+|---|---|---|---|---|
+| WT/FLAIR | 0,848 | 0,848 | 0,853 | ngưỡng đơn ĐÃ chạm trần; **khớp François 0,83±0,18** ⇒ cường độ ĐỦ cho WT |
+| ET/T1ce | 0,552 | 0,628 | 0,635 | cần BAND (interval>single); trần chỉ 0,635 ⇒ cường độ **KHÔNG đủ** cho ET |
+
+Đây là *"thông tin nằm ở đâu"* — phân rã chưa ai làm, nhất quán văn liệu. **Giữ, đây là contribution #1.**
+
+**🔴 RỦI RO #4 NỔ `[SCREENING]`:** decode `morph` (Kapur-thresholds + hình thái học) **VƯỢT** oracle cường độ trên WT/FLAIR — tại **k=3, CẢ 8 metaheuristic** cho morph dice_median 0,90–0,91 > oracle_levelset 0,853 (8/8 ô, không cherry-pick). Theo A10 #4, điều này **giết P4-dạng-ceiling**. Cơ chế: hình thái học dùng thông tin **không-gian**, thoát khỏi cận trên **chỉ-cường-độ**. ⇒ oracle KHÔNG phải trần của pipeline thật.
+
+> **✅ KHOÁ (mở rộng A2 fallback):** **XOÁ mọi phát biểu trần khỏi P4.** P4 không còn nói "trần" của bất cứ thứ gì — ngay cả oracle level-set cũng bị morphology vượt. P4 mới = **(i) phân rã trần cường-độ** (single⊆interval⊆levelset, cho biết cường độ đủ hay không cho từng target: WT đủ, ET không) **+ (ii) quan sát rằng hậu xử lý không-gian vượt mọi oracle cường-độ** ⇒ củng cố A0 (Dice do bước sau optimization quyết định). Cả hai đều là *quan sát phân rã*, không phải *claim trần*. Cấm tuyệt đối "we establish the ceiling" giữ nguyên (A2).
+
+---
+
+#### B3 · ĐÓNG GÓP DƯƠNG — HẠ CẤP P5, ĐƯA "DECODING-DOMINANCE" LÊN PRIMARY 🔴
+
+**RỦI RO #2 `[SCREENING]`:** P5 (ngưỡng hiệu chỉnh out-of-fold, WT 0,73) **KHÔNG thắng** metaheuristic khi chúng dùng decode `morph` (WT 0,91). P5 **chỉ thắng trên ET/T1ce** (0,499 vs metaheuristic tốt nhất 0,319). ⇒ câu *"ngưỡng 1-tham-số thắng cả họ metaheuristic"* (A10 #2) **SAI trên WT** — kích hoạt A10 #2 fallback.
+
+> **✅ KHOÁ:** Đóng góp dương **KHÔNG còn là "P5 thắng metaheuristic".** Trọng tâm chuyển sang, theo thứ tự:
+> 1. **PHÁT HIỆN DECODING-DOMINANCE (primary mới — hook định lượng cho A0):** cùng một bộ Kapur-thresholds, đổi decoding `brightest`→`morph` làm Dice WT nhảy **~0,46 → ~0,91** (gấp đôi, **chỉ đổi bước decode, cùng optimizer, cùng ngưỡng**); trong khi đổi optimizer (QIGOA/GA/PSO/… tại k=3 morph) **bất biến ~0,91**. ⇒ *"optimizer là đồ trang trí; lựa chọn decoding — tùy tiện và không được báo cáo trong văn liệu — mới quyết định Dice lâm sàng."* Đây là hiện thân định lượng trực tiếp của LUẬN ĐỀ (A0).
+> 2. **Ceiling decomposition** (B2-i, n=368 thật).
+> 3. **P5 hạ xuống**: một baseline hiệu chỉnh **thắng trên target KHÓ (ET), nơi cường độ không đủ và không decoder nào cứu được** — vẫn là kết quả có ích, nhưng không còn là headline.
+> 4. Công cụ chẩn đoán O(L·logL) + checklist giao thức (giữ nguyên).
+>
+> Việc chọn decoding rule → **loại B (CÓ HỌC)** nếu được tối ưu theo Dice; nếu chỉ liệt kê 4 rule cố định thì là **khảo sát**, không phải học. Giữ A3 (out-of-fold cho mọi thành phần có học).
+
+---
+
+#### B4 · P3 — DẤU TƯƠNG QUAN k–Dice LẬT THEO DECODING RULE `[SCREENING]` ⚠️
+
+Spearman(k, Dice) **RIÊNG từng rule** (câu hỏi A10 #3): `brightest` **+0,96** (Dice TĂNG theo k) · `morph` **−0,89** (GIẢM) · otsu_pick/upper_union không đáng kể. ⇒ headline *"metrics are anti-correlated"* dạng đơn giản **SAI** — dấu phụ thuộc decoding rule. **Không giết P3**, nhưng khớp A4(a) (đã bỏ aggregate Spearman khỏi decision rule) và củng cố A0: hành vi Dice bị chi phối bởi decoding tùy tiện. Primary của P3 vẫn là Δᵢ per-patient (A4a), không đổi. **Tái lập ở n=368 trước khi viết.**
+
+---
+
+#### B5 · GHI CHÚ SỐ LIỆU ⚠️
+
+- **Cohort thật = 368 ca** (không phải 369 như config giả định — 1 ca bị `build_cohort` loại, nghi thiếu modality). `data/splits/brats_cohort.csv` là nguồn chuẩn. Xác nhận ca nào & lý do trước khi viết Methods.
+- **`results/smoke/` là synthetic** (sót trong `/kaggle/working` bền, bị tar gói kèm) — đã gitignore, KHÔNG bao giờ là kết quả.
+- **Việc còn treo trước E2:** (a) **A9 timestamp** OSF/Zenodo — GẤP, vì Bảng II + ceiling đã là số thật; (b) **Bảng I** (câu hỏi rủi ro #1, chưa làm — quyết định P1 có strawman không); (c) tái lập B2/B3/B4 trên `exp_main.yaml`.

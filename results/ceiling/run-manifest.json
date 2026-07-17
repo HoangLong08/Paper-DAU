@@ -1,0 +1,55 @@
+{
+  "git_commit": "1461520d7785c65a06704e47ba229ddde0b2d9ff",
+  "config_hash": "be0758bede6ffa782d3a1f962c6e65aa5d79d6c0281aba95c78e3daa02d12c5b",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.0.2",
+    "scipy": "1.16.3",
+    "skimage": "0.25.2",
+    "sklearn": "1.6.1",
+    "torch": "2.10.0+cpu",
+    "pandas": "2.3.3",
+    "nibabel": "5.4.2"
+  },
+  "timestamp": "2026-07-17T18:31:26.115198+00:00",
+  "output_paths": [
+    "/kaggle/working/qigoa/results/ceiling/raw.csv",
+    "/kaggle/working/qigoa/results/ceiling/qstar.csv",
+    "/kaggle/working/qigoa/results/ceiling/summary.csv"
+  ],
+  "extra": {
+    "experiment": "E4 ceiling ladder + P5",
+    "config_path": "configs/exp_ceiling.yaml",
+    "data_source": "brats",
+    "placeholder": false,
+    "oracles": [
+      "oracle_single",
+      "oracle_interval",
+      "oracle_levelset"
+    ],
+    "n_folds": 5,
+    "q_grid": [
+      80.0,
+      99.9,
+      100
+    ],
+    "learning_curve_sizes": [
+      5,
+      10,
+      20,
+      50,
+      100,
+      0
+    ],
+    "n_rows": 14720,
+    "p5_protocol": "nested CV, patient-level, q* fitted on outer-train, frozen, evaluated out-of-fold (prereg A3)",
+    "elapsed_s": 1387.794
+  }
+}

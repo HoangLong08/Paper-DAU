@@ -1,0 +1,56 @@
+{
+  "git_commit": "1461520d7785c65a06704e47ba229ddde0b2d9ff",
+  "config_hash": "6298ea8c3a8155c4c56ba92940655441dda76fdac2170072f9834dab6ee80344",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.0.2",
+    "scipy": "1.16.3",
+    "skimage": "0.25.2",
+    "sklearn": "1.6.1",
+    "torch": "2.10.0+cpu",
+    "pandas": "2.3.3",
+    "nibabel": "5.4.2"
+  },
+  "timestamp": "2026-07-17T17:12:15.020473+00:00",
+  "output_paths": [
+    "/kaggle/working/qigoa/results/week1/stats/pairwise.csv",
+    "/kaggle/working/qigoa/results/week1/stats/tost.csv",
+    "/kaggle/working/qigoa/results/week1/stats/bayes.csv",
+    "/kaggle/working/qigoa/results/week1/stats/cd.csv",
+    "/kaggle/working/qigoa/results/week1/stats/p3_delta.csv",
+    "/kaggle/working/qigoa/results/week1/stats/p2c_decoupling.csv",
+    "/kaggle/working/qigoa/results/week1/stats/family_a_superiority.csv"
+  ],
+  "extra": {
+    "experiment": "E6 statistics",
+    "config_path": "configs/exp_week1.yaml",
+    "data_source": "brats",
+    "placeholder": false,
+    "unit": "patient",
+    "k_primary": 4,
+    "decoding_primary": "brightest",
+    "reference_method": "DP-exact",
+    "sesoi": 0.01,
+    "sesoi_hierarchy": [
+      0.01,
+      0.05
+    ],
+    "rope": [
+      -0.01,
+      0.01
+    ],
+    "zero_method": "pratt (A4d)",
+    "families": {
+      "A": "superiority (1 test, no correction)",
+      "B": "trend (Holm within family)",
+      "C": "equivalence TOST (intersection-union \u21d2 NO correction)",
+      "D": "exploratory (effect size + CI, no p-claims)"
+    },
+    "elapsed_s": 23.538
+  }
+}

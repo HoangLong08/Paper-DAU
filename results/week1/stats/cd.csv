@@ -1,0 +1,23 @@
+# QIGOA reality-check | script=run_stats.py | experiment=week1 | data_source=brats | commit=1461520d7785c65a06704e47ba229ddde0b2d9ff | generated=2026-07-17T17:12:06
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+target,include_zero_bg,k,decode_rule,metric,method,avg_rank,cd,friedman_stat,friedman_p,n_patients,n_methods,family,placeholder
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),DP-exact,5.458333333333333,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GA,4.733333333333333,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GOA,6.466666666666667,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GOA-fixed,5.683333333333334,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GWO,5.408333333333333,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),MPA,5.408333333333333,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),PSO,5.375,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),QIGOA,5.466666666666667,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),WOA,5.3,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),random,5.7,1.748966806114081,16.875175315568107,0.050706979929502134,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),DP-exact,5.591666666666667,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GA,5.35,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GOA,4.633333333333334,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GOA-fixed,5.9,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GWO,5.291666666666667,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),MPA,5.491666666666666,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),PSO,5.625,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),QIGOA,6.033333333333333,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),WOA,5.583333333333333,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),random,5.5,1.748966806114081,11.660030627871414,0.23316059716811294,60,10,D-exploratory,0

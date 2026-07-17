@@ -1,0 +1,42 @@
+{
+  "git_commit": "1461520d7785c65a06704e47ba229ddde0b2d9ff",
+  "config_hash": "e1567361361f7d0038a6fbaf05355cdae1ae325cc64ca7aef2acd3e8998bd912",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.0.2",
+    "scipy": "1.16.3",
+    "skimage": "0.25.2",
+    "sklearn": "1.6.1",
+    "torch": "2.10.0+cpu",
+    "pandas": "2.3.3",
+    "nibabel": "5.4.2"
+  },
+  "timestamp": "2026-07-17T09:45:04.880760+00:00",
+  "output_paths": [
+    "/kaggle/working/qigoa/results/exact/dp_vs_bruteforce.csv"
+  ],
+  "extra": {
+    "experiment": "main",
+    "config_path": "configs/exp_main.yaml",
+    "data_source": "brats",
+    "placeholder": false,
+    "gate": "E1 dp_vs_bruteforce",
+    "n_rows": 160,
+    "n_fail": 0,
+    "tol": 1e-09,
+    "k_list": [
+      2,
+      3
+    ],
+    "n_images": 20,
+    "passed": true,
+    "elapsed_s": 2077.548
+  }
+}

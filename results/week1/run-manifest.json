@@ -1,0 +1,70 @@
+{
+  "git_commit": "1461520d7785c65a06704e47ba229ddde0b2d9ff",
+  "config_hash": "6298ea8c3a8155c4c56ba92940655441dda76fdac2170072f9834dab6ee80344",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.0.2",
+    "scipy": "1.16.3",
+    "skimage": "0.25.2",
+    "sklearn": "1.6.1",
+    "torch": "2.10.0+cpu",
+    "pandas": "2.3.3",
+    "nibabel": "5.4.2"
+  },
+  "timestamp": "2026-07-17T17:11:44.494067+00:00",
+  "output_paths": [
+    "/kaggle/working/qigoa/results/week1/raw.csv",
+    "/kaggle/working/qigoa/results/week1/summary.csv",
+    "/kaggle/working/qigoa/results/week1/mask_identity.csv"
+  ],
+  "extra": {
+    "experiment": "E2 main grid",
+    "config_path": "configs/exp_week1.yaml",
+    "data_source": "brats",
+    "placeholder": false,
+    "n_cells_computed": 23520,
+    "budget": 5000,
+    "k_list": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10
+    ],
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "optimizers": [
+      "GA",
+      "PSO",
+      "GOA",
+      "GOA-fixed",
+      "GWO",
+      "WOA",
+      "MPA",
+      "QIGOA",
+      "random"
+    ],
+    "decoding_rules": [
+      "brightest",
+      "upper_union",
+      "otsu_pick",
+      "morph"
+    ],
+    "labelmap_decoders": [
+      "kmeans",
+      "watershed",
+      "chanvese"
+    ],
+    "elapsed_s": 25093.279
+  }
+}

@@ -1,0 +1,7 @@
+# QIGOA reality-check | script=run_stats.py | experiment=week1 | data_source=brats | commit=1461520d7785c65a06704e47ba229ddde0b2d9ff | generated=2026-07-17T17:12:07
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+family,analysis,target,include_zero_bg,decode_rule,reference,n,median_delta,p,rank_biserial,ci_low,ci_high,sesoi,n_zero,n_total,success,mode_k_psnr,mode_k_dice,placeholder,p_holm
+B-trend,P3-primary: Dice(k*_Dice) - Dice(k*_PSNR),et_t1ce,true,brightest,DP-exact,60,0.0,0.004711793940728323,1.0,0.0,0.0,0.01,52,60,False,10.0,10.0,0,0.009423587881456646
+B-trend,"P3-secondary: per-patient Spearman(k, Dice)",et_t1ce,true,brightest,DP-exact,57,0.9910312089651149,2.772811001500193e-11,0.9975801572897761,0.9910312089651149,1.0,-0.5,0,57,False,,,0,1.1091244006000772e-10
+B-trend,P3-primary: Dice(k*_Dice) - Dice(k*_PSNR),wt_flair,true,brightest,DP-exact,60,0.11380832704915123,3.7787747957135796e-11,1.0,0.08052627896000797,0.16089448200500167,0.01,8,60,True,10.0,2.0,0,1.1336324387140739e-10
+B-trend,"P3-secondary: per-patient Spearman(k, Dice)",wt_flair,true,brightest,DP-exact,60,-0.06258080319838417,0.7823926539705083,0.04100601421541826,-0.7545146580662666,0.5892857142857144,-0.5,1,60,False,,,0,0.7823926539705083

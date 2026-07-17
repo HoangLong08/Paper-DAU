@@ -1,0 +1,3 @@
+# QIGOA reality-check | script=run_stats.py | experiment=week1 | data_source=brats | commit=1461520d7785c65a06704e47ba229ddde0b2d9ff | generated=2026-07-17T17:12:14
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+

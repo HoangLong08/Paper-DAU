@@ -1,0 +1,21 @@
+# QIGOA reality-check | script=run_stats.py | experiment=week1 | data_source=brats | commit=1461520d7785c65a06704e47ba229ddde0b2d9ff | generated=2026-07-17T17:12:05
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+family,target,include_zero_bg,k,decode_rule,method,reference,n_patients,rope_low,rope_high,p_left,p_rope,p_right,primary,placeholder
+C-equivalence,et_t1ce,true,4,brightest,GA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,GOA,DP-exact,60,-0.01,0.01,0.08335,0.9121,0.00455,True,0
+C-equivalence,et_t1ce,true,4,brightest,GOA-fixed,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,GWO,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,MPA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,PSO,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,QIGOA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,WOA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,et_t1ce,true,4,brightest,random,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,GA,DP-exact,60,-0.01,0.01,0.0,0.99205,0.00795,True,0
+C-equivalence,wt_flair,true,4,brightest,GOA,DP-exact,60,-0.01,0.01,0.0118,0.05525,0.93295,True,0
+C-equivalence,wt_flair,true,4,brightest,GOA-fixed,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,GWO,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,MPA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,PSO,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,QIGOA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,WOA,DP-exact,60,-0.01,0.01,0.0,1.0,0.0,True,0
+C-equivalence,wt_flair,true,4,brightest,random,DP-exact,60,-0.01,0.01,0.29105,0.4225,0.28645,True,0

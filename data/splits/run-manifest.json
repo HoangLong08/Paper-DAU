@@ -1,0 +1,33 @@
+{
+  "git_commit": "1461520d7785c65a06704e47ba229ddde0b2d9ff",
+  "config_hash": "be0758bede6ffa782d3a1f962c6e65aa5d79d6c0281aba95c78e3daa02d12c5b",
+  "seeds": [
+    0
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.0.2",
+    "scipy": "1.16.3",
+    "skimage": "0.25.2",
+    "sklearn": "1.6.1",
+    "torch": "2.10.0+cpu",
+    "pandas": "2.3.3",
+    "nibabel": "5.4.2"
+  },
+  "timestamp": "2026-07-17T18:05:45.334402+00:00",
+  "output_paths": [
+    "/kaggle/working/qigoa/data/splits/brats_cohort.csv",
+    "/kaggle/working/qigoa/data/splits/fold_0.json",
+    "/kaggle/working/qigoa/data/splits/fold_1.json",
+    "/kaggle/working/qigoa/data/splits/fold_2.json",
+    "/kaggle/working/qigoa/data/splits/fold_3.json",
+    "/kaggle/working/qigoa/data/splits/fold_4.json"
+  ],
+  "extra": {
+    "script": "scripts/make_splits.py",
+    "n_folds": 5,
+    "split_unit": "patient",
+    "stratified_by": "grade x WT-volume tertile (A3)",
+    "cohort_csv": "/kaggle/working/qigoa/data/splits/brats_cohort.csv"
+  }
+}
