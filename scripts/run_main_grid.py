@@ -23,6 +23,8 @@ Resume-được (§5 Kaggle): checkpoint sau MỖI ô (image, k, algo, seed), hi
 
 from __future__ import annotations
 
+import multiprocessing as mp
+import os
 import sys
 import time
 
@@ -90,6 +92,100 @@ def _cell_common(cfg, sl, target, bg, k, method, seed, img, thr, f_val, f_exact,
     }
 
 
+def _patient_rows(task):
+    """Toàn bộ công việc của MỘT bệnh nhân → (rows, n_cells). KHÔNG ghi file.
+
+    Tách ra để đường tuần tự (--workers 1) và đường song song dùng CHUNG một thân
+    duy nhất — nếu nhân đôi code, hai đường sẽ trôi dạt và số của paper phụ thuộc vào
+    cờ dòng lệnh (đúng loại lỗi mà scripts/README §"Interface gaps" cảnh báo).
+
+    An toàn song song: một ô chỉ phụ thuộc (histogram, k, seed, budget, hp) vì
+    `_common.run_optimizer_cell` gọi `set_all_seeds(seed)` ngay đầu mỗi ô ⇒ độc lập
+    thứ tự chạy. Ghi CSV vẫn do tiến trình cha làm (một người ghi duy nhất).
+    """
+    sl, done_p, ctx = task
+    cfg, scfg = ctx["cfg"], ctx["scfg"]
+    rules, labelmap_all = ctx["rules"], ctx["labelmap_all"]
+    lm_primary_only, lm_methods = ctx["lm_primary_only"], ctx["lm_methods"]
+    k_primary, seeds, algos = ctx["k_primary"], ctx["seeds"], ctx["algos"]
+    budget, hp, tol, cache_dir = ctx["budget"], ctx["hp"], ctx["tol"], ctx["cache_dir"]
+
+    rows, n_cells = [], 0
+    for target in ctx["targets"]:
+        img, gt = target_arrays(sl, target)
+
+        # ---- baseline cổ điển (loại A; không phụ thuộc k lẫn histogram-bg) --
+        if scfg.get("include_classical", False):
+            for name, mask in classical_masks(
+                    img, scfg.get("classical") or [], scfg).items():
+                row_key = {"patient_id": sl.patient_id, "target": target,
+                           "include_zero_bg": NA_BG, "k": NA_K,
+                           "method": name, "seed": NA_SEED}
+                if key_of(row_key, KEY_COLS) in done_p:
+                    continue
+                rows.append({
+                    **row_key, "method_class": CLASS_A, "decode_rule": "native",
+                    "decode_horn": "native", "thresholds": "",
+                    "fitness": "", "f_exact": "", "relative_gap": "", "hit": "",
+                    "nfe": "", "budget": "", "runtime_s": "",
+                    "psnr": "", "ssim": "",
+                    "mask_hash": mask_hash(mask),
+                    **mask_metrics(mask, gt, ctx["mcfg"]),
+                    "data_source": data_source(cfg),
+                    "placeholder": int(data_source(cfg) == "synthetic"),
+                })
+
+        for bg in ctx["bgs"]:
+            hist = hist_cached(cache_dir, sl, target, bool(bg))
+            if hist.sum() <= 0:
+                print(f"[SKIP] {sl.patient_id}/{target}/bg={bg}: histogram rỗng")
+                continue
+            fit = make_fitness(hist, str(scfg.get("fitness", "kapur")))
+
+            for k in ctx["k_list"]:
+                # reference optimum (Menotti 2015 — KHÔNG phải đóng góp của ta)
+                thr_ex, f_ex = solve_exact(fit, k)
+                lm = (labelmap_all
+                      if labelmap_all and (not lm_primary_only or k == k_primary)
+                      else [])
+
+                # ---- DP-exact (tất định ⇒ seed = -1) -----------------
+                row_key = {"patient_id": sl.patient_id, "target": target,
+                           "include_zero_bg": str(bool(bg)).lower(), "k": k,
+                           "method": EXACT, "seed": NA_SEED}
+                if key_of(row_key, KEY_COLS) not in done_p:
+                    t0 = time.perf_counter()
+                    _ = solve_exact(fit, k)      # đo lại để có runtime sạch
+                    dt = time.perf_counter() - t0
+                    base = _cell_common(cfg, sl, target, bg, k, EXACT, NA_SEED,
+                                        img, list(thr_ex), float(f_ex), float(f_ex), tol)
+                    base.update({"nfe": "", "budget": "", "runtime_s": dt})
+                    lm_dp = lm if (lm_methods is None or EXACT in lm_methods) else []
+                    rows.extend(decode_rows(base, img, gt, list(thr_ex), scfg, rules, lm_dp))
+                    n_cells += 1
+
+                # ---- metaheuristic × seed ----------------------------
+                for algo in algos:
+                    use_lm = lm if (lm_methods is None or algo in lm_methods) else []
+                    for seed in seeds:
+                        row_key = {"patient_id": sl.patient_id, "target": target,
+                                   "include_zero_bg": str(bool(bg)).lower(), "k": k,
+                                   "method": algo, "seed": seed}
+                        if key_of(row_key, KEY_COLS) in done_p:
+                            continue
+                        res = run_optimizer_cell(algo, fit, k, seed, budget, hp)
+                        base = _cell_common(cfg, sl, target, bg, k, algo, seed, img,
+                                            res["thresholds"], res["fitness"],
+                                            float(f_ex), tol)
+                        base.update({"nfe": res["nfe"], "budget": budget,
+                                     "runtime_s": res["runtime_s"]})
+                        lm_here = use_lm if seed == seeds[0] or not lm_primary_only else []
+                        rows.extend(decode_rows(base, img, gt, res["thresholds"],
+                                                scfg, rules, lm_here))
+                        n_cells += 1
+    return rows, n_cells
+
+
 def main() -> int:
     _p = parse_args(__doc__.splitlines()[0])
     _p.add_argument(
@@ -98,6 +194,16 @@ def main() -> int:
         default=None,
         help="chỉ chạy các k này, VD '2,3,4'. E2 (~20h) vượt giới hạn session Kaggle "
              "12h ⇒ chia stage theo k qua nhiều session, rồi merge (docs/huong-dan-setup-kaggle.md §4)",
+    )
+    _p.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="số tiến trình song song, chia việc theo BỆNH NHÂN. 1 (mặc định) = đường "
+             "chạy tuần tự nguyên bản. BIT-EXACT với tuần tự: mỗi ô gọi set_all_seeds(seed) "
+             "riêng (_common.run_optimizer_cell) nên kết quả KHÔNG phụ thuộc thứ tự chạy; "
+             "Pool.imap giữ nguyên thứ tự bệnh nhân ⇒ raw.csv giống hệt (trừ cột runtime_s, "
+             "vốn là wall-clock). 0 hoặc âm ⇒ dùng os.cpu_count().",
     )
     args = _p.parse_args()
     cfg, cfg_hash = load_config(args.config)
@@ -143,88 +249,47 @@ def main() -> int:
     n_cells = 0
     t_start = time.perf_counter()
 
+    ctx = {
+        "cfg": cfg, "scfg": scfg, "mcfg": mcfg, "targets": targets, "bgs": bgs,
+        "k_list": k_list, "k_primary": k_primary, "seeds": seeds, "budget": budget,
+        "hp": hp, "algos": algos, "tol": tol, "cache_dir": cache_dir, "rules": rules,
+        "labelmap_all": labelmap_all, "lm_primary_only": lm_primary_only,
+        "lm_methods": lm_methods,
+    }
+    workers = int(args.workers) or (os.cpu_count() or 1)
+    if workers < 0:
+        workers = os.cpu_count() or 1
+
+    def _tasks():
+        """Sinh task theo bệnh nhân; lọc sẵn done-keys của riêng bệnh nhân đó
+        (gửi cả tập `done` cho mỗi worker sẽ pickle thừa hàng trăm nghìn khoá)."""
+        for sl in iter_slices(scfg):
+            yield (sl, {t for t in done if t[0] == sl.patient_id}, ctx)
+
     with CsvAppender(raw_path, fields, "run_main_grid.py", cfg, resume=args.resume,
                      note="long-format: 1 row per (patient, target, bg, k, method, seed, "
                           "decode_rule). k=-1 / seed=-1 / include_zero_bg=na ⇒ not applicable."
                      ) as w:
-        for sl in iter_slices(scfg):
-            for target in targets:
-                img, gt = target_arrays(sl, target)
+        if workers <= 1:
+            results = (_patient_rows(t) for t in _tasks())
+        else:
+            # imap (KHÔNG imap_unordered) ⇒ giữ nguyên thứ tự bệnh nhân ⇒ raw.csv
+            # giống hệt bản tuần tự, không chỉ tương đương về nội dung.
+            print(f"[E2] chạy song song {workers} tiến trình (chia theo bệnh nhân); "
+                  f"ghi CSV vẫn tuần tự ở tiến trình cha.")
+            pool = mp.Pool(processes=workers)
+            results = pool.imap(_patient_rows, _tasks(), chunksize=1)
 
-                # ---- baseline cổ điển (loại A; không phụ thuộc k lẫn histogram-bg) --
-                if scfg.get("include_classical", False):
-                    for name, mask in classical_masks(
-                            img, scfg.get("classical") or [], scfg).items():
-                        row_key = {"patient_id": sl.patient_id, "target": target,
-                                   "include_zero_bg": NA_BG, "k": NA_K,
-                                   "method": name, "seed": NA_SEED}
-                        if key_of(row_key, KEY_COLS) in done:
-                            continue
-                        w.write({
-                            **row_key, "method_class": CLASS_A, "decode_rule": "native",
-                            "decode_horn": "native", "thresholds": "",
-                            "fitness": "", "f_exact": "", "relative_gap": "", "hit": "",
-                            "nfe": "", "budget": "", "runtime_s": "",
-                            "psnr": "", "ssim": "",
-                            "mask_hash": mask_hash(mask),
-                            **mask_metrics(mask, gt, mcfg),
-                            "data_source": data_source(cfg),
-                            "placeholder": int(data_source(cfg) == "synthetic"),
-                        })
-                        w.flush()
-
-                for bg in bgs:
-                    hist = hist_cached(cache_dir, sl, target, bool(bg))
-                    if hist.sum() <= 0:
-                        print(f"[SKIP] {sl.patient_id}/{target}/bg={bg}: histogram rỗng")
-                        continue
-                    fit = make_fitness(hist, str(scfg.get("fitness", "kapur")))
-
-                    for k in k_list:
-                        # reference optimum (Menotti 2015 — KHÔNG phải đóng góp của ta)
-                        thr_ex, f_ex = solve_exact(fit, k)
-                        lm = (labelmap_all
-                              if labelmap_all and (not lm_primary_only or k == k_primary)
-                              else [])
-
-                        # ---- DP-exact (tất định ⇒ seed = -1) -----------------
-                        row_key = {"patient_id": sl.patient_id, "target": target,
-                                   "include_zero_bg": str(bool(bg)).lower(), "k": k,
-                                   "method": EXACT, "seed": NA_SEED}
-                        if key_of(row_key, KEY_COLS) not in done:
-                            t0 = time.perf_counter()
-                            _ = solve_exact(fit, k)      # đo lại để có runtime sạch
-                            dt = time.perf_counter() - t0
-                            base = _cell_common(cfg, sl, target, bg, k, EXACT, NA_SEED,
-                                                img, list(thr_ex), float(f_ex), float(f_ex), tol)
-                            base.update({"nfe": "", "budget": "", "runtime_s": dt})
-                            lm_dp = lm if (lm_methods is None or EXACT in lm_methods) else []
-                            for r in decode_rows(base, img, gt, list(thr_ex), scfg, rules, lm_dp):
-                                w.write(r)
-                            w.flush()
-                            n_cells += 1
-
-                        # ---- metaheuristic × seed ----------------------------
-                        for algo in algos:
-                            use_lm = lm if (lm_methods is None or algo in lm_methods) else []
-                            for seed in seeds:
-                                row_key = {"patient_id": sl.patient_id, "target": target,
-                                           "include_zero_bg": str(bool(bg)).lower(), "k": k,
-                                           "method": algo, "seed": seed}
-                                if key_of(row_key, KEY_COLS) in done:
-                                    continue
-                                res = run_optimizer_cell(algo, fit, k, seed, budget, hp)
-                                base = _cell_common(cfg, sl, target, bg, k, algo, seed, img,
-                                                    res["thresholds"], res["fitness"],
-                                                    float(f_ex), tol)
-                                base.update({"nfe": res["nfe"], "budget": budget,
-                                             "runtime_s": res["runtime_s"]})
-                                lm_here = use_lm if seed == seeds[0] or not lm_primary_only else []
-                                for r in decode_rows(base, img, gt, res["thresholds"],
-                                                     scfg, rules, lm_here):
-                                    w.write(r)
-                                w.flush()      # checkpoint sau MỖI ô (§5 Kaggle #3)
-                                n_cells += 1
+        try:
+            for rows, n in results:
+                for r in rows:
+                    w.write(r)
+                w.flush()       # checkpoint sau MỖI bệnh nhân (§5 Kaggle #3)
+                n_cells += n
+        finally:
+            if workers > 1:
+                pool.close()
+                pool.join()
 
     elapsed = time.perf_counter() - t_start
     summary_path, ident_path = summarise(raw_path, out_dir, scfg, cfg, algos)
