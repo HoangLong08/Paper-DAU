@@ -198,9 +198,12 @@ def main() -> int:
     _p.add_argument(
         "--workers",
         type=int,
-        default=1,
-        help="số tiến trình song song, chia việc theo BỆNH NHÂN. 1 (mặc định) = đường "
-             "chạy tuần tự nguyên bản. BIT-EXACT với tuần tự: mỗi ô gọi set_all_seeds(seed) "
+        default=0,
+        help="số tiến trình song song, chia việc theo BỆNH NHÂN. 0 (MẶC ĐỊNH) = dùng hết "
+             "os.cpu_count(); đặt 1 để quay về đường chạy tuần tự nguyên bản. Mặc định là "
+             "auto vì notebook Kaggle gọi script này KHÔNG kèm cờ, mà chạy 1 luồng ở n=369 "
+             "tốn ~114h CPU. Đổi mặc định KHÔNG đổi số: "
+             "BIT-EXACT với tuần tự: mỗi ô gọi set_all_seeds(seed) "
              "riêng (_common.run_optimizer_cell) nên kết quả KHÔNG phụ thuộc thứ tự chạy; "
              "Pool.imap giữ nguyên thứ tự bệnh nhân ⇒ raw.csv giống hệt (trừ cột runtime_s, "
              "vốn là wall-clock). 0 hoặc âm ⇒ dùng os.cpu_count().",

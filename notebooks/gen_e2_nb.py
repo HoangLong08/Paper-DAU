@@ -250,24 +250,46 @@ cell này giải nén nó vào repo ⇒ `--resume` tiếp đúng chỗ dừng, *
 """))
 
 cells.append(code(r"""
-import glob, tarfile
+import glob, tarfile, shutil
 
 if not RESTORE_FROM_TGZ:
-    print('RESTORE_FROM_TGZ = False -> bo qua (working dir hien tai da co results/, hoac la session dau).')
+    print('RESTORE_FROM_TGZ = False -> bo qua (session dau, hoac working dir da co results/).')
 else:
+    # (1) Truong hop A: archive con nguyen duoi /kaggle/input
     cands = sorted(glob.glob('/kaggle/input/**/results_*.tgz', recursive=True)) + \
-            sorted(glob.glob('/kaggle/input/**/*.tgz', recursive=True))
+            sorted(glob.glob('/kaggle/input/**/*.tgz', recursive=True)) + \
+            sorted(glob.glob('/kaggle/input/**/*.tar.gz', recursive=True))
     cands = list(dict.fromkeys(cands))
-    if not cands:
-        raise RuntimeError('RESTORE_FROM_TGZ=True nhung KHONG thay .tgz nao duoi /kaggle/input.\n'
-                           '=> Add Input dataset chua .tgz session truoc, hoac dat lai co = False.')
-    src = cands[-1]
-    print('Restore tu:', src)
-    with tarfile.open(src, 'r:gz') as t:
-        t.extractall(DIR)   # tgz goi tu repo root: results/... + data/splits/...
-    n_raw = sum(1 for _ in open(pathlib.Path(DIR, 'results/main/raw.csv'))) \
-        if pathlib.Path(DIR, 'results/main/raw.csv').exists() else 0
-    print('Da giai nen. results/main/raw.csv:', n_raw, 'dong (ke ca banner).')
+    if cands:
+        src = cands[-1]
+        print('Restore tu ARCHIVE:', src)
+        with tarfile.open(src, 'r:gz') as t:
+            t.extractall(DIR)      # tgz goi tu repo root: results/... + data/splits/...
+    else:
+        # (2) Truong hop B: Kaggle TU GIAI NEN khi tao Dataset -> tim thu muc da giai
+        hits = [p for p in pathlib.Path('/kaggle/input').rglob('main/raw.csv')
+                if p.parent.parent.name == 'results']
+        if not hits:
+            raise RuntimeError(
+                'RESTORE_FROM_TGZ=True nhung KHONG thay .tgz, LAN KHONG thay '
+                'results/main/raw.csv da giai nen duoi /kaggle/input.\n'
+                '=> Add Input dataset chua ket qua session truoc chua thanh cong.')
+        src_results = hits[0].parent.parent                 # .../results
+        print('Restore tu THU MUC DA GIAI NEN:', src_results)
+        shutil.copytree(src_results, pathlib.Path(DIR, 'results'), dirs_exist_ok=True)
+        sp = src_results.parent / 'data' / 'splits'
+        if sp.is_dir():
+            shutil.copytree(sp, pathlib.Path(DIR, 'data/splits'), dirs_exist_ok=True)
+
+    # GUARD: restore hong ma van chay tiep = tinh lai tu 0 va GHI DE tien do session truoc.
+    raw = pathlib.Path(DIR, 'results/main/raw.csv')
+    n_raw = sum(1 for _ in open(raw, encoding='utf-8', errors='replace')) if raw.exists() else 0
+    print('results/main/raw.csv:', n_raw, 'dong (ke ca banner).')
+    if n_raw < 1000:
+        raise RuntimeError(
+            'RESTORE THAT BAI (raw.csv chi %d dong). DUNG NGAY — chay tiep se tinh lai tu 0 '
+            'va dot ca mot session. Kiem tra Add Input.' % n_raw)
+    print('Restore OK -> --resume se bo qua cac o da tinh o session truoc.')
 """))
 
 cells.append(md(r"""
