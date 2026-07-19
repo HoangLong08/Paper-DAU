@@ -78,6 +78,11 @@ TARGETS: Dict[str, tuple] = {
 FITNESSES = {"kapur": KapurFitness, "otsu": OtsuFitness}
 
 #: Nhãn loại phương pháp (prereg §6/A3 — mỗi phương pháp thuộc ĐÚNG một loại).
+# Cột ĐỊNH DANH (không phải số đo): luôn đọc dưới dạng chuỗi. Xem read_results_csv —
+# để pandas tự suy kiểu trên các cột này đã gây trùng dòng + tách nhóm trên lưới chính.
+ID_COLS = ("patient_id", "target", "include_zero_bg", "method", "method_class",
+           "decode_rule", "decode_horn", "thresholds", "data_source")
+
 CLASS_A = "A: unsupervised per-image"
 CLASS_B = "B: learned (out-of-fold only)"
 CLASS_C = "C: uses test-time ground truth"
@@ -320,11 +325,26 @@ def read_results_csv(path: Path) -> pd.DataFrame:
     File rỗng / chỉ có banner ⇒ DataFrame RỖNG (không ném lỗi): một phân tích không áp
     dụng được với input hiện có là **thông tin**, không phải sự cố — và tuyệt đối không
     được thay bằng một hàng bịa (IRON RULE 1).
+
+    ``low_memory=False`` + ép ``dtype=str`` cho các cột ĐỊNH DANH là BẮT BUỘC, không
+    phải tinh chỉnh hiệu năng. Với ``low_memory=True`` (mặc định của pandas) dtype được
+    suy diễn THEO TỪNG KHỐI: khi raw.csv đủ lớn, một khối chỉ chứa ``true``/``false``
+    trong ``include_zero_bg`` bị đọc thành **bool**, nên ``str(v)`` cho ``'True'`` thay
+    vì ``'true'``. Hậu quả đã quan sát được trên lưới chính (2026-07-19):
+    (a) ``done_keys()`` trượt khoá ⇒ ``--resume`` tính lại ô đã xong ⇒ dòng trùng;
+    (b) ``groupby`` trong ``summarise()`` tách CÙNG một điều kiện thành hai nhóm ⇒
+    ``summary.csv`` báo ``n_patients`` chỉ bằng một phần thực tế.
     """
     try:
-        return pd.read_csv(path, comment="#")
+        return pd.read_csv(path, comment="#", low_memory=False,
+                           dtype={c: str for c in ID_COLS})
     except pd.errors.EmptyDataError:
         return pd.DataFrame()
+    except ValueError:
+        # File cũ thiếu một vài cột định danh ⇒ ép dtype theo cột thực có.
+        head = pd.read_csv(path, comment="#", nrows=0)
+        keep = {c: str for c in ID_COLS if c in head.columns}
+        return pd.read_csv(path, comment="#", low_memory=False, dtype=keep)
 
 
 def done_keys(path: Path, key_cols: Sequence[str], resume: bool) -> set:

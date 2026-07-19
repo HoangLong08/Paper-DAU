@@ -317,6 +317,19 @@ def summarise(raw_path, out_dir, scfg, cfg, algos):
     from src.eval.stats import bootstrap_ci
 
     df = read_results_csv(raw_path)
+
+    # Lớp phòng vệ: raw.csv là append-only nên một lần --resume trượt khoá sẽ để lại
+    # dòng LẶP. Các bản sao bit-identical (đã kiểm 2026-07-19) nên bỏ trùng là vô hại,
+    # nhưng KHÔNG bỏ trùng thì median/CI bị đếm hai lần ⇒ số sai vào Bảng III.
+    full_key = KEY_COLS + ["decode_rule"]
+    if all(c in df.columns for c in full_key):
+        n_before = len(df)
+        df = df.drop_duplicates(full_key, keep="first")
+        if n_before != len(df):
+            print(f"[summarise] BỎ TRÙNG {n_before - len(df)} dòng lặp khoá "
+                  f"(còn {len(df)}). Nguyên nhân gốc: --resume trượt khoá; "
+                  f"đã vá ở read_results_csv.", flush=True)
+
     mcfg = metrics_cfg(scfg)
     nboot = int(mcfg.get("bootstrap_n", 10000))
 
