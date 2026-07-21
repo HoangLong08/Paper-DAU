@@ -120,14 +120,29 @@ sh([sys.executable, '-m', 'pip', 'install', '-q', 'medpy', 'tifffile'],
 """.strip()))
 
 # ---------------------------------------------------------------- Cell GPU
-cells.append(md("## Cell 2 — ★ GPU-check (DỪNG nếu quên bật Accelerator)"))
+cells.append(md("## Cell 2 — ★ GPU-check (DỪNG SỚM nếu vắng GPU HOẶC GPU không tương thích)"))
 cells.append(code(r"""
 import torch
 print('torch', torch.__version__, '| cuda available:', torch.cuda.is_available())
 if not torch.cuda.is_available():
-    raise RuntimeError('KHONG THAY GPU -> panel Settings > Accelerator > GPU (T4/P100). '
+    raise RuntimeError('KHONG THAY GPU -> Settings > Accelerator > GPU. '
                        'Chay U-Net 25 lan tren CPU la KHONG kha thi. DUNG.')
 print('GPU:', torch.cuda.get_device_name(0))
+# torch.cuda.is_available()=True VAN co the KHONG chay duoc: torch cu128 tren image
+# Kaggle da BO ho tro P100 (sm_60, dai ho tro 7.0-12.0) -> kernel GPU dau tien moi no
+# 'no kernel image is available' SAU ~40 phut chuan bi du lieu. Thu 1 kernel THAT o day
+# de chet trong 1 giay thay vi 40 phut. Fix: doi Accelerator sang **GPU T4 x2** (sm_75).
+try:
+    _ = (torch.ones(64, device='cuda') @ torch.ones(64, 64, device='cuda')).sum().item()
+    torch.cuda.synchronize()
+    print('GPU kernel test: OK -> train duoc.')
+except Exception as e:
+    cap = torch.cuda.get_device_capability(0)
+    raise RuntimeError(
+        'GPU CO nhung KHONG chay duoc kernel (capability sm_%d%d): %s\n'
+        '=> torch nay khong ho tro GPU dang chon. DOI Settings > Accelerator sang '
+        '"GPU T4 x2" (T4 = sm_75, tuong thich) roi Save & Run All lai. DUNG.'
+        % (cap[0], cap[1], e))
 """.strip()))
 
 # ---------------------------------------------------------------- Cell dataset guard
