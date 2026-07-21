@@ -73,6 +73,23 @@ stats:
   ceiling_dir: results/ceiling
   unet_dir: results/unet
 
+# --- E4: 2D U-Net (GPU) — bậc "pixel-model cùng input" của ceiling decomposition ---- #
+#   python scripts/run_unet.py --config configs/exp_main.yaml --resume
+#   Class B (học) ⇒ CHỈ chấm out-of-fold (A3). Cùng input = 1 lát FLAIR lúc inference.
+#   ⚠️ unet2d.py hiện HARDWIRE FLAIR+WT ⇒ chỉ target wt_flair. et_t1ce cần mở rộng code.
+#   5 fold phủ trọn 368 BN mỗi seed; nhiều seed ⇒ dải phương sai (median theo BN ở E6).
+unet:
+  targets: [wt_flair]
+  folds: [0, 1, 2, 3, 4]
+  seeds: [0, 1, 2, 3, 4]          # DoD §8: ≥5 seed
+  cfg:
+    epochs: 40
+    batch_size: 16
+    lr: 1.0e-3
+    weight_decay: 1.0e-5
+    device: auto                  # auto ⇒ cuda trên Kaggle GPU, cpu nếu vắng
+    num_workers: 2
+
 # --- E1: CỔNG CỨNG trên dữ liệu THẬT (chạy TRƯỚC lưới này) ------------------ #
 #   python scripts/run_exact_check.py --config configs/exp_main.yaml
 #   ~10–20 phút CPU (vét cạn k=3 trên histogram BraTS đầy đủ). FAIL ⇒ DỪNG TOÀN BỘ.
