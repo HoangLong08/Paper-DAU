@@ -79,6 +79,13 @@ stats:
 #   ⚠️ unet2d.py hiện HARDWIRE FLAIR+WT ⇒ chỉ target wt_flair. et_t1ce cần mở rộng code.
 #   5 fold phủ trọn 368 BN mỗi seed; nhiều seed ⇒ dải phương sai (median theo BN ở E6).
 unet:
+  # ⚠️ BẮT BUỘC khai báo TƯỜNG MINH: `section()` merge {**cfg, **sub} ⇒ khối này
+  # THỪA KẾ `output_dir: results/main` ở top-level, nuốt mất default "results/unet"
+  # của run_unet.py. Bug đã cắn thật (07-22): raw.csv + checkpoint rơi vào
+  # results/main/, notebook kiểm results/unet/raw.csv nên báo nhầm "chưa có",
+  # và tgz đóng gói thư mục rỗng. Nguy hiểm hơn: nếu session có restore dữ liệu E2
+  # thì U-Net sẽ ghi ĐÈ SCHEMA KHÁC vào chính results/main/raw.csv của lưới chính.
+  output_dir: results/unet
   targets: [wt_flair]
   folds: [0, 1, 2, 3, 4]
   seeds: [0]                      # A8/E4: 5 fold × 1 seed = PHỦ TRỌN 368 BN (đủ cho

@@ -258,7 +258,18 @@ with tarfile.open(tgz, 'w:gz') as t:
         t.add('results/unet')
     if pathlib.Path('data/splits').is_dir():
         t.add('data/splits')
+    # Checkpoint: resume THẬT dựa trên raw.csv (done_keys), KHONG dua tren .pt —
+    # nhung van goi de tai lap / kiem toan duoc. Quet ca 2 cho vi bug output_dir
+    # (07-22) tung day .pt vao results/main/checkpoints.
+    for ck in ('results/unet/checkpoints', 'results/main/checkpoints'):
+        if pathlib.Path(ck).is_dir():
+            t.add(ck)
+    # Cuu ho: neu bug output_dir tai dien, raw.csv U-Net nam o results/main/raw.csv.
+    for stray in glob.glob('results/main/raw.csv'):
+        t.add(stray, arcname='RESCUE_results_main_raw.csv')
 print('Da dong goi:', tgz, '-> tai ve tu tab Output.')
+print('Noi dung tgz:', *sorted(n for n in tarfile.open(tgz).getnames()
+                               if n.count('/') <= 2), sep='\n  ')
 for mf in sorted(glob.glob('results/unet/run-manifest.json')):
     print('\n' + '=' * 60 + '\n' + mf + '\n' + '=' * 60)
     print(json.dumps(json.load(open(mf)), indent=2, ensure_ascii=False))
