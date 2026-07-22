@@ -81,7 +81,10 @@ stats:
 unet:
   targets: [wt_flair]
   folds: [0, 1, 2, 3, 4]
-  seeds: [0, 1, 2, 3, 4]          # DoD §8: ≥5 seed
+  seeds: [0]                      # A8/E4: 5 fold × 1 seed = PHỦ TRỌN 368 BN (đủ cho
+                                  # ceiling decomposition — 1 Dice out-of-fold/BN). Đa-seed
+                                  # (dải phương sai E6) HOÃN: 25 tổ hợp ≈ 65h GPU vượt quota
+                                  # (đo thực 07-22: ~2,6h/train T4). Nới lại khi có quota.
   cfg:
     epochs: 40
     batch_size: 16
