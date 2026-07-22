@@ -1,0 +1,4 @@
+# QIGOA reality-check | script=run_stats.py | experiment=main | data_source=brats | commit=a8a8ec698d101c26b034335bebe3e976c65f165e | generated=2026-07-23T03:45:25
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+family,analysis,target,n_patients,median_diff,ci_low,ci_high,p,rank_biserial,n_zero,n_total,reference_class,holm,fallback_if_not_superior,placeholder
+A-superiority,P4: Dice(2D-UNet) - Dice(oracle_levelset),wt_flair,368,0.05028525300034825,0.04133292656421661,0.06461371954251893,2.769722421680282e-32,0.7115293979026747,0,368,"C: uses test-time ground truth (oracle = unreachable upper bound, NOT a method)",1 test ⇒ không hiệu chỉnh (A4e),KHÔNG rút về 'thresholding chạm trần của chính nó' (= François & Tinarrage đã in ⇒ zero novelty). Headline: 'Trần CAO — thất bại KHÔNG do giới hạn biểu diễn mà do BÀI TOÁN CHỌN NGƯỠNG' (A2).,0

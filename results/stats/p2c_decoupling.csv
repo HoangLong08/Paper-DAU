@@ -1,0 +1,31 @@
+# QIGOA reality-check | script=run_stats.py | experiment=main | data_source=brats | commit=a8a8ec698d101c26b034335bebe3e976c65f165e | generated=2026-07-23T03:45:25
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+family,analysis,target,include_zero_bg,k,decode_rule,n_obs,spearman_rho,p,prediction,placeholder
+D-exploratory,P2c decoupling,et_t1ce,false,2,brightest,3312,0.5969479400171566,4.8387e-319,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,false,3,brightest,3312,0.6215992886231251,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,false,4,brightest,3312,0.5918801183990412,2.425994810327e-312,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,false,5,brightest,3312,0.5265359641554438,1.1359361617977427e-235,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,false,6,brightest,3312,0.4650572007594977,2.0511747732923654e-177,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,false,8,brightest,3312,0.355236447438001,4.29844961804353e-99,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,false,10,brightest,3312,0.3038251668386798,1.1090431400967138e-71,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,2,brightest,3312,0.6712975291189841,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,3,brightest,3312,0.6103328941874528,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,4,brightest,3312,0.6436819970635421,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,5,brightest,3312,0.5974327496430475,1.0901e-319,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,6,brightest,3312,0.4980747090676846,3.2350061500335225e-207,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,8,brightest,3312,0.3915006303190683,9.206578441681671e-122,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,et_t1ce,true,10,brightest,3312,0.31644775607012016,6.319920821986468e-78,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,2,brightest,3312,0.6092640497758581,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,3,brightest,3312,0.6643840170064289,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,4,brightest,3312,0.6468103187463418,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,5,brightest,3312,0.5865406169096253,2.072734411305291e-305,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,6,brightest,3312,0.5014060007163623,2.0759232289167376e-210,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,8,brightest,3312,0.3919427855182103,4.6719676350903373e-122,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,false,10,brightest,3312,0.3217401894730723,1.2321603664452588e-80,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,2,brightest,3312,0.7660272179412443,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,3,brightest,3312,0.6856219134334828,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,4,brightest,3312,0.718328816106293,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,5,brightest,3312,0.6485943927410016,0.0,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,6,brightest,3312,0.5802177469571825,2.288306911854131e-297,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,8,brightest,3312,0.4017002635233565,1.1280463189669357e-128,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0
+D-exploratory,P2c decoupling,wt_flair,true,10,brightest,3312,0.3333792741318872,8.626213917997303e-87,rho ~ 0 (fitness gap KHÔNG dịch thành ΔDice); rho mạnh & dương ⇒ luận điểm Goodhart yếu đi,0

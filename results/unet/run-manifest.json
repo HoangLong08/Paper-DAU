@@ -1,0 +1,55 @@
+{
+  "git_commit": "d2783fd430d2cd9a78ccaa1297299c26a75a893c",
+  "config_hash": "45a9c7da4b71b3bc08a91923ba79ffeb6b527240d43cfc3d69421c3728d97272",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.0.2",
+    "scipy": "1.16.3",
+    "skimage": "0.25.2",
+    "sklearn": "1.6.1",
+    "torch": "2.10.0+cu128",
+    "pandas": "2.3.3",
+    "nibabel": "5.4.2"
+  },
+  "timestamp": "2026-07-22T20:25:04.707832+00:00",
+  "output_paths": [
+    "/kaggle/working/qigoa/results/unet/raw.csv",
+    "/kaggle/working/qigoa/results/unet/summary.csv"
+  ],
+  "extra": {
+    "experiment": "E4 2D U-Net",
+    "config_path": "configs/exp_main.yaml",
+    "data_source": "brats",
+    "placeholder": false,
+    "folds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seeds": [
+      0
+    ],
+    "unet_cfg": {
+      "epochs": 40,
+      "batch_size": 16,
+      "lr": 0.001,
+      "weight_decay": 1e-05,
+      "device": "auto",
+      "num_workers": 2,
+      "out_dir": "/kaggle/working/qigoa/results/unet/checkpoints"
+    },
+    "n_rows": 73,
+    "protocol": "class B \u2014 out-of-fold only; train on all tumour slices of outer-train patients, infer on the single designated slice of held-out patients (prereg A3)",
+    "nnunet": "NOT trained \u2014 literature reference only (Isensee et al., arXiv:2011.00848)",
+    "elapsed_s": 8313.986
+  }
+}

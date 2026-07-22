@@ -1,0 +1,57 @@
+{
+  "git_commit": "a8a8ec698d101c26b034335bebe3e976c65f165e",
+  "config_hash": "65a661e0ad47c7b598bb863486a7af034b91a67d82f4d3356e0daf743b35ab97",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "dataset_version": "kaggle:awsaf49/brats20-dataset-training-validation",
+  "lib_versions": {
+    "numpy": "2.4.2",
+    "scipy": "1.15.3",
+    "skimage": "0.25.0",
+    "sklearn": "1.6.1",
+    "torch": "2.11.0+cpu",
+    "pandas": "3.0.0"
+  },
+  "timestamp": "2026-07-22T20:45:26.178640+00:00",
+  "output_paths": [
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\pairwise.csv",
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\tost.csv",
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\bayes.csv",
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\cd.csv",
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\p3_delta.csv",
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\p2c_decoupling.csv",
+    "D:\\HoangLong\\Personal\\paper\\3-\\results\\stats\\family_a_superiority.csv"
+  ],
+  "extra": {
+    "experiment": "E6 statistics",
+    "config_path": "configs\\exp_main.yaml",
+    "data_source": "brats",
+    "placeholder": false,
+    "unit": "patient",
+    "k_primary": 4,
+    "decoding_primary": "brightest",
+    "reference_method": "DP-exact",
+    "sesoi": 0.01,
+    "sesoi_hierarchy": [
+      0.01,
+      0.05
+    ],
+    "rope": [
+      -0.01,
+      0.01
+    ],
+    "zero_method": "pratt (A4d)",
+    "families": {
+      "A": "superiority (1 test, no correction)",
+      "B": "trend (Holm within family)",
+      "C": "equivalence TOST (intersection-union \u21d2 NO correction)",
+      "D": "exploratory (effect size + CI, no p-claims)"
+    },
+    "elapsed_s": 360.465
+  }
+}

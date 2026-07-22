@@ -1,0 +1,4 @@
+# QIGOA reality-check | script=run_unet.py::_summarise | experiment=main | data_source=brats | commit=d2783fd430d2cd9a78ccaa1297299c26a75a893c | generated=2026-07-22T20:25:04
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+target,method,method_class,n_patients,n_folds,n_seeds,dice_median,dice_q1,dice_q3,dice_ci_low,dice_ci_high,hd95_median,nsd_median,empty_mask_rate,placeholder
+wt_flair,2D-UNet,B: learned (out-of-fold only),368,5,1,0.923379879245717,0.8665745550461097,0.9497059090821708,0.9175415480072369,0.9300598143879006,6.494648145952809,0.7769364100664214,0.0,0

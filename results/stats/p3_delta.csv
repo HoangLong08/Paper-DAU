@@ -1,0 +1,11 @@
+# QIGOA reality-check | script=run_stats.py | experiment=main | data_source=brats | commit=a8a8ec698d101c26b034335bebe3e976c65f165e | generated=2026-07-23T03:44:34
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+family,analysis,target,include_zero_bg,decode_rule,reference,n,median_delta,p,rank_biserial,ci_low,ci_high,sesoi,n_zero,n_total,success,mode_k_psnr,mode_k_dice,placeholder,p_holm
+B-trend,P3-primary: Dice(k*_Dice) - Dice(k*_PSNR),et_t1ce,false,brightest,DP-exact,368,0.0,7.519610447544905e-19,1.0,0.0,0.0,0.01,289,368,False,10.0,10.0,0,3.007844179017962e-18
+B-trend,"P3-secondary: per-patient Spearman(k, Dice)",et_t1ce,false,brightest,DP-exact,327,0.9910312089651149,1.4863338673967117e-50,0.945084657268591,0.9910312089651149,0.9910312089651149,-0.5,0,327,False,,,0,7.431669336983558e-50
+B-trend,P3-primary: Dice(k*_Dice) - Dice(k*_PSNR),et_t1ce,true,brightest,DP-exact,368,0.0,1.1145835880963e-16,1.0,0.0,0.0,0.01,299,368,False,10.0,10.0,0,3.3437507642889e-16
+B-trend,"P3-secondary: per-patient Spearman(k, Dice)",et_t1ce,true,brightest,DP-exact,327,0.9910312089651149,1.1900555384245256e-53,0.9687103751771463,0.9910312089651149,1.0,-0.5,0,327,False,,,0,7.140333230547154e-53
+B-trend,P3-primary: Dice(k*_Dice) - Dice(k*_PSNR),wt_flair,false,brightest,DP-exact,368,0.1259639616478238,5.109496859281564e-59,1.0,0.10518457901978423,0.14797907607935645,0.01,61,368,True,10.0,2.0,0,4.087597487425251e-58
+B-trend,"P3-secondary: per-patient Spearman(k, Dice)",wt_flair,false,brightest,DP-exact,368,-0.22623081526841887,0.15603290155676985,-0.08522233514500759,-0.43643578047198484,0.07142857142857144,-0.5,2,368,False,,,0,0.15603290155676985
+B-trend,P3-primary: Dice(k*_Dice) - Dice(k*_PSNR),wt_flair,true,brightest,DP-exact,368,0.10235662551732588,1.7694468861357084e-57,1.0,0.07250588856020357,0.11880225180742032,0.01,76,368,True,10.0,3.0,0,1.238612820294996e-56
+B-trend,"P3-secondary: per-patient Spearman(k, Dice)",wt_flair,true,brightest,DP-exact,368,0.3214285714285715,2.3919759464497164e-06,0.2836438618454967,0.054056247761733546,0.42857142857142866,-0.5,1,368,False,,,0,4.783951892899433e-06

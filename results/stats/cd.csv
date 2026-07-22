@@ -1,0 +1,43 @@
+# QIGOA reality-check | script=run_stats.py | experiment=main | data_source=brats | commit=a8a8ec698d101c26b034335bebe3e976c65f165e | generated=2026-07-23T03:44:33
+# Provenance: numbers trace to this script + configs/*.yaml + the commit above (CLAUDE.md §5.3). Do not edit by hand.
+target,include_zero_bg,k,decode_rule,metric,method,avg_rank,cd,friedman_stat,friedman_p,n_patients,n_methods,family,placeholder
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),DP-exact,5.479619565217392,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),GA,6.1290760869565215,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),GOA,6.167119565217392,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),GOA-fixed,5.385869565217392,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),GWO,5.368206521739131,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),MPA,5.323369565217392,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),PSO,5.338315217391305,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),QIGOA,5.144021739130435,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),WOA,5.398097826086956,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,false,4,brightest,dice(neg-ranked: low rank = better),random,5.266304347826087,0.7062090567842203,71.24489476566832,8.675463581859399e-12,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),DP-exact,5.618206521739131,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GA,5.436141304347826,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GOA,5.580163043478261,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GOA-fixed,5.474184782608695,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),GWO,5.510869565217392,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),MPA,5.555706521739131,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),PSO,5.4375,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),QIGOA,5.3709239130434785,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),WOA,5.591032608695652,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+et_t1ce,true,4,brightest,dice(neg-ranked: low rank = better),random,5.425271739130435,0.7062090567842203,4.464827344846032,0.8782484169885346,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),DP-exact,5.557065217391305,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),GA,5.491847826086956,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),GOA,5.377717391304348,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),GOA-fixed,5.403532608695652,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),GWO,5.634510869565218,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),MPA,5.419836956521739,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),PSO,5.5896739130434785,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),QIGOA,5.599184782608695,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),WOA,5.389945652173913,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,false,4,brightest,dice(neg-ranked: low rank = better),random,5.536684782608695,0.7062090567842203,4.6765152211920995,0.8615467629491578,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),DP-exact,5.516304347826087,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GA,5.4959239130434785,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GOA,5.290760869565218,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GOA-fixed,5.6915760869565215,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),GWO,5.400815217391305,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),MPA,5.460597826086956,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),PSO,5.552989130434782,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),QIGOA,5.559782608695652,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),WOA,5.478260869565218,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
+wt_flair,true,4,brightest,dice(neg-ranked: low rank = better),random,5.552989130434782,0.7062090567842203,6.494818652852054,0.6895534127898384,368,10,D-exploratory,0
