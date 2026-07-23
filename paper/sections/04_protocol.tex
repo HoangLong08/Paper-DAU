@@ -160,11 +160,12 @@ nuisance.
 % --- FIGURE 1 — pipeline + budget diagram (drawio-skill, manual) -------------
 % Provenance: docs/RESULTS.md "Hình 1". Flow figures are drawn, not bitmapped
 % (playbook §6.4).
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
+  \resizebox{0.92\textwidth}{!}{%
   \begin{tikzpicture}[
     font=\footnotesize,
-    node distance=6mm and 7mm,
+    node distance=6mm and 9mm,
     box/.style={draw, rounded corners=2pt, align=center, inner sep=3pt,
                 minimum height=8mm, text width=17mm},
     stage/.style={box, fill=blue!6},
@@ -189,7 +190,7 @@ nuisance.
     % budget gate on the optimizer
     \node[draw, dashed, fit=(opt), inner sep=5pt, label={[font=\scriptsize]below:%
       equal NFE budget}] {};
-  \end{tikzpicture}
+  \end{tikzpicture}}
   \caption{The two-stage pipeline. Stage~1 optimizes the threshold vector on the
   histogram and is scored in fitness units ($F_{\mathrm{Kapur}}$); Stage~2 decodes
   the intensity bands into a binary mask and is the only stage scored against the
@@ -199,4 +200,4 @@ nuisance.
   fitting of any learned component is confined to the training split
   (§\ref{sec:protocol}).}
   \label{fig:pipeline}
-\end{figure}
+\end{figure*}
