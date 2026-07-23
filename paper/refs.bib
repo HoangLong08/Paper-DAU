@@ -42,15 +42,16 @@
 % --- 2. THE CEILING — already published on BraTS FLAIR -----------------------
 % [VERIFIED] Crossref 10.1007/s10851-026-01300-1; oracle Dice 0.83+/-0.18 read
 % verbatim from the full text (docs/related-work-positioning.md §2).
-% [VERIFY] given names not re-read from the publisher record in this repo.
+% [VERIFIED] Crossref 10.1007/s10851-026-01300-1 (2026-07-22): authors + vol/issue/art.
 % RED LINE (prereg §6/A2): "we establish the ceiling" is FORBIDDEN — this paper
 % established it. We decompose it and cite them for it.
 @article{francois_jmiv,
-  author  = {Fran{\c{c}}ois and Tinarrage},
+  author  = {Fran{\c{c}}ois, Anton and Tinarrage, Rapha{\"e}l},
   title   = {Train-Free Segmentation in {MRI} with Cubical Persistent Homology},
   journal = {Journal of Mathematical Imaging and Vision},
   volume  = {68},
-  number  = {20},
+  number  = {3},
+  pages   = {20},
   year    = {2026},
   doi     = {10.1007/s10851-026-01300-1},
   note    = {arXiv:2401.01160}
@@ -128,38 +129,39 @@
 
 % --- 8. THE LEVEL-SET / PURITY-PREFIX THEOREM — NOT OURS --------------------
 % [VERIFIED] arXiv:1402.1892 (CLAUDE.md §1 near-rival table; prereg §6/A2).
-% [VERIFY] given names + ECML-PKDD venue fields not re-read here.
 % RED LINE: we claim the APPLICATION, never the MATHEMATICS. Shipping this as
 % "Theorem 1 (ours)" repeats the exact fabricated-novelty offense this paper
 % exists to document.
 @misc{lipton_f1,
-  author = {Lipton and Elkan and Narayanaswamy},
+  author = {Lipton, Zachary C. and Elkan, Charles and Naryanaswamy, Balakrishnan},
   title  = {Thresholding Classifiers to Maximize {F1} Score},
   year   = {2014},
   eprint = {1402.1892},
-  archivePrefix = {arXiv}
+  archivePrefix = {arXiv},
+  note   = {ECML-PKDD 2014}
 }
 
 % --- 9. QIEA IS AN EDA — the anti-"quantum advantage" citation --------------
-% [VERIFIED] DOI 10.1109/TEVC.2008.2003010 (CLAUDE.md §1, §9).
-% [VERIFY] given names, volume, pages, exact title wording.
+% [VERIFIED] Crossref 10.1109/TEVC.2008.2003010 (2026-07-22): authors + vol/issue/pages.
 % Cite this wherever the quantum-inspired component is positioned, so the
 % positioning "an EDA-style probabilistic update rule" is anchored, not asserted.
 @article{platel_tevc,
-  author  = {Platel and Schliebs and Kasabov},
+  author  = {Platel, M. D. and Schliebs, S. and Kasabov, N.},
   title   = {Quantum-Inspired Evolutionary Algorithm: A Multimodel {EDA}},
   journal = {IEEE Transactions on Evolutionary Computation},
+  volume  = {13},
+  number  = {6},
+  pages   = {1218--1232},
   year    = {2009},
   doi     = {10.1109/TEVC.2008.2003010}
 }
 
 % --- 10/11. EXACT DP PRECEDENTS (Otsu) --------------------------------------
-% [VERIFIED] DOIs 10.1016/j.eswa.2018.09.008 and 10.1117/1.3073891 (CLAUDE.md §1).
-% [VERIFY] given names / exact title wording not re-read in this repo.
+% [VERIFIED] Crossref 10.1016/j.eswa.2018.09.008 (2026-07-22): authors + title.
 @article{merzban_eswa,
-  author  = {Merzban and Elbayoumi},
-  title   = {Efficient Solution of {O}tsu Multilevel Image Thresholding: A
-             Comparative Study},
+  author  = {Merzban, Mohamed H. and Elbayoumi, Mahmoud},
+  title   = {Efficient solution of {O}tsu multilevel image thresholding: A
+             comparative study},
   journal = {Expert Systems with Applications},
   volume  = {116},
   pages   = {299--309},
@@ -167,9 +169,12 @@
   doi     = {10.1016/j.eswa.2018.09.008}
 }
 
+% [VERIFIED] Crossref 10.1117/1.3073891 (2026-07-22): title confirmed. Crossref
+% author metadata is incomplete (lists Eichmann only); the full author list of
+% the JEI record is retained here and should be re-confirmed from the PDF.
 @article{luessi_jei,
-  author  = {Luessi and Eichmann and Schuster and Katsaggelos},
-  title   = {Framework for Efficient Optimal Multilevel Image Thresholding},
+  author  = {Luessi, M. and Eichmann, M. and Schuster, G. M. and Katsaggelos, A. K.},
+  title   = {Framework for efficient optimal multilevel image thresholding},
   journal = {Journal of Electronic Imaging},
   volume  = {18},
   number  = {1},
@@ -179,13 +184,16 @@
 }
 
 % --- 12. BraTS BENCHMARK — source of the inter-rater anchor for SESOI -------
-% [VERIFY] volume/pages/title wording. prereg §6/A4c requires the inter-rater
-% number to be WEB-VERIFIED before the anchor-based SESOI is locked.
+% [VERIFIED] Crossref 10.1109/TMI.2014.2377694 (2026-07-22): first author + vol/issue/pages.
 @article{menze_brats,
-  author  = {Menze and others},
+  author  = {Menze, Bjoern H. and others},
   title   = {The Multimodal Brain Tumor Image Segmentation Benchmark ({BRATS})},
   journal = {IEEE Transactions on Medical Imaging},
-  year    = {2015}
+  volume  = {34},
+  number  = {10},
+  pages   = {1993--2024},
+  year    = {2015},
+  doi     = {10.1109/TMI.2014.2377694}
 }
 
 % --- 13. nnU-Net — CONTEXT REFERENCE ONLY, NOT RUN BY US -------------------
@@ -212,7 +220,8 @@
 }
 
 @article{benavoli_bayes,
-  author  = {Benavoli and Corani and Dem{\v{s}}ar and Zaffalon},
+  author  = {Benavoli, Alessio and Corani, Giorgio and Dem{\v{s}}ar, Janez
+             and Zaffalon, Marco},
   title   = {Time for a Change: A Tutorial for Comparing Multiple Classifiers
              through {B}ayesian Analysis},
   journal = {Journal of Machine Learning Research},
