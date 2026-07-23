@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Tong-quan-paper-QIGOA">
+    <mxGraphModel dx="1600" dy="1800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1700" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="QIGOA REALITY-CHECK — SƠ ĐỒ TỔNG QUAN TOÀN BỘ PAPER&#xa;từ hướng nghiên cứu gốc đến đầu ra" style="text;html=1;align=center;verticalAlign=middle;fontSize=20;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+          <mxGeometry x="40" y="10" width="1560" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b1" value="①  HƯỚNG NGHIÊN CỨU GỐC (đề thầy giao)" style="swimlane;html=1;startSize=40;fillColor=#dae8fc;strokeColor=#6c8ebf;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="1560" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" value="&lt;b&gt;Đề TS. Đỗ Phúc Hảo giao&lt;/b&gt;&#xa;QIGOA = GOA (đàn châu chấu) + Q-bit&#xa;+ rotation gate · hàm Kapur entropy&#xa;Dữ liệu: BraTS 2020 (MRI u não)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="b1">
+          <mxGeometry x="30" y="60" width="380" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" value="&lt;b&gt;Câu hỏi GỐC&lt;/b&gt;&#xa;&#xa;« QIGOA có THẮNG các&#xa;metaheuristic khác không? »" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="b1">
+          <mxGeometry x="490" y="60" width="320" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="n13" value="&lt;b&gt;Chẩn đoán đề gốc&lt;/b&gt;&#xa;sai loại metric · sai venue · zero novelty&#xa;hai lớp metaphor (lượng tử + châu chấu)&#xa;⇒ KHÔNG extend lên journal được" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="b1">
+          <mxGeometry x="890" y="60" width="420" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;" edge="1" parent="b1" source="n11" target="n12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#b85450;" edge="1" parent="b1" source="n12" target="n13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b2" value="②  PHÁT HIỆN — 3 sự thật từ dữ liệu + collision-check văn liệu" style="swimlane;html=1;startSize=40;fillColor=#f8cecc;strokeColor=#b85450;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="330" width="1560" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="n21" value="&lt;b&gt;① SUY BIẾN (degeneracy)&lt;/b&gt;&#xa;Tối ưu k ngưỡng, nhưng mask u cuối&#xa;chỉ phụ thuộc 1–2 ngưỡng&#xa;⇒ đang tối ưu một biến&#xa;KHÔNG ảnh hưởng đầu ra" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="b2">
+          <mxGeometry x="30" y="60" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n22" value="&lt;b&gt;② ĐÃ CÓ LỜI GIẢI CHÍNH XÁC&lt;/b&gt;&#xa;DP exact Kapur, O(k·L²), &lt; 160 ms&#xa;Menotti et al., CIARP 2015&#xa;⇒ dò tìm bằng metaheuristic&#xa;là THỪA (11 năm trước đã có)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="b2">
+          <mxGeometry x="410" y="60" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n23" value="&lt;b&gt;③ GOODHART&lt;/b&gt;&#xa;k tăng → Kapur / PSNR / SSIM TĂNG&#xa;nhưng Dice (khớp u thật) GIẢM&#xa;⇒ cả ngành đang&#xa;ĐO SAI THỨ CẦN ĐO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="b2">
+          <mxGeometry x="790" y="60" width="340" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n24" value="&lt;b&gt;NEAR-RIVAL đã in trước&lt;/b&gt;&#xa;Hammouche 2010 · Lipton 2014&#xa;François &amp;amp; Tinarrage 2026 (trần 0,83)&#xa;Hegazy &amp;amp; Gabr 2026 (2 bài/tháng)&#xa;⇒ phải PHÂN BIỆT, không claim mới" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="b2">
+          <mxGeometry x="1170" y="60" width="340" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b3" value="③  NGÃ RẼ ĐẠO ĐỨC — điểm quyết định của cả dự án" style="swimlane;html=1;startSize=40;fillColor=#fff2cc;strokeColor=#d6b656;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="590" width="1560" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n32" value="&lt;b&gt;❌ Bịa số cho « thắng »&lt;/b&gt;&#xa;= vi phạm IRON RULE 1&#xa;= huỷ sự nghiệp nghiên cứu&#xa;(ĐƯỜNG BỊ CHẶN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;dashed=1;" vertex="1" parent="b3">
+          <mxGeometry x="100" y="60" width="340" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="d31" value="&lt;b&gt;Dữ liệu nói ngược&#xa;kỳ vọng ⇒ làm gì?&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="b3">
+          <mxGeometry x="580" y="55" width="280" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n33" value="&lt;b&gt;✅ PIVOT — giữ QIGOA làm nhân vật&#xa;trung tâm nhưng ĐỔI CÂU HỎI&lt;/b&gt;&#xa;« QIGOA có thực sự giúp không,&#xa;và ta đang đo đúng thứ chưa? »" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="b3">
+          <mxGeometry x="1000" y="60" width="420" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="e31" value="KHÔNG" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#b85450;dashed=1;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b3" source="d31" target="n32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e32" value="CHỌN NÓI THẬT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;strokeWidth=2;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b3" source="d31" target="n33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b4" value="④  LUẬN ĐỀ DUY NHẤT (bán cái này — KHÔNG bán 4 mệnh đề rời)" style="swimlane;html=1;startSize=40;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="820" width="1560" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n41" value="&lt;b&gt;Trong miền có ground truth lâm sàng, khoảng cách tối ưu&#xa;mà cả dòng văn liệu đang tranh nhau&#xa;KHÔNG chiếu xuống mask lâm sàng.&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=13;strokeWidth=2;" vertex="1" parent="b4">
+          <mxGeometry x="180" y="50" width="700" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n42" value="&lt;b&gt;BẤT TỬ trước kết quả thực nghiệm&lt;/b&gt; — đúng ở CẢ HAI nhánh:&#xa;• Mọi thuật toán ĐẠT tối ưu ⇒ optimizer là ĐỒ TRANG TRÍ&#xa;• KHÔNG đạt ⇒ cả một thập kỷ engineering đang đóng&#xa;   một gap chứng minh được là VÔ NGHĨA với lâm sàng" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;align=left;spacingLeft=10;" vertex="1" parent="b4">
+          <mxGeometry x="960" y="50" width="480" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="e41" value="vì sao an toàn" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b4" source="n41" target="n42">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b5" value="⑤  HÀNG RÀO LIÊM CHÍNH — dựng TRƯỚC khi viết dòng code đầu tiên" style="swimlane;html=1;startSize=40;fillColor=#e1d5e7;strokeColor=#9673a6;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1040" width="1560" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="n51" value="&lt;b&gt;docs/preregistration.md&lt;/b&gt;&#xa;Khoá 13/07/2026 — TRƯỚC khi chạy&#xa;Ghi sẵn: giả thuyết · metric quyết định&#xa;· ngưỡng thành công · fallback&#xa;⇒ chống HARKing (bịa giả thuyết sau)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="b5">
+          <mxGeometry x="30" y="60" width="360" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="n52" value="&lt;b&gt;AUDIT 24 AGENT (14/07/2026)&lt;/b&gt;&#xa;chạy TRƯỚC khi thấy số thật&#xa;⇒ §6 Amendment A0–A10 (append-only)&#xa;4 lỗi CHÍ MẠNG được sửa kịp&#xa;(đây là preregistration ĐANG HOẠT ĐỘNG)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="b5">
+          <mxGeometry x="430" y="60" width="360" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="n53" value="&lt;b&gt;4 MỆNH ĐỀ BỊ HẠ CẤP&lt;/b&gt;&#xa;P1 suy biến → viết thành THẾ LƯỠNG NAN&#xa;P2 → hạ xuống 2 đoạn setup có citation&#xa;P3 → xác nhận future-work người khác&#xa;P4 → CẤM câu « we establish the ceiling »" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="b5">
+          <mxGeometry x="830" y="60" width="380" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="n54" value="&lt;b&gt;IRON RULES 1–6&lt;/b&gt;&#xa;không bịa số&#xa;không bịa citation&#xa;placeholder không tự thăng cấp&#xa;web-verify · không overclaim" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="b5">
+          <mxGeometry x="1250" y="60" width="280" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="e51" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#9673a6;" edge="1" parent="b5" source="n51" target="n52">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e52" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#9673a6;" edge="1" parent="b5" source="n52" target="n53">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b6" value="⑥  PIPELINE THỰC NGHIỆM — số chảy MỘT chiều, không bao giờ gõ tay" style="swimlane;html=1;startSize=40;fillColor=#ffe6cc;strokeColor=#d79b00;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1310" width="1560" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="n61" value="&lt;b&gt;configs/*.yaml&lt;/b&gt;&#xa;1 file = 1 thí nghiệm&#xa;seed · k · ngân sách NFE&#xa;KHÔNG magic number" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="b6">
+          <mxGeometry x="40" y="60" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n63" value="&lt;b&gt;scripts/run_*.py&lt;/b&gt;&#xa;1 script = 1 bảng/hình&#xa;+ run-manifest.json&#xa;(commit · seed · lib version)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="b6">
+          <mxGeometry x="400" y="60" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n64" value="&lt;b&gt;results/*.csv&lt;/b&gt;&#xa;có banner nguồn gốc&#xa;KHÔNG sửa tay&#xa;synthetic ⇒ [PLACEHOLDER]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="b6">
+          <mxGeometry x="760" y="60" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n65" value="&lt;b&gt;paper/*.tex&lt;/b&gt;&#xa;bảng &amp;amp; hình SINH RA từ results&#xa;qua build_tables.py&#xa;KHÔNG copy-paste số" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="b6">
+          <mxGeometry x="1120" y="60" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="n62" value="&lt;b&gt;src/&lt;/b&gt; — động cơ khoa học&#xa;fitness · solvers · decode · eval · data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="b6">
+          <mxGeometry x="330" y="190" width="290" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="n66" value="&lt;b&gt;CỔNG CỨNG theo thứ tự&lt;/b&gt;  smoke (synthetic) → E1 DP vs vét cạn&#xa;(FAIL ⇒ in « DỪNG TOÀN BỘ », exit 1) → week1 sàng lọc n=60&#xa;(hỏng thì chết RẺ) → E2 lưới chính n=369 × 5 seed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=10;" vertex="1" parent="b6">
+          <mxGeometry x="670" y="185" width="470" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n67" value="&lt;b&gt;Kaggle&lt;/b&gt; — 4 notebook = 4 giai đoạn&#xa;(12 h/phiên · CPU vs GPU · resume)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="b6">
+          <mxGeometry x="1180" y="185" width="290" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="e61" value="--config" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d79b00;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b6" source="n61" target="n63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e62" value="ghi ra" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d79b00;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b6" source="n63" target="n64">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e63" value="build_tables.py" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b6" source="n64" target="n65">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e64" value="import" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeColor=#6c8ebf;labelBackgroundColor=#ffffff;fontSize=11;" edge="1" parent="b6" source="n62" target="n63">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="b7" value="⑦  ĐẦU RA" style="swimlane;html=1;startSize=40;fillColor=#d5e8d4;strokeColor=#82b366;swimlaneFillColor=#ffffff;fontStyle=1;fontSize=14;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1650" width="1560" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="n71" value="&lt;b&gt;✅ Bảng II — ĐÃ PASS&lt;/b&gt;&#xa;(số THẬT đầu tiên vào bản thảo)&#xa;DP vs vét cạn: 160/160 ô, 0 FAIL&#xa;mask giống hệt, tol 1e-9" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="b7">
+          <mxGeometry x="30" y="55" width="370" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n72" value="&lt;b&gt;⏳ Còn [PLACEHOLDER]&lt;/b&gt;&#xa;Bảng III (lưới chính) · IV (ablation) · V (trần)&#xa;Hình 2 CD · Hình 3 Goodhart · Hình 4 thang trần&#xa;U-Net (GPU) · ngoại kiểm LGG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="b7">
+          <mxGeometry x="440" y="55" width="400" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n73" value="&lt;b&gt;3 ĐÓNG GÓP DƯƠNG&lt;/b&gt;&#xa;① Phân rã trần Dice (chưa ai làm)&#xa;② Công cụ chẩn đoán O(L·log L)&#xa;③ Checklist giao thức đánh giá&#xa;    + Bảng I trắc lượng (2 coder, κ)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="b7">
+          <mxGeometry x="880" y="55" width="360" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="n74" value="&lt;b&gt;VENUE&lt;/b&gt;&#xa;BSPC → ESWA → Sci Reports&#xa;+ arXiv preprint NGAY&#xa;ngày nộp (cắm cọc ưu tiên)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="b7">
+          <mxGeometry x="1280" y="55" width="250" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="e71" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;" edge="1" parent="b7" source="n73" target="n74">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="E1" value="chạy thử → dữ liệu nói NGƯỢC kỳ vọng" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#b85450;strokeWidth=3;labelBackgroundColor=#ffffff;fontSize=12;fontStyle=1;" edge="1" parent="1" source="b1" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E2" value="3 cờ đỏ + đã bị scoop ⇒ claim gốc CHẾT" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#b85450;strokeWidth=3;labelBackgroundColor=#ffffff;fontSize=12;fontStyle=1;" edge="1" parent="1" source="b2" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E3" value="REFRAME trung thực, không cứu claim đã chết" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;strokeWidth=3;labelBackgroundColor=#ffffff;fontSize=12;fontStyle=1;" edge="1" parent="1" source="b3" target="b4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E4" value="khoá claim TRƯỚC khi chạy ⇒ không thể tự lừa mình" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#9673a6;strokeWidth=3;labelBackgroundColor=#ffffff;fontSize=12;fontStyle=1;" edge="1" parent="1" source="b4" target="b5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E5" value="chỉ khi hàng rào đã dựng mới được viết code" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#d79b00;strokeWidth=3;labelBackgroundColor=#ffffff;fontSize=12;fontStyle=1;" edge="1" parent="1" source="b5" target="b6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="E6" value="mọi số truy được về script + config + commit (RESULTS.md)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;strokeWidth=3;labelBackgroundColor=#ffffff;fontSize=12;fontStyle=1;" edge="1" parent="1" source="b6" target="b7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend" value="Chú giải màu" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;verticalAlign=top;fontStyle=1;fontSize=13;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1900" width="330" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" value="" style="rounded=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="legend">
+          <mxGeometry x="15" y="34" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1t" value="Đầu vào / cấu hình / venue" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="55" y="32" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2" value="" style="rounded=0;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="legend">
+          <mxGeometry x="15" y="58" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2t" value="Vấn đề / rủi ro / luật cấm" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="55" y="56" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3" value="" style="rounded=0;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="legend">
+          <mxGeometry x="15" y="82" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3t" value="Quyết định / cảnh báo / cổng cứng" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="55" y="80" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" value="" style="rounded=0;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="legend">
+          <mxGeometry x="15" y="106" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4t" value="Kết quả thật / đóng góp dương" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="55" y="104" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" value="" style="rounded=0;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="legend">
+          <mxGeometry x="15" y="130" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5t" value="Hàng rào liêm chính" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="55" y="128" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lg6" value="" style="rounded=0;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="legend">
+          <mxGeometry x="15" y="154" width="30" height="16" as="geometry" />
+        </mxCell>
+        <mxCell id="lg6t" value="Văn liệu ngoài / hạ tầng chạy" style="text;html=1;align=left;verticalAlign=middle;fontSize=12;" vertex="1" parent="legend">
+          <mxGeometry x="55" y="152" width="260" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="note" value="&lt;b&gt;Đọc sơ đồ này thế nào&lt;/b&gt;&#xa;Mũi tên DỌC (đậm) = mạch câu chuyện của paper, đọc từ trên xuống.&#xa;Mũi tên NGANG (mảnh) = quan hệ bên trong một giai đoạn.&#xa;Giai đoạn ①→③ là LỊCH SỬ (vì sao đổi hướng).&#xa;Giai đoạn ④→⑦ là BÀI HIỆN TẠI (đang làm gì, ra cái gì).&#xa;&#xa;Điểm mấu chốt: ⑤ nằm TRƯỚC ⑥ — hàng rào liêm chính được dựng&#xa;xong mới cho phép chạy thí nghiệm. Đó là lý do code trông &quot;khó tính&quot;." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=12;align=left;spacingLeft=12;verticalAlign=top;spacingTop=8;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="410" y="1900" width="620" height="180" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

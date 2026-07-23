@@ -41,3 +41,22 @@ paper/figures/*.pdf
 # Kết quả THẬT từ Kaggle được commit CÓ CHỦ Ý kèm dòng provenance trong
 # docs/RESULTS.md (xem docs/huong-dan-setup-kaggle.md Bước 5), dùng:
 #     git add -f results/<exp>/
+
+# --- Dump thô tải về từ Kaggle — KHÔNG commit -------------------------------
+# results/session*/ và results/<n>-QIGOA…/ là bản tải nguyên si output notebook:
+# chúng lặp lại chính results/ ở bên trong, tổng ~6 GB, và raw.csv lên tới
+# ~760 MB — vượt giới hạn cứng 100 MB/file của GitHub. Nguồn thật của chúng là
+# notebook Kaggle + .tgz trên Kaggle Datasets, KHÔNG phải repo này.
+# Chỉ artifact nhỏ (summary.csv, run-manifest.json, stats/) mới vào repo.
+results/session*/
+results/[0-9]-*/
+results/main/raw.csv
+*.tgz
+results/**/*.zip
+results/**/*.pt
+
+# Bundle nộp Overleaf — build artifact, sinh lại được từ paper/.
+overleaf_upload.zip
+
+# Tài liệu cá nhân (thư mời), không phải nội dung paper.
+thu_moi_*.pdf
