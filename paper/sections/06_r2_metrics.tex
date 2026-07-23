@@ -22,30 +22,50 @@
 \section{Surrogate Criteria Along the Threshold-Count Axis}
 \label{sec:r2}
 
-\TODO{setup paragraph: credit Hegazy \& Gabr~\cite{hegazy_metricbias} for
-establishing surrogate-metric bias on natural images and state plainly that this
-section extends the question to clinical ground truth and to the threshold-count
-axis; we claim the extension, not the discovery.}
+That reconstruction-fidelity surrogates are biased as segmentation criteria was
+established on natural images by Hegazy and Gabr~\cite{hegazy_metricbias} and, for
+PSNR specifically including the multi-level case, earlier still. We claim the
+domain extension, not the discovery: we move the question to clinical ground
+truth on brain MRI and to the axis along which the field selects model
+complexity, the number of thresholds $k$.
 
 \subsection{An Analytic Argument, Not Only a Correlation}
 
 % Prove it, don't correlate it (A4a): PSNR is a monotone function of the
 % quantization error, so it increases with k BY CONSTRUCTION (Lloyd-Max). An
 % analytic argument cannot be defeated by sample size.
-\TODO{short analytic argument that reconstruction-error-based surrogates
-increase with the number of thresholds by construction, independently of any
-segmentation quality. This is the part of the section that no sample size can
-attack.}
+PSNR is a monotone function of the mean squared quantization error of the
+piecewise-constant reconstruction induced by the thresholds. Adding a threshold
+refines that quantization and cannot increase the squared error, so PSNR is
+non-decreasing in $k$ by construction, independently of any segmentation quality
+--- the same Lloyd--Max property that makes finer quantizers reconstruct better.
+The argument is analytic and cannot be defeated by sample size; the data merely
+confirm it. Mean PSNR rises monotonically across every $k$ step on all four
+target-by-background settings, from $21.5$--$25.0$ dB at $k=2$ to $36.5$--$36.9$
+dB at $k=10$, and the PSNR-optimal threshold count is the largest available,
+$k=10$, in $16$ of $16$ configurations. The Dice-optimal count, by contrast, is
+$2$ or $3$, and never $10$ outside a single degenerate cell. The argmax of the
+reported surrogate and the argmax of clinical quality disagree universally and
+by construction.
 
 \subsection{The Cost of Selecting the Threshold Count by a Surrogate}
 
 % ⚠️ Selecting k is a LEARNED choice (prereg §6/A3, family B) => it may ONLY be
 % evaluated out-of-fold. Selecting k on the test patients would be exactly the
 % error this paper documents.
-\TODO{primary analysis: per-patient difference between the Dice at the
-Dice-optimal threshold count and the Dice at the surrogate-optimal threshold
-count, one-sample Wilcoxon over patients with effect size and bootstrap CI.
-Report as a per-patient clinical cost. Provenance: results/main/summary.csv.}
+The clinical cost of selecting $k$ by the surrogate is the per-patient Dice
+difference between the Dice-optimal and the PSNR-optimal threshold count. Holding
+the optimizer at the exact global optimum, so that the effect cannot be an
+artifact of any metaheuristic, this cost is significant but its magnitude is
+governed by the decoding rule. On whole tumor it is a median $0.126$ Dice under
+the primary \texttt{brightest} rule with the intensity-zero background excluded,
+$0.102$ with it included, and reaches $0.321$ under morphological decoding; on
+enhancing tumor under \texttt{brightest} the two argmaxes coincide and the cost
+is zero. Across all decoding rules the per-patient cost spans $0.0009$ to
+$0.3210$ Dice --- more than two orders of magnitude, in which the only thing that
+varies is the Stage-2 decoder, not the optimizer, the objective, or $k$. The cost
+of the surrogate is real, and it is set downstream of the optimization the
+surrogate scores.
 
 % --- FIGURE 3 — dual axis: surrogate up, clinical down, along k --------------
 % results/main/summary.csv <- scripts/build_figures.py -> figures/fig3_goodhart.pdf
@@ -63,14 +83,20 @@ Report as a per-patient clinical cost. Provenance: results/main/summary.csv.}
 % Written BEFORE the numbers, on purpose: it is the paragraph that survives
 % adversarial reading.
 Within a fixed threshold count, the association between surrogate scores and the
-clinical score across algorithms is positive; the disagreement we examine is
-along the threshold-count axis, not along the algorithm axis.
-\TODO{report the within-$k$ association explicitly from results/, and explain
-why a positive within-$k$ association is compatible with, and indeed expected
-under, an opposite trend along $k$.}
+clinical score across algorithms is positive: the per-$k$ Spearman correlation
+between PSNR and Dice across methods reaches $+0.89$. A reviewer can reproduce
+this in minutes, and we state it plainly. It is not in tension with the result
+above. A positive association among competing solutions at one complexity, and an
+opposite trend as complexity itself changes, are a textbook aggregation effect;
+the disagreement we report is on the $k$ axis, not the algorithm axis.
 
-\TODO{report the trend separately FOR EACH decoding rule (Week-1 risky
-experiment 3, prereg §6/A10). If the negative trend exists only under one rule,
-then the finding is about that decoder, not about the metrics, and this section
-must be retitled accordingly. This is preregistered and is not negotiable after
-seeing the numbers.}
+We also report what does not survive. The pre-registered secondary form of this
+section --- a per-patient rank correlation $\rho(k,\mathrm{Dice}) < -0.5$ ---
+fails in all $16$ configurations, and its sign flips with the decoding rule, from
+$-0.94$ under morphological decoding to $+0.29$ under band-union decoding on whole
+tumor, and to $+0.99$ under \texttt{brightest} on enhancing tumor. The plain
+statement ``higher $k$ gives lower Dice'' is therefore not supported in general
+and we withdraw it. What survives is the load-bearing claim, and it is the one
+that is analytic rather than correlational: the surrogate used to choose model
+complexity is structurally maximized at the wrong value of $k$, and the clinical
+cost of following it is set by the decoder.

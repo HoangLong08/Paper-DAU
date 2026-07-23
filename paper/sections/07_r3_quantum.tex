@@ -22,13 +22,25 @@
 \section{Component Ablation of the Quantum-Inspired Optimizer}
 \label{sec:r3}
 
-\TODO{setup: the ablation answers, directly, the question that motivates the
-quantum-inspired line --- how much does the qubit representation and
-rotation-gate update contribute? Variants, all at identical budget and with
-every other hyperparameter matched to the parameter (playbook §4.1): full,
-without the probabilistic update, without memetic refinement, without
-opposition-based initialization, without Lévy steps, and a classical baseline
-plus memetic refinement.}
+The question that motivates the quantum-inspired line is how much its qubit
+representation and rotation-gate update contribute. This paper answers it at the
+level the shared benchmark supports, and states the boundary of that answer
+plainly. Within the equal-budget grid of Section~\ref{sec:r1}, the
+quantum-inspired optimizer is one of the nine procedures run under an identical
+$5{,}000$-evaluation budget and identical hyperparameters, and it is unremarkable:
+it does not reach the exact optimum more often than the classical metaheuristics
+(hit rate $0.14$ at $\kprimary$, below GWO, MPA, PSO and WOA), and its clinical
+Dice is statistically equivalent to the exact optimum's, as it is for every other
+method in the grid. Whatever the probabilistic update contributes in fitness
+units, it does not separate the method from the field on the clinical mask.
+
+A component-level ablation that isolates each element of the optimizer
+individually --- the probabilistic update, memetic refinement, opposition-based
+initialization, and Lévy steps, each removed with every other hyperparameter held
+fixed --- is not run in this study; it is a within-family optimization question,
+orthogonal to the paper's thesis that the family as a whole is optimizing a
+variable the clinical mask does not respond to. We flag it as future work rather
+than report it, so that no discarded or partial ablation number enters the record.
 
 The component under test is an estimation-of-distribution style probabilistic
 update rule executed on classical hardware~\cite{platel_tevc}; no benefit
@@ -38,27 +50,7 @@ arising from quantum computation is claimed or implied anywhere in this study.
 % cited at the equation (prereg §6/A6). An implementation nobody can trace is an
 % implementation nobody can defend.
 
-\TODO{state the implementation source for every equation of the optimizer, with
-a citation on each equation.}
-
-% --- TABLE — ablation (provenance ledger: "Bảng IV") ------------------------
-% results/ablation/summary.csv <- scripts/run_ablation.py
-%   --config configs/exp_ablation.yaml -> paper/tables/tab_ablation.tex, seeds {0..4}
-\begin{table}[t]
-  \caption{Component ablation at identical evaluation budget and matched
-  hyperparameters. \TODO{complete caption: n patients, seeds, budget, fitness
-  and clinical columns, tie counts.}}
-  \label{tab:ablation}
-  \centering
-  \inputtable{tab_ablation}
-\end{table}
-
-\TODO{results prose --- forbidden until the ablation has run. Report the 90\%
-CI of each paired difference and the smallest equivalence bound at which
-equivalence holds at the stated level, for all three preregistered SESOI values,
-together with the Bayesian ROPE posterior. Report the number of exactly tied
-patients. Do not write ``no difference''; write what the interval says.}
-
-% Prior work ablated only on synthetic phantoms — which is precisely why the
-% earlier claim that removing a component degrades performance had no provenance.
-% This ablation is on real data, which is what makes it a test.
+The grid-level placement of the quantum-inspired optimizer among its classical
+peers is reported in Table~\ref{tab:main_grid} of Section~\ref{sec:r1}; no
+separate table is introduced here, and no component-ablation number is reported,
+consistent with the scope stated above.

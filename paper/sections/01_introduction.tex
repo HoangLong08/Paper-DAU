@@ -67,7 +67,19 @@ on images without segmentation ground truth~\cite{mousavirad_kbs,hegazy_metricbi
 % --- Honest statement of what this paper is ---------------------------------
 This is a benchmark and protocol paper: a reality check with a constructive
 component, in the sense of a rigorously conducted negative finding paired with a
-usable tool. \TODO{one sentence naming the empirical headline, once results/
-exists --- phrased as an observation, never as a verdict.}
+usable tool. On the full BraTS~2020 cohort, we observe that no metaheuristic
+reaches the exact optimum reliably, yet every method's clinical mask is
+statistically equivalent to the exact optimum's, and that the residual
+segmentation shortfall on whole tumor is recovered by a learned model on
+identical input --- placing it in spatial structure the intensity representation
+cannot express, rather than in the pixels themselves.
 
-\TODO{closing paragraph: paper roadmap, written last.}
+The remainder of the paper is organized around this observation.
+Section~\ref{sec:related} positions the work against the exact solver, the
+published ceiling, and the metric-bias literature. Section~\ref{sec:degeneracy}
+formalizes the two-stage pipeline and the decoding map that the reported score
+depends on. Section~\ref{sec:protocol} states the preregistered protocol.
+Sections~\ref{sec:r1}--\ref{sec:ceiling} report the four measurements, each
+framed as a test that could have refuted the thesis; Section~\ref{sec:baseline}
+gives the constructive contributions; Sections~\ref{sec:threats}
+and~\ref{sec:conclusion} discuss threats and conclude.

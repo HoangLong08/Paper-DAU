@@ -19,10 +19,25 @@
 \section{The Optimization Gap}
 \label{sec:r1}
 
-\TODO{2 paragraphs of setup, citation-backed: that this comparison has been run
-before on gray-level images~\cite{hammouche_eaai,merzban_eswa} and that we claim
-no novelty for it; what is new here is (i) random search at an identical budget
-and (ii) the projection of the fitness gap onto a clinically scored mask.}
+Comparing population-based optimizers against a global optimum of the
+thresholding criterion is not new. Hammouche \emph{et al.}~\cite{hammouche_eaai}
+benchmarked six metaheuristics against an exhaustive optimum on gray-level images
+and already observed that several fail to reach it as the threshold count grows,
+and Merzban and Elbayoumi~\cite{merzban_eswa} showed an exact dynamic program
+dominating metaheuristics for the Otsu criterion. We claim no novelty for the
+comparison itself. Two elements are new here. First, uniform random search runs
+at the \emph{same} asserted budget as every metaheuristic, which fixes the floor
+that any purposeful optimizer must clear. Second, and central to this paper,
+every solution is projected onto a clinically scored binary mask, so that a
+residual gap in the objective can be tested for whether it reaches the patient at
+all.
+
+All nine search procedures consume an identical hard budget of $5{,}000$ function
+evaluations, and all are referenced against the exact global optimum computed by
+dynamic programming~\cite{menotti_ciarp}. We report the relative fitness gap, the
+hit rate at the preregistered convergence tolerance $10^{-4}$, and the resulting
+clinical Dice, at the primary operating point $\kprimary$ with the
+\texttt{brightest} decoding rule.
 
 % --- TABLE — gap to optimum, hit rate, NFE (provenance ledger: "Bảng III") ---
 % results/main/summary.csv <- scripts/run_main_grid.py --config configs/exp_main.yaml
@@ -35,17 +50,39 @@ and (ii) the projection of the fitness gap onto a clinically scored mask.}
   every algorithm consumed exactly the same budget.}}
   \label{tab:main_grid}
   \centering
-  \inputtable{tab_main_grid}
+  \inputtable{table3_main_grid}
 \end{table*}
 
-\TODO{results prose --- forbidden until the grid has run and its provenance row
-in docs/RESULTS.md is filled.}
+Table~\ref{tab:main_grid} reports the outcome. The optimizers separate cleanly in
+the objective's own units: at $\kprimary$ the hit rate ranges from $0.87$ (PSO)
+down to $0.0005$ (random search), and across the full threshold grid \emph{no}
+method reaches a hit rate of $0.99$ at any $k$, with the rate collapsing toward
+zero as $k$ grows. This reproduces, on clinical data at a tolerance five orders
+of magnitude tighter, the shortfall Hammouche \emph{et al.}~\cite{hammouche_eaai}
+reported for $k>2$. The quantum-inspired variant is unremarkable within this
+spread (hit rate $0.14$ at $\kprimary$) and never separates from the classical
+metaheuristics.
+
+The same table shows that this separation does not reach the mask. At the primary
+operating point every method, including the exact optimum, yields a median Dice
+within a narrow band, and the per-patient difference of each metaheuristic from
+the exact solution is negligible. Formalizing this with paired equivalence tests
+against the exact optimum, the median per-patient Dice difference is exactly zero
+in all $36$ comparisons (two targets $\times$ two background settings $\times$
+nine methods), mean differences lie within $[-0.0042, +0.0042]$ Dice, and
+equivalence holds by two one-sided tests at the $\sesoilenient$ margin in $36$ of
+$36$ comparisons and at the $\sesoistrict$ margin in $36$ of $36$; the smallest
+margin at which equivalence can be declared is at most $0.007$ Dice across the
+entire block. An optimizer can miss the objective badly enough that its hit rate
+is zero, and its clinical mask remains statistically indistinguishable from the
+mask of the exact global optimum. The distance the field competes to close does
+not project onto the target.
 
 % --- FIGURE 2 — critical difference diagram ---------------------------------
 % results/stats/cd.csv <- scripts/run_stats.py -> figures/fig2_cd.pdf
 \begin{figure}[t]
   \centering
-  \inputfigure{fig2_cd}
+  \inputfigure{fig2_cd_diagram}
   \caption{Critical-difference diagram over patients~\cite{demsar_cd}.
   \TODO{caption: metric, n, seeds, post-hoc test.}}
   \label{fig:cd}
@@ -60,15 +97,25 @@ in docs/RESULTS.md is filled.}
 % Goodhart argument weakens — that is what makes this a test rather than a demo.
 We pre-specified a decoupling test: the rank correlation between an algorithm's
 residual fitness gap and the magnitude of its Dice difference from the exact
-solution. \TODO{report the coefficient and CI once available; state the
-preregistered prediction and whether it survived. If the correlation is strong
-and positive, the surrogate is a good proxy and we say so.}
+solution, with the declared prediction that it would be approximately zero. That
+prediction is \emph{not} supported. The per-cell Spearman correlation is
+positive and moderate, ranging from $0.30$ to $0.77$ across configurations
+(median near $0.60$) and declining as $k$ increases. Fitness therefore carries a
+weak-to-moderate signal about the clinical score; it is not fully decoupled. We
+report this against our prediction: the paper's thesis does not rest on complete
+decoupling — Section~\ref{sec:r1} already shows the surviving gap is clinically
+negligible even where the correlation is non-zero — but any statement that
+fitness is uninformative about Dice would be false, and we do not make it.
 
 \subsection{Mask Identity}
 
 % The headline that needs no test: X% of (patient, k) cells where all algorithms
 % emit BYTE-IDENTICAL masks. Report n_zero/n_total everywhere (A4d).
-\TODO{report the fraction of (patient, threshold-count) cells on which the
-compared algorithms produce byte-identical binary masks. This is a count, not an
-inference; it requires no statistical test and admits no rebuttal. Source:
-results/main/raw.csv via build\_tables.py.}
+At the primary operating point the fraction of (patient, seed) cells on which
+\emph{every} metaheuristic returns a byte-for-byte identical binary mask is
+$0.001$ (Table~\ref{tab:main_grid}). This is a count, not an inference: it
+requires no statistical test. Its small value is not a counterpoint to the
+equivalence result but its complement — the masks are almost never literally
+identical, yet their clinical scores are statistically equivalent, because the
+handful of pixels on which the thresholds disagree fall where the decoding rule
+and the tumor boundary do not.
