@@ -73,8 +73,11 @@ surrogate scores.
   \centering
   \inputfigure{fig3_goodhart}
   \caption{Surrogate criteria and clinical scores along the threshold-count
-  axis. \TODO{caption: both axes labeled with units and direction of goodness,
-  n patients, seeds, error bars defined, decoding rule named.}}
+  axis. The reconstruction surrogate (PSNR, higher is better) rises monotonically
+  with the number of thresholds, while clinical Dice (higher is better) peaks at
+  two or three; $n=368$ patients under \texttt{brightest} decoding, bands showing
+  the bootstrap interval. The two criteria select opposite ends of the $k$
+  axis.}
   \label{fig:goodhart}
 \end{figure}
 

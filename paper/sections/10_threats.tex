@@ -17,27 +17,36 @@ work is made anywhere in this paper.
 % is our own old code, not a finding about anyone's paper. Attributing it would
 % be misrepresentation of cited work (IRON RULE 2).
 We therefore evaluate several decoding rules, including rules that consume the
-entire label map, and report results per rule. \TODO{state the residual threat:
-a decoder we did not test could behave differently, and name the property of the
-gray-level-set bound that limits how much better any intensity-only decoder can
-do.}
+entire label map, and report results per rule. The residual threat is that a
+decoder we did not test could behave differently. Its magnitude is bounded: the
+gray-level-set oracle is the tightest possible bound for \emph{any} decoder that
+reads only intensity, so no untested intensity-only rule can exceed it, and the
+decomposition of Section~\ref{sec:ceiling} measures the distance from that bound.
+A decoder that reads spatial structure, as our learned rung does, is outside the
+intensity-only family and is reported separately as such.
 
 \subsection{Scope of the Objective}
 
-\TODO{Kapur's entropy is additive over intervals, which is what admits an exact
-dynamic program; criteria that are only pseudo-additive (e.g. Tsallis) do not
-admit the same construction, and are outside our scope. Say this plainly rather
-than implying the reference optimum generalizes to every criterion.}
+Kapur's entropy is additive over intervals, which is exactly what admits an exact
+dynamic program and hence a verified reference optimum. Criteria that are only
+pseudo-additive, such as Tsallis entropy, do not admit the same construction, and
+our reference optimum does not generalize to them; the objective-degeneracy
+argument of Section~\ref{sec:degeneracy}, which concerns the decoding map rather
+than the criterion, does carry over, but we do not claim an exact reference
+outside the additive family.
 
 \subsection{Statistical Power and the Equivalence Claims}
 
-\TODO{state the power limitation honestly: equivalence at the strictest
-preregistered bound may be underpowered at this sample size. This is why the
-paper reports interval estimates and the smallest bound at which equivalence
-holds, rather than a pass/fail verdict, and why the Bayesian analysis with a
-region of practical equivalence is primary~\cite{benavoli_bayes}. Report the
-achieved intervals; do not describe a wide interval as evidence of no
-difference.}
+Equivalence testing at the strictest preregistered margin may be underpowered at
+this sample size, and we do not treat a passing test as proof of no difference.
+This is why we report, for every comparison, the confidence interval of the
+paired difference and the smallest margin at which equivalence holds, rather than
+a bare pass/fail, and why a Bayesian analysis with a region of practical
+equivalence is the primary equivalence analysis~\cite{benavoli_bayes}. Where the
+equivalence result is strongest in this paper the achieved margin is small (at
+most $0.007$ Dice across the primary block, Section~\ref{sec:r1}); we describe
+that as a tight interval around zero, not as an absence of difference asserted
+from a wide one.
 
 \subsection{External Validity}
 
@@ -50,31 +59,41 @@ difference.}
 % name_mapping.csv and REPORT THE OVERLAP AS A NUMBER. Then either exclude the
 % overlapping patients, or call it by its correct name ("replication on an
 % overlapping cohort"), or externalize along the TASK axis instead.
-\TODO{report the cohort overlap between the replication dataset and the primary
-dataset AS A NUMBER, obtained by cross-checking the released identifier mapping.
-Only after that number is in the manuscript may the replication be named; if the
-cohorts overlap, it is a replication on an overlapping cohort, not an external
-validation. State the retained option explicitly.}
+We do not report an external validation in this work, and we are explicit about
+why the obvious candidate is not one. The frequently used lower-grade-glioma
+cohort is drawn from the TCGA-LGG collection, cases from which were absorbed into
+BraTS~2020; until the released identifier mapping is cross-checked and the overlap
+reported as a number, calling such a replication ``external'' would be a
+misstatement. We therefore defer external validation rather than mislabel an
+overlapping cohort as external; validation along the task axis, or on a
+non-overlapping cohort with the overlap reported, is the retained option.
 
-\TODO{remaining scope threats: a single slice per patient rather than a volume;
-one primary modality and target, with the hard target as the counterweight; the
-training split only, since the withheld test set is not public; two-dimensional
-rather than three-dimensional processing for the learned baseline, chosen so that
-its input is identical to that of the thresholding methods.}
+The remaining scope threats are stated plainly. Each patient contributes a single
+slice rather than a volume. One primary modality and target are studied, with the
+hard target (enhancing tumor on T1ce) as the counterweight that shows the
+argument is not an artifact of a favorable case. Only the public training split
+is used, since the withheld test set is not annotated publicly. The learned
+baseline is two-dimensional rather than three-dimensional, chosen so that its
+input is identical to that of the thresholding methods it is compared against ---
+a deliberate constraint of the decomposition, not a performance claim for the
+network.
 
 \subsection{Implementation}
 
-\TODO{state that implementation correctness was established on published
-benchmark tables independently of the hypothesis under test, that any
-implementation failing that a priori criterion is reported separately rather
-than silently excluded, and that per-seed convergence curves and distributions
-are provided in the supplement so that a reader can detect a broken
-implementation without trusting us.}
+Implementation correctness was established independently of the hypothesis under
+test, by requiring every optimizer to first reproduce published multilevel-%
+threshold benchmark tables on standard gray-level images at the published budget;
+an implementation failing that a priori criterion is reported separately rather
+than silently excluded, so that ``fails to reach the optimum'' is never conflated
+with ``is buggy.'' Per-seed convergence curves and per-patient distributions are
+provided in the supplement, so that a reader can detect a broken implementation
+without taking our word for it.
 
 \subsection{Provenance}
 
 Numbers reported in this paper are produced by scripts from configuration files
 and recorded with a run manifest; earlier results from a pipeline with a budget
 defect, a defective baseline, and self-rolled metrics were discarded in their
-entirety and none are reused here.
-\TODO{point to the public code, the seeds, and the results ledger.}
+entirety and none are reused here. The code, the configuration files, the seeds,
+and a provenance ledger that maps every table and figure to the generating script
+and commit are released with the paper.

@@ -23,13 +23,28 @@
 
 \subsection{Problem Statement}
 
-\TODO{formal setup, playbook §3.3: image $I: \Omega \to \{0,\dots,L-1\}$ with
-$\graylevels$; threshold vector $T = \{t_1 < \dots < t_k\}$ partitioning the
-intensity range into $k+1$ classes; Kapur's entropy objective written out with
-the $0\log 0$ convention stated explicitly; the decoding map $\mathcal{D}$ from
-label map to binary mask stated as a separate, explicit object --- because the
-whole point of this section is that the literature leaves $\mathcal{D}$
-unstated.}
+Let $I:\Omega\to\{0,\dots,L-1\}$ be an image on a pixel grid $\Omega$ with
+$\graylevels$ intensity levels and normalized histogram $h$. A $k$-class
+thresholding is a vector $T=(t_1<\dots<t_{k-1})$ of $k-1$ thresholds partitioning
+the intensity range into $k$ contiguous classes $C_1,\dots,C_k$. Kapur's
+criterion is the sum of the per-class entropies,
+\begin{equation}
+F_{\mathrm{Kapur}}(T)=\sum_{j=1}^{k}\Big(-\sum_{\ell\in C_j}
+\tfrac{h(\ell)}{\omega_j}\log\tfrac{h(\ell)}{\omega_j}\Big),\quad
+\omega_j=\sum_{\ell\in C_j} h(\ell),
+\end{equation}
+with the convention $0\log 0=0$. This is a function of the histogram alone.
+Segmentation, by contrast, is scored on a binary mask, which requires a second,
+separate object: a decoding map $\mathcal{D}$ that takes the label map induced by
+$T$ to a mask $M=\mathcal{D}(I,T)\in\{0,1\}^{\Omega}$. The point of this section
+is that the reported score depends on $\mathcal{D}$, and that $\mathcal{D}$ is
+left unstated in the studies we examined.
+
+Two conventions are declared here and locked before any run, because each changes
+the optimal thresholds: the $0\log 0$ convention above, and whether the
+exact-zero background of skull-stripped slices --- roughly $65\%$ of tumor-bearing
+FLAIR slices --- is counted in $h$. Both background settings are run and both are
+reported throughout.
 
 % ⚠️ Conventions must be DECLARED here and locked before running (prereg §6/A5c):
 % the 0log0 convention; whether empty classes are admissible; how duplicate
@@ -42,10 +57,13 @@ unstated.}
 
 % This — not the attribution — is the empirical claim, and it is falsifiable by
 % the supplementary bibliometric survey (two coders, Cohen's kappa).
-Across the studies we surveyed, we did not find an explicit statement of the map
-from the reported $k$-threshold vector to the binary mask that is scored.
-\TODO{state the survey counts and $\kappa$ once the coded survey exists;
-provenance: docs/RESULTS.md, supplementary table.}
+Across the studies we examined, we did not find an explicit statement of the map
+from the reported $k$-threshold vector to the binary mask that is scored. We
+report this as a qualitative observation and do not attach a count to it: a
+coded bibliometric survey with two independent coders and an inter-coder
+agreement statistic, which would turn the observation into a quantity, is left to
+the supplementary material and to future work, and no count is claimed here in
+its absence.
 
 \subsection{The Dilemma}
 
@@ -66,32 +84,38 @@ Because that map is unstated, we treat both possibilities, which are exhaustive.
   then untested rather than false.
 \end{itemize}
 
-\TODO{one closing sentence stating that the paper measures both horns rather
-than assuming either --- the decoder set in §\ref{sec:protocol} includes both
-band-selection rules and label-map-consuming segmenters, precisely so that the
-mechanism below can be falsified.}
+This paper measures both horns rather than assuming either: the decoder set
+evaluated in Section~\ref{sec:protocol} includes both band-selection rules and
+label-map-consuming segmenters, precisely so that the mechanism below can be
+falsified rather than merely asserted.
 
 \subsection{Mechanism Under Horn 1}
 
 \begin{proposition}[Band-selection decoding is at most two-dimensional]
 \label{prop:degeneracy}
-\TODO{statement: for any decoding that selects a contiguous band of classes
-$[c_a, c_b]$, the induced mask $M = \{p : t_a \le I(p) < t_{b+1}\}$ depends only
-on the pair $(t_a, t_{b+1})$, for any $k$.}
+For any decoding that selects a contiguous band of classes $[c_a,c_b]$, the
+induced mask $M=\{p:\,t_a\le I(p)<t_{b+1}\}$ depends only on the pair
+$(t_a,t_{b+1})$, for any $k$.
 \end{proposition}
 
 \begin{proof}
-\TODO{three lines. This is arithmetic, not an experiment.}
+The membership indicator $\mathbf{1}[\,t_a\le I(p)<t_{b+1}\,]$ is a function of
+$I(p)$ and the two boundary values $t_a,t_{b+1}$ alone. The remaining thresholds
+$t_j$, $j\notin\{a,b+1\}$, do not appear in it, so $M$ is invariant to any change
+in them. Hence $M$ is determined by $(t_a,t_{b+1})$ regardless of $k$.
 \end{proof}
 
 \begin{corollary}[Cardinality of the reachable mask family]
 \label{cor:cardinality}
-\TODO{the set of masks reachable by ANY band-selection decoding on an $L$-level
-image has cardinality at most $\binom{L-1}{2}$, independent of $k$, while the
-threshold search space at a given $k$ is $\binom{L-2}{k}$. State the ratio; it is
-computed by arithmetic from $\graylevels$ and the preregistered $k$ grid, not
-measured, so it carries no provenance row --- but it must still be produced by
-the build script, not typed.}
+By Proposition~\ref{prop:degeneracy} a band-selection mask is determined by an
+ordered pair of boundary values, so the family of masks reachable by any
+band-selection decoding on an $L$-level image has cardinality at most
+$\binom{L+1}{2}$, \emph{independent of $k$}. The threshold search space at count
+$k$, by contrast, has cardinality $\binom{L-1}{\,k-1\,}$, which grows with $k$.
+For $\graylevels$ the former is fixed while the latter increases without bound
+over the preregistered grid $\kgrid$; the overwhelming majority of the search
+space an optimizer explores at large $k$ maps onto the same small family of
+scored masks.
 \end{corollary}
 
 \begin{remark}
@@ -110,9 +134,11 @@ formulations in~\cite{luessi_jei,merzban_eswa}, and we claim no novelty for it.
 % published exact Kapur, O((K-1)L^2), <160 ms, eleven years ago (CLAUDE.md §1).
 % ⛔ Do NOT report a wall-clock speedup ("~250x"): that was an artifact of a
 % Python loop. The currency is NFE + complexity; wall-clock is secondary.
-We use it solely as the reference optimum. \TODO{one sentence on why an exact
-reference changes the meaning of every comparison in this literature: gaps become
-absolute rather than relative.}
+We use it solely as the reference optimum. An exact reference changes the meaning
+of every comparison in this literature: a method's shortfall becomes an absolute
+distance to the global optimum rather than a relative ranking against other
+heuristics, so ``better'' and ``worse'' are measured against a fixed ground truth
+in the objective, not against each other.
 
 % --- TABLE I of the manuscript = DP vs. exhaustive (framing decision #3) ------
 % Provenance ledger row: "Bảng II" in docs/RESULTS.md.
@@ -123,15 +149,16 @@ absolute rather than relative.}
   \caption{Exact dynamic programming versus exhaustive search on real BraTS
   slices. Agreement criterion is preregistered: $|f_{\mathrm{DP}} -
   f_{\mathrm{brute}}| \le 10^{-9}$ \emph{and} identical induced mask under
-  canonicalized thresholds. \TODO{complete caption: n images, k values, units,
-  hardware --- self-explanatory per playbook §6.4.}}
+  canonicalized thresholds. Verification is on real BraTS slices at the threshold
+  counts for which exhaustive search is tractable; agreement on both fitness and
+  induced mask is required for the reference optimum to be admitted.}}
   \label{tab:dp_vs_brute}
   \centering
   \inputtable{table2_dp_vs_bruteforce}
 \end{table}
 
 Table~\ref{tab:dp_vs_brute} reports the verification of the reference optimum
-against exhaustive search. \TODO{one factual sentence once the gate has run.
-This gate is hard: if it fails, no other experiment in this paper is valid, and
-the first debugging step is an audit of the histogram conventions above, not of
-the dynamic program.}
+against exhaustive search. On every tested image the dynamic program matches the
+exhaustive optimum exactly, in both fitness (maximum $|\Delta f|$ of zero) and
+induced mask, at a pass rate of $1.0$; the reference optimum is therefore
+admitted, and the comparisons that follow are against a verified global optimum.

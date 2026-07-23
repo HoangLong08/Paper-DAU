@@ -45,9 +45,13 @@ clinical Dice, at the primary operating point $\kprimary$ with the
 % Report median [IQR] + bootstrap CI (A7), NOT mean±std, for Dice columns.
 \begin{table*}[t]
   \caption{Relative fitness gap to the exact optimum, hit rate, and consumed
-  function evaluations, per algorithm and threshold count. \TODO{complete
-  caption: n patients, seeds, budget, the equal-NFE assertion, and the fact that
-  every algorithm consumed exactly the same budget.}}
+  function evaluations, per algorithm at the primary threshold count
+  $\kprimary$ with \texttt{brightest} decoding, over $n=368$ patients and five
+  seeds. Every metaheuristic consumed exactly the same asserted budget of
+  $5{,}000$ evaluations. Dice is the median with a $95\%$ bootstrap CI; the
+  exact optimum (DP-exact) has no budget. Mask-identity rate is the fraction of
+  (patient, seed) cells in which every metaheuristic returns a byte-identical
+  mask.}
   \label{tab:main_grid}
   \centering
   \inputtable{table3_main_grid}
@@ -83,8 +87,10 @@ not project onto the target.
 \begin{figure}[t]
   \centering
   \inputfigure{fig2_cd_diagram}
-  \caption{Critical-difference diagram over patients~\cite{demsar_cd}.
-  \TODO{caption: metric, n, seeds, post-hoc test.}}
+  \caption{Critical-difference diagram of clinical Dice ranks over $n=368$
+  patients~\cite{demsar_cd}, at the primary operating point; methods connected by
+  a bar are not distinguishable at the Nemenyi post-hoc level following a
+  Friedman test.}
   \label{fig:cd}
 \end{figure}
 

@@ -19,11 +19,20 @@
 
 \subsection{Metaheuristic and Quantum-Inspired Multilevel Thresholding}
 
-\TODO{2--3 paragraphs surveying the line of work, at the level of PRACTICE, not
-of named authors. Cite from refs.bib only. Any count of papers ("N of M studies
-report no Dice") comes from the coded bibliometric survey and may be stated only
-once that survey exists with its two-coder Cohen's $\kappa$ --- see the
-supplementary table and docs/RESULTS.md.}
+The line of work treats multilevel thresholding as an optimization contest. A
+criterion --- most often Kapur's entropy or Otsu's between-class variance --- is
+fixed, and successive papers propose population-based search procedures to
+maximize it, reporting the achieved criterion value, a reconstruction-fidelity
+surrogate such as PSNR or SSIM, and convergence behavior. Quantum-inspired
+variants are a visible branch of this activity, and the line remains active on
+medical images into recent years~\cite{alnajdawi_scirep,mousavirad_kbs}. Two
+features of the common evaluation practice matter for what follows. First,
+performance is frequently reported in the criterion's own units or by a
+fidelity surrogate, rather than against a segmentation ground truth. Second, the
+map from the reported threshold vector to a scored binary mask is typically not
+stated, so the object actually being measured is left implicit. We characterize
+these as properties of the prevailing practice, not of any individual study, and
+we attach no count to them in the absence of the coded survey.
 
 % Recent, large, medical-image optimizer benchmark: the strongest checkable
 % evidence for the thesis. Numbers in this paper's records are [PARTIAL] —
@@ -124,6 +133,8 @@ to establishing a ceiling; our contribution is its \emph{decomposition}
 
 \subsection{The Gap}
 
-\TODO{closing paragraph naming the gap in one sentence, written after §3 and
-§8. It must be a statement about what has not been MEASURED, not a statement
-about what other authors failed to do.}
+The gap these works leave is not an unsolved optimization but an unmeasured
+projection: with an exact optimum on one side and a published ceiling on the
+other, what has not been measured is whether the optimization distance separating
+the competing methods survives the mapping onto a clinically scored mask. That
+projection, on a cohort with ground truth, is the subject of this paper.

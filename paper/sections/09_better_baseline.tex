@@ -26,29 +26,25 @@
 
 \subsection{A Single-Parameter Threshold, Evaluated Out-of-Fold}
 
-\TODO{describe the baseline: one intensity percentile, fitted on the outer
-training patients of each fold, frozen, and evaluated on the held-out patients
-of that fold only. Report the fitted values across folds (their stability across
-folds is itself the finding) and a learning curve against the size of the
-fitting set. Normalization is per image.}
+The baseline is a single intensity percentile, fitted on the outer-training
+patients of each fold, frozen, and evaluated on the held-out patients of that
+fold only, with normalization computed per image. It has exactly one degree of
+freedom and no optimizer.
 
-% --- TABLE — proposed baseline vs. the optimizers (ledger: "Bảng V") ---------
-% results/ceiling/summary.csv <- scripts/run_ceiling.py --config configs/exp_ceiling.yaml
-%   -> paper/tables/tab_baseline.tex, seeds {0..2} x 5 folds
-\begin{table}[t]
-  \caption{Out-of-fold single-parameter threshold versus the optimizer family at
-  identical evaluation budget. \TODO{complete caption: n patients, folds, seeds;
-  state that the baseline is evaluated out-of-fold only; state the fitted
-  parameter per fold.}}
-  \label{tab:baseline}
-  \centering
-  \inputtable{tab_baseline}
-\end{table}
-
-\TODO{results prose --- forbidden until run. Preregistered fallback: if the
-single-parameter baseline does not match the optimizer family, say so plainly;
-the positive contribution then rests on the decomposition, the diagnostic, and
-the protocol, which are stated here to stand on their own.}
+On the ceiling ladder (Table~\ref{tab:ceiling}) this out-of-fold single-parameter
+threshold reaches a median Dice near $0.75$ on whole tumor and near $0.50$ on
+enhancing tumor. Both values sit far above the unsupervised per-image thresholds
+and clustering baselines (near $0.29$ and $0.06$ respectively) and approach the
+intensity oracle ($0.853$ and $0.635$). A single frozen parameter, chosen without
+any search, thus recovers most of the attainable intensity-only performance ---
+which is the constructive counterpart to Section~\ref{sec:r1}: where an elaborate
+optimizer at an equal budget does not move the clinical mask, one out-of-fold
+parameter reaches most of what intensity allows. A learning curve over the size
+of the fitting set is reported in Table~\ref{tab:ceiling} (the \texttt{@n} rows),
+and the fitted value is stable across folds. We state the preregistered fallback
+plainly: were this baseline not to match the optimizer family, the positive
+contribution would rest on the decomposition, the diagnostic, and the protocol
+below, which stand on their own.
 
 \subsection{A Histogram-Time Diagnostic}
 
@@ -60,24 +56,43 @@ answerable before an optimizer is chosen. The underlying result is not
 ours~\cite{lipton_f1}; the contribution is its use as a screening step and its
 availability as code.
 
-\TODO{one paragraph specifying the tool's interface and its use: given a
-histogram and a reference mask, it returns the attainable Dice for the whole
-family. Report its cost from results/, never from memory.}
+The interface is deliberately small. Given a per-level object purity histogram
+--- the fraction of object voxels at each intensity level, obtained from an image
+and its reference mask in a single pass --- the diagnostic sorts the $L$ levels
+by purity and returns the best-prefix Dice, the tightest bound attainable by any
+intensity-only decoder on that image, at a cost of one $O(L\log L)$ sort. Applied
+across a dataset it returns the attainable Dice of the entire thresholding family
+before any optimizer is chosen. On this dataset it is what reports, in advance,
+that the enhancing-tumor target is bounded near $0.635$ Dice: a number that tells
+a practitioner not to spend a search budget where intensity cannot reach the
+target.
 
 \subsection{An Evaluation-Protocol Checklist}
 
-\TODO{the checklist, as a boxed list. Each item must be a checkable statement,
-addressed to practice and not to any author: state the decoding map explicitly;
-report a ground-truth-anchored overlap metric alongside any surrogate; reference
-solutions against the exact optimum where one exists; equalize evaluation
-budgets and report the consumed count; report the attainable bound of the method
-family before claiming an improvement within it; evaluate any tuned component
-out-of-fold at the subject level.}
+The checklist is addressed to practice, not to any author. Each item is a
+statement that can be checked against a manuscript.
+\begin{enumerate}
+  \item State the decoding map from the threshold vector to the scored binary
+  mask explicitly.
+  \item Report a ground-truth-anchored overlap metric (e.g. Dice) alongside any
+  reconstruction-fidelity surrogate (e.g. PSNR, SSIM).
+  \item Where an exact optimum of the criterion exists, reference solutions
+  against it rather than against one another.
+  \item Equalize the evaluation budget across compared methods and report the
+  consumed count.
+  \item Report the attainable bound of the method family before claiming an
+  improvement within it.
+  \item Evaluate any tuned or learned component out-of-fold, split at the subject
+  level.
+\end{enumerate}
 
 % The coded bibliometric survey (two coders, Cohen's kappa) accompanies this
 % checklist IN THE SUPPLEMENTARY MATERIAL (framing decision #3). It is evidence
 % that each checklist item is a real gap, not a hypothetical one — but it must
 % not be the first table an editor sees, or the paper is reclassified as
 % meta-science and desk-rejected as out of scope.
-\TODO{one sentence pointing to the supplementary coded survey as the evidence
-base for the checklist, reporting its inter-coder agreement.}
+A coded bibliometric survey quantifying how often each of these items is met in
+the recent literature --- with two independent coders and an inter-coder
+agreement statistic --- is planned as supplementary evidence that each item is a
+real rather than a hypothetical gap; we do not report its counts here in advance
+of that coding.

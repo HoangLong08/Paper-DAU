@@ -14,24 +14,40 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-\TODO{paragraph 1 --- what was measured, in one sentence per result section,
-each traceable to a table or figure above and to a provenance row in the results
-ledger. No new numbers.}
+We measured four things on the full BraTS~2020 cohort. No metaheuristic reaches
+the exact Kapur optimum at a $0.99$ hit rate for any threshold count
+(Section~\ref{sec:r1}). Every method's per-patient Dice is nonetheless
+statistically equivalent to the exact optimum's (Table~\ref{tab:main_grid}). The
+surrogate used to select the number of thresholds is maximized at the largest
+count by construction while clinical quality is best at two or three
+(Section~\ref{sec:r2}). And a learned model on identical single-slice input
+exceeds the intensity-only ceiling on whole tumor (Table~\ref{tab:ceiling}). Each
+of these traces to a table or figure above and to a row in the released ledger.
 
-\TODO{paragraph 2 --- the bounded claim. On this problem, an exact solution has
-existed for over a decade~\cite{menotti_ciarp}, the attainable performance of
-the method family is bounded and that bound is already
-published~\cite{francois_jmiv}, and what our measurements add is the projection
-between them: whether the optimization distance the field competes over reaches
-the clinical mask at all. State the outcome of that projection as an observation
-about the task, not as a verdict about a community.}
+The claim is bounded to this problem. On it, an exact solution has existed for
+over a decade~\cite{menotti_ciarp}, the attainable performance of the method
+family is bounded and that bound is already published~\cite{francois_jmiv}, and
+what our measurements add is the projection between them: whether the optimization
+distance the field competes over reaches the clinical mask. It does not. We state
+this as an observation about the task --- on this objective, with this decoding,
+the optimized variable has limited influence on the scored mask --- not as a
+verdict about a research community.
 
-\TODO{paragraph 3 --- the constructive part: the decomposition, the
-histogram-time diagnostic that lets any author bound their method family before
-building an optimizer, and the protocol checklist. Restate that neither the exact
-solver nor the underlying bound result is claimed as ours.}
+The constructive contribution is threefold. The ceiling decomposition separates
+what is absent from a contiguous intensity band, what is absent from intensity
+altogether, and what a learned model recovers from the same pixels. The
+histogram-time diagnostic lets any author bound their entire method family before
+building an optimizer. The protocol checklist names the practices whose absence
+lets the degeneracy go unnoticed. Neither the exact solver~\cite{menotti_ciarp}
+nor the level-set bound result~\cite{lipton_f1,francois_jmiv} is claimed as ours;
+the decomposition, the diagnostic, and the protocol are.
 
-\TODO{paragraph 4 --- what would change the conclusion: criteria that are not
-interval-additive, decoders outside the intensity-only family, volumetric or
-multi-modal inputs. Name the experiment that would overturn each claim, in the
-spirit of the refutation-test framing of the evaluation.}
+What would overturn each claim is stated in the spirit of the refutation tests
+that structure the evaluation. A criterion that is not interval-additive would
+break the exact reference and would have to be checked separately. A decoder
+outside the intensity-only family --- one that reads spatial structure --- can
+exceed the intensity ceiling, as our learned rung does, and is the constructive
+direction rather than a refutation. And a volumetric or multi-modal input could
+move the ceiling itself, which is precisely the measurement the diagnostic makes
+cheap to repeat. The instrument to check any of this was in the dataset all
+along.

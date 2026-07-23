@@ -12,19 +12,26 @@
 
 \subsection{Preregistration}
 
-\TODO{one paragraph. Call the protocol by its honest name (prereg §6/A9):
-``confirmatory analysis protocol for exploratory findings'' --- the degeneracy
-and metric observations were found exploratorily on an earlier, flawed pipeline
-whose numbers are discarded in their entirety; this protocol pre-specifies the
-confirmatory re-analysis. Cite the OSF/Zenodo DOI. Mislabeling a protocol as a
-preregistration is worse than having none.}
+We call the protocol by its honest name: a confirmatory analysis protocol for
+exploratory findings. The degeneracy and surrogate-metric observations were first
+noticed on an earlier pipeline that carried a budget defect, a defective
+baseline, and self-rolled metrics; every number from that pipeline is discarded
+and none is reused here. What remains from it is a set of hypotheses, and the
+protocol below pre-specifies their confirmatory re-analysis: the decision metric,
+success threshold, and analysis for each claim were fixed, in an append-only
+document, before the clean grid was run, so that no choice in this section could
+be made after seeing a number. \TODO{author task at submission: cite the public
+OSF/Zenodo registration DOI of that protocol document.}
 
 \subsection{Data and Cohort}
 
-\TODO{BraTS 2020 training split (the only split with public ground truth); the
-preregistered slice rule (largest whole-tumor area per patient); cohort size and
-the cohort selection rule, both declared a priori; the committed cohort manifest
-data/splits/brats\_cohort.csv with per-image checksums.}
+We use the BraTS~2020 training collection, the only split with public
+voxel-level ground truth. Each patient contributes a single two-dimensional
+slice, chosen a priori as the slice of largest whole-tumor area, so that the
+input given to the thresholding methods and to the learned baseline is identical.
+The cohort is every patient for which that slice is defined: $368$ of the $369$
+released cases, one case being excluded by the a priori tumor-slice criterion.
+The cohort manifest, with a per-case checksum, is committed with the code.
 
 % ⚠️ Never claim "state of the art on the BraTS leaderboard": the real test set
 % is held out on Synapse. We use the training split and split it ourselves.
@@ -33,10 +40,14 @@ data/splits/brats\_cohort.csv with per-image checksums.}
 % overlap REPORTED AS A NUMBER before the words "external validation" are used.
 We evaluate on the publicly annotated training split and construct our own
 patient-level splits; we make no claim relating to the withheld BraTS test set.
-\TODO{state the primary target (whole tumor on FLAIR, the most favorable case
-for the methods under audit) and the hard target (enhancing tumor on T1ce, a
-bright rim around a dark core, which no single contiguous intensity band can
-represent) --- the a fortiori structure of the argument.}
+Two targets are studied. The primary is whole tumor on FLAIR, the most favorable
+case for the methods under audit: a single bright region that a contiguous
+intensity band can plausibly capture. The hard target is enhancing tumor on
+T1ce, a bright rim around a dark necrotic core, a shape no single contiguous
+intensity band can represent. The argument is a fortiori: a limitation that
+appears even on the favorable target is not an artifact of a poorly chosen case,
+and the hard target shows where the representational limit is provable rather
+than measured.
 
 \subsection{Splits and Leakage Control}
 
@@ -49,13 +60,20 @@ tertile, with an inner validation fold inside each outer-training fold for
 epoch selection. Methods are classified once, a priori, into three families and
 evaluated accordingly:
 
-\TODO{table or list of the three families (a) unsupervised per-image methods
-(classical thresholds, k-means, GMM, exact DP, the metaheuristics, random
-search), evaluated on every patient; (b) methods WITH LEARNED PARAMETERS (the
-U-Net, the single-parameter threshold, and the SELECTION OF $k$), evaluated
-out-of-fold ONLY; (c) oracles, which are not methods but unattainable upper
-bounds and MUST be labeled ``uses test-time ground truth'' in every table and
-figure.}
+\begin{itemize}
+  \item \textbf{Family A --- unsupervised per-image methods}: the classical
+  thresholds (Otsu, Li, triangle), $k$-means and GMM clustering, the exact
+  dynamic program, the metaheuristics, and random search. These have no fitted
+  parameters and are evaluated on every patient.
+  \item \textbf{Family B --- methods with learned parameters}: the 2-D U-Net,
+  the single-parameter percentile threshold, and any data-driven selection of the
+  threshold count $k$. These are evaluated \emph{out-of-fold only}; scoring them
+  on patients used to fit them would be the exact error this paper documents.
+  \item \textbf{Family C --- oracles}: the contiguous-band and gray-level-set
+  oracles. These are not methods but unattainable upper bounds; they consume the
+  test-time ground truth and are labeled ``uses test-time ground truth'' in every
+  table and figure.
+\end{itemize}
 
 Nested cross-validation yields exactly one out-of-fold value per patient for
 every method, on the same patient set, which is what makes paired Wilcoxon,
@@ -89,13 +107,17 @@ excluded implementations are reported separately rather than dropped.
 
 \subsection{Metrics}
 
-\TODO{Dice and HD95 as the clinical endpoints; NSD at tolerance $\nsdtau$~mm
-primary with a sensitivity analysis, with the implementation NAMED (a paper
-auditing metrics may not use an unnamed or self-rolled implementation); PSNR and
-SSIM from a standard library, present as EVIDENCE about the surrogate criteria
-rather than as results; the connected-component count of the predicted mask; the
-empty-mask rate as an independent reported result. IoU is dropped: it is a
-monotone bijection of Dice.}
+The clinical endpoints are Dice and the 95th-percentile Hausdorff distance,
+with the Normalized Surface Dice at tolerance $\nsdtau$~mm as primary and a
+sensitivity analysis over $\{1,3,5\}$~mm; overlap and surface metrics use a named
+public implementation, since a paper auditing evaluation may not rely on an
+unnamed or self-rolled one. PSNR and SSIM are computed from a standard library
+and reported as evidence about the surrogate criteria, never as quality results.
+We also report the connected-component count of the predicted mask and the
+empty-mask rate as an independent result. IoU is omitted as a monotone bijection
+of Dice. Because Dice is bounded and skewed, it is summarized by its median with
+interquartile range and a bootstrap confidence interval, not by mean and standard
+deviation, and the per-patient distribution is provided.
 
 % A7 conventions, locked before running:
 % - empty predicted mask with non-empty GT => Dice 0, HD95 = declared fixed
@@ -107,17 +129,20 @@ monotone bijection of Dice.}
 
 \subsection{Statistics}
 
-\TODO{Wilcoxon signed-rank at patient level with rank-biserial effect size;
-Friedman with Nemenyi and a critical-difference diagram~\cite{demsar_cd};
-equivalence by TOST reported as a 90\% CI of the paired difference PLUS the
-smallest bound at which equivalence holds, so the analysis always returns a
-number rather than a pass/fail; Bayesian signed-rank with a ROPE as the primary
-equivalence analysis~\cite{benavoli_bayes}. State the SESOI hierarchy
-($\sesoistrict$ strict, an inter-rater-anchored bound~\cite{menze_brats}, and
-$\sesoilenient$ lenient) and report all three, always. State the multiple-testing
-families explicitly, and that intersection--union equivalence tests are not
-corrected. Name the primary threshold count ($\kprimary$), the primary decoding
-rule, and the reference algorithm for equivalence.}
+Paired comparisons use the Wilcoxon signed-rank test at the patient level with a
+rank-biserial effect size; omnibus ranking uses Friedman with a Nemenyi
+critical-difference diagram~\cite{demsar_cd}. Equivalence is tested by two
+one-sided tests and reported as a $90\%$ confidence interval of the paired
+difference together with the smallest margin at which equivalence holds, so that
+the analysis returns a number rather than a pass/fail verdict; a Bayesian
+signed-rank test with a region of practical equivalence is the primary
+equivalence analysis~\cite{benavoli_bayes}. We state a SESOI hierarchy ---
+$\sesoistrict$ strict, an inter-rater-anchored intermediate
+bound~\cite{menze_brats}, and $\sesoilenient$ lenient --- and report all three.
+Multiple-testing families are declared explicitly; the intersection--union
+equivalence tests are not corrected. The primary threshold count is $\kprimary$,
+the primary decoding rule is band selection of the brightest class, and the
+reference for equivalence is the exact dynamic program.
 
 % 🔴 A4d — THE scipy TRAP. Under the degeneracy mechanism, two algorithms that
 % find the same threshold produce bit-identical masks => paired difference is
@@ -137,9 +162,41 @@ nuisance.
 % (playbook §6.4).
 \begin{figure}[t]
   \centering
-  \inputfigure{fig1_pipeline}
-  \caption{Pipeline and evaluation budget. \TODO{self-explanatory caption:
-  data path, the decoding stage as an explicit separate box, the single
-  evaluation gate that enforces the budget, and the split boundary.}}
+  \begin{tikzpicture}[
+    font=\footnotesize,
+    node distance=6mm and 7mm,
+    box/.style={draw, rounded corners=2pt, align=center, inner sep=3pt,
+                minimum height=8mm, text width=17mm},
+    stage/.style={box, fill=blue!6},
+    oracle/.style={box, fill=gray!12},
+    score/.style={align=center, font=\scriptsize\itshape, text=black!65},
+    arr/.style={-{Latex[length=2mm]}, thick}]
+    \node[box] (hist) {Image\\ histogram $h$};
+    \node[stage, right=of hist] (opt) {Stage 1\\ optimizer $\mathcal{A}$};
+    \node[box, right=of opt] (thr) {thresholds\\ $\hat{\mathbf t}$};
+    \node[stage, right=of thr] (dec) {Stage 2\\ decoding $D$};
+    \node[box, right=of dec] (mask) {binary\\ mask $M$};
+    \node[oracle, below=9mm of thr] (gt) {reference\\ mask $G$};
+    \draw[arr] (hist) -- (opt);
+    \draw[arr] (opt) -- (thr);
+    \draw[arr] (thr) -- (dec);
+    \draw[arr] (dec) -- (mask);
+    \draw[arr] (gt) -- (dec.south);
+    \draw[arr] (gt.east) -- ++(2.2,0) |- (mask.east)
+          node[pos=0.25, below, score]{Dice$(M,G)$};
+    \node[score, above=1mm of opt] {scored by $F_{\mathrm{Kapur}}$};
+    \node[score, above=1mm of dec] {selects the object band};
+    % budget gate on the optimizer
+    \node[draw, dashed, fit=(opt), inner sep=5pt, label={[font=\scriptsize]below:%
+      equal NFE budget}] {};
+  \end{tikzpicture}
+  \caption{The two-stage pipeline. Stage~1 optimizes the threshold vector on the
+  histogram and is scored in fitness units ($F_{\mathrm{Kapur}}$); Stage~2 decodes
+  the intensity bands into a binary mask and is the only stage scored against the
+  reference mask (Dice). A decade of work optimizes Stage~1. Every optimizer
+  passes through a single evaluation gate enforcing an identical function-%
+  evaluation budget. The reference mask enters only at Stage~2 and at scoring;
+  fitting of any learned component is confined to the training split
+  (§\ref{sec:protocol}).}
   \label{fig:pipeline}
 \end{figure}

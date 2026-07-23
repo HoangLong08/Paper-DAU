@@ -52,9 +52,15 @@ it. Its consequence here is practical: the bound is computable in $O(L \log L)$
 from a histogram, so the attainable performance of the entire thresholding
 family is knowable before any optimizer is written.
 
-\TODO{state the bound formally, with attribution in the statement itself, and
-note that it is strictly tighter than the contiguous-band oracle because a
-non-contiguous gray-level set is admissible. Do NOT label it Theorem 1 (ours).}
+Formally, for a fixed image and reference mask, order the gray levels by the
+purity $p(\ell)=\Pr(\text{object}\mid I=\ell)$ and let the optimal intensity-only
+mask be the union of the levels in the best-scoring prefix of that ordering; by
+the $F_1$-threshold result of Lipton \emph{et al.}~\cite{lipton_f1}, with Dice
+in the role of $F_1$ and purity in the role of a calibrated posterior, this mask
+maximizes Dice among all masks defined by an arbitrary set of gray levels. It is
+strictly tighter than the contiguous-band oracle, since a non-contiguous
+gray-level set is admissible and a contiguous band is a special case. We state
+this as an application of a known result, not as a theorem of ours.
 
 \subsection{The Ladder}
 
@@ -88,10 +94,11 @@ learned model sits above all of them at $0.923$.
 \begin{figure}[t]
   \centering
   \inputfigure{fig4_ceiling_ladder}
-  \caption{Ceiling ladder on a common Dice axis over the same held-out patients.
-  \TODO{caption: every oracle rung labeled ``uses test-time ground truth'';
-  n patients, folds, seeds; the literature reference rung labeled as not run by
-  us and using a different input protocol.}}
+  \caption{Ceiling ladder on a common Dice axis over the same $n=368$ held-out
+  patients, five folds. Oracle rungs use test-time ground truth and are
+  unreachable upper bounds, not methods; the learned rung and the
+  single-parameter threshold are scored strictly out-of-fold. Whole tumor on
+  FLAIR; the U-Net reads the same single slice as the thresholding methods.}
   \label{fig:ladder}
 \end{figure}
 
