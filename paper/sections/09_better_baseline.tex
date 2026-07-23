@@ -36,8 +36,8 @@ threshold reaches a median Dice near $0.75$ on whole tumor and near $0.50$ on
 enhancing tumor. Both values sit far above the unsupervised per-image thresholds
 and clustering baselines (near $0.29$ and $0.06$ respectively) and approach the
 intensity oracle ($0.853$ and $0.635$). A single frozen parameter, chosen without
-any search, thus recovers most of the attainable intensity-only performance ---
-which is the constructive counterpart to Section~\ref{sec:r1}: where an elaborate
+any search, thus recovers most of the attainable intensity-only performance.
+This is the constructive counterpart to Section~\ref{sec:r1}: where an elaborate
 optimizer at an equal budget does not move the clinical mask, one out-of-fold
 parameter reaches most of what intensity allows. A learning curve over the size
 of the fitting set is reported in Table~\ref{tab:ceiling} (the \texttt{@n} rows),
@@ -50,15 +50,15 @@ below, which stand on their own.
 
 The bound of §\ref{sec:ceiling} is computable from an image histogram and a
 reference mask in $O(L \log L)$, i.e. in microseconds per image and independently
-of the threshold count. This makes a previously post-hoc question --- how much
-Dice is attainable by \emph{any} intensity-only method on this dataset? ---
+of the threshold count. This makes a previously post-hoc question (how much
+Dice is attainable by \emph{any} intensity-only method on this dataset?)
 answerable before an optimizer is chosen. The underlying result is not
 ours~\cite{lipton_f1}; the contribution is its use as a screening step and its
 availability as code.
 
 The interface is deliberately small. Given a per-level object purity histogram
---- the fraction of object voxels at each intensity level, obtained from an image
-and its reference mask in a single pass --- the diagnostic sorts the $L$ levels
+(the fraction of object voxels at each intensity level, obtained from an image
+and its reference mask in a single pass), the diagnostic sorts the $L$ levels
 by purity and returns the best-prefix Dice, the tightest bound attainable by any
 intensity-only decoder on that image, at a cost of one $O(L\log L)$ sort. Applied
 across a dataset it returns the attainable Dice of the entire thresholding family
@@ -92,7 +92,7 @@ statement that can be checked against a manuscript.
 % not be the first table an editor sees, or the paper is reclassified as
 % meta-science and desk-rejected as out of scope.
 A coded bibliometric survey quantifying how often each of these items is met in
-the recent literature --- with two independent coders and an inter-coder
-agreement statistic --- is planned as supplementary evidence that each item is a
+the recent literature, with two independent coders and an inter-coder
+agreement statistic, is planned as supplementary evidence that each item is a
 real rather than a hypothetical gap; we do not report its counts here in advance
 of that coding.

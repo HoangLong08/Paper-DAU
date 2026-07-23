@@ -20,7 +20,7 @@
 \subsection{Metaheuristic and Quantum-Inspired Multilevel Thresholding}
 
 The line of work treats multilevel thresholding as an optimization contest. A
-criterion --- most often Kapur's entropy or Otsu's between-class variance --- is
+criterion (most often Kapur's entropy or Otsu's between-class variance) is
 fixed, and successive papers propose population-based search procedures to
 maximize it, reporting the achieved criterion value, a reconstruction-fidelity
 surrogate such as PSNR or SSIM, and convergence behavior. Quantum-inspired
@@ -65,8 +65,8 @@ algorithms studied are classical throughout.
 \subsection{The Exact Solution Already Exists}
 
 % Drop-in paragraph, positioning §5. Cited in the ABSTRACT as well.
-Exact, polynomial-time computation of optimal multilevel thresholds --- for
-Otsu, Kapur, and Kittler--Illingworth criteria alike --- was given by Menotti
+Exact, polynomial-time computation of optimal multilevel thresholds, for
+Otsu, Kapur, and Kittler--Illingworth criteria alike, was given by Menotti
 \emph{et al.}~\cite{menotti_ciarp}, with an $O((K-1)L^2)$ dynamic program.
 Related exact formulations appear in Luessi \emph{et al.}~\cite{luessi_jei} and
 Merzban and Elbayoumi~\cite{merzban_eswa}, the latter demonstrating that the
@@ -98,8 +98,8 @@ measure what selecting it under surrogate criteria costs in clinical terms.
 \subsection{Evaluation Standards for Segmentation}
 
 Mousavirad \emph{et al.}~\cite{mousavirad_kbs} pose precisely our optimization
-question --- whether population-based metaheuristics are effective for
-multilevel thresholding --- but in a setting that structurally cannot detect the
+question (whether population-based metaheuristics are effective for
+multilevel thresholding) but in a setting that structurally cannot detect the
 phenomenon we study: the objective is Otsu between-class variance on natural
 benchmark images without segmentation ground truth, so performance is measured
 \emph{in the objective's own units}. They report that recent algorithms differ

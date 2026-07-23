@@ -51,9 +51,9 @@ on images without segmentation ground truth~\cite{mousavirad_kbs,hegazy_metricbi
 
   \item \textbf{A decomposition of the thresholding ceiling.} We separate the
   bound attainable by a contiguous-intensity-band mask, the bound attainable by
-  an arbitrary gray-level set --- the tightest bound for any intensity-only
+  an arbitrary gray-level set (the tightest bound for any intensity-only
   decoder, obtained by applying the F1-threshold result of Lipton \emph{et
-  al.}~\cite{lipton_f1} --- and the performance of a learned model on identical
+  al.}~\cite{lipton_f1}), and the performance of a learned model on identical
   single-slice input. This separates the shortfall into ``information absent
   from intensity'' and ``information absent from the pixels.''
   % We claim the APPLICATION and the DECOMPOSITION, never the mathematics.
@@ -71,7 +71,7 @@ usable tool. On the full BraTS~2020 cohort, we observe that no metaheuristic
 reaches the exact optimum reliably, yet every method's clinical mask is
 statistically equivalent to the exact optimum's, and that the residual
 segmentation shortfall on whole tumor is recovered by a learned model on
-identical input --- placing it in spatial structure the intensity representation
+identical input, placing it in spatial structure the intensity representation
 cannot express, rather than in the pixels themselves.
 
 The remainder of the paper is organized around this observation.
